@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.strategy;
+package pp.muza.monopoly.model.actions.cards;
 
 import java.math.BigDecimal;
 
@@ -8,9 +8,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.turn.Turn;
 
 /**
  * The player receives money from this card.
@@ -22,16 +20,18 @@ public final class Income extends ActionCard {
     private final BigDecimal amount;
 
     Income(BigDecimal amount) {
-        super("Income", ActionType.INCOME, 0, true);
+        super("Income", Action.INCOME, Type.OBLIGATION, HIGH_PRIORITY);
         this.amount = amount;
+    }
+
+    public static ActionCard of(BigDecimal amount) {
+        return new Income(amount);
     }
 
     @Override
     protected void onExecute(Turn turn) throws ActionCardException {
-        Player player = turn.getPlayer();
-        Game game = turn.getGame();
         try {
-            game.addMoney(player, amount);
+            turn.addMoney(amount);
         } catch (BankException e) {
             throw new ActionCardException(e, this);
         }

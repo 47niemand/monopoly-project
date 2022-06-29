@@ -2,13 +2,11 @@ package pp.muza.monopoly.model.lands;
 
 import java.math.BigDecimal;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public final class Jail extends Land {
 
     private final BigDecimal fine;

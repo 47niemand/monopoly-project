@@ -16,11 +16,10 @@ import org.apache.commons.cli.ParseException;
 
 import pp.muza.monopoly.model.game.Bank;
 import pp.muza.monopoly.model.game.Board;
+import pp.muza.monopoly.model.game.BoardUtils;
 import pp.muza.monopoly.model.game.Game;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.player.Player;
-import pp.muza.monopoly.model.lands.BoardHelper;
-import pp.muza.monopoly.model.player.strategy.DefaultPlayer;
 
 /**
  * This is a simple Monopoly game.
@@ -35,13 +34,8 @@ public class App {
 
     private static int players = DEFAULT_PLAYERS;
 
-    public String getGreeting() {
-        return "This is a game of Monopoly!";
-    }
-
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-        // check command line argument -p for number of players
 
         Options options = new Options();
         options.addOption(Option.builder("p").longOpt(OPT_PLAYERS).hasArg().desc("define number of players")
@@ -69,12 +63,16 @@ public class App {
     static void game() {
         List<Player> p = new ArrayList<>();
         for (int i = 0; i < players; i++) {
-            p.add(new DefaultPlayer("Player " + (i + 1)));
+            p.add(new Player("@Player" + (i + 1)));
         }
 
-        Board<Land> board = BoardHelper.defaultBoard();
+        Board<Land> board = BoardUtils.defaultBoard();
         Bank bank = new Bank();
         Game game = new Game(board, bank, p);
         game.gameLoop();
+    }
+
+    public String getGreeting() {
+        return "This is a game of Monopoly!";
     }
 }

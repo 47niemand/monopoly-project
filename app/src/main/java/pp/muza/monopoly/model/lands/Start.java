@@ -1,14 +1,12 @@
 package pp.muza.monopoly.model.lands;
 
-import java.math.BigDecimal;
-
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public final class Start extends Land {
 
     private final BigDecimal incomeTax;

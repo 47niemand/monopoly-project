@@ -1,6 +1,4 @@
-package pp.muza.monopoly.model.actions.contracts;
-
-import java.math.BigDecimal;
+package pp.muza.monopoly.model.actions.cards;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,10 +6,10 @@ import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.turn.Turn;
 import pp.muza.monopoly.model.lands.Property;
+
+import java.math.BigDecimal;
 
 /**
  * A contract for a property.
@@ -29,22 +27,16 @@ public class Contract extends ActionCard {
     private final Property property; // the property being sent
 
     Contract(int landId, Property property) {
-        super("Contract", ActionType.CONTRACT, 0, false);
+        super("Contract", Action.CONTRACT, Type.CONTRACT, DEFAULT_PRIORITY);
         this.landId = landId;
         this.property = property;
     }
 
-    public static Contract of(int landId, Property property) {
-        return new Contract(landId, property);
-    }
-
     @Override
     protected void onExecute(Turn turn) throws ActionCardException {
-        Game game = turn.getGame();
-        Player player = turn.getPlayer();
         try {
             BigDecimal amount = property.getPrice();
-            game.contract(player, landId, property, amount);
+            turn.doContract(landId, property, amount);
         } catch (BankException e) {
             throw new ActionCardException(e, this);
         }

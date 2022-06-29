@@ -2,15 +2,14 @@ package pp.muza.monopoly.model.lands;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 @AllArgsConstructor
 public abstract class Land {
 
@@ -32,4 +31,9 @@ public abstract class Land {
         }
     }
 
+    @Value
+    public static class Entry<T extends Land> {
+        int position;
+        T land;
+    }
 }

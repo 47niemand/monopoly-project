@@ -1,10 +1,12 @@
 package pp.muza.monopoly.model.game;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,9 +16,14 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.actions.cards.chance.Chance;
+import pp.muza.monopoly.model.actions.cards.chance.ChanceCard;
+import pp.muza.monopoly.model.game.strategy.DefaultStrategy;
 import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.player.Player;
 import pp.muza.monopoly.model.lands.Property;
+import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.turn.TurnImpl;
 
 /**
  * The game.
@@ -24,7 +31,7 @@ import pp.muza.monopoly.model.lands.Property;
  * The game is composed of a board, a list of players.
  * The board is composed of a list of lands.
  * There is a turn for each player. The turn is composed of a list of action
- * cards. (see {@link Turn})
+ * cards. (see {@link TurnImpl})
  * Players can execute action cards. (see {@link ActionCard#execute(Turn) })
  * The player lost when he has mandatory action cards in his hand at the end of
  * the turn.
@@ -36,30 +43,54 @@ public class Game {
 
     private final Board<Land> board;
     private final Bank bank;
+    private final Pile<Chance> chanceCards;
     private final List<Player> players;
+    private final Map<Player, DefaultStrategy> strategyMap = new HashMap<>();
     private final Map<Player, Integer> playerPos = new HashMap<>();
-    private final Map<Integer, Player> landPlayerMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Player> landOwnerMap = new HashMap<>();
     private final Map<Player, PlayerStatus> playerStatus = new HashMap<>();
-    private int currentPlayerId;
+    private final Map<Player, Pile<ActionCard>> playerChanceCards = new HashMap<>();
 
+    private int currentPlayerId;
     private Turn currentTurn;
 
     public Game(Board<Land> board, Bank bank, List<Player> players) {
         this.board = board;
         this.bank = bank;
         this.players = ImmutableList.copyOf(players);
-        try {
-            initialize();
-        } catch (BankException e) {
-            throw new RuntimeException(e);
+
+        playerPos.clear();
+        landOwnerMap.clear();
+        playerStatus.clear();
+        this.bank.reset();
+        // bank add money to players
+        for (Player p : this.players) {
+            try {
+                this.bank.addMoney(p, BigDecimal.valueOf(18));
+            } catch (BankException e) {
+                throw new RuntimeException(e);
+            }
+            strategyMap.put(p, new DefaultStrategy());
         }
+        currentPlayerId = 0;
+        for (Player player : this.players) {
+            playerPos.put(player, 0);
+            playerStatus.put(player, PlayerStatus.IN_GAME);
+            playerChanceCards.put(player, new Pile<>());
+        }
+
+        chanceCards = new Pile<>(Arrays
+                .stream(ChanceCard.values())
+                .map(Chance::of)
+                .collect(Collectors.toList()));
+        chanceCards.shuffle();
     }
 
     /**
      * get the winner(s) of the game.
      * it is players who have the highest amount of money, and they are in the game
      */
-    public List<Player> getWinners() {
+    List<Player> getWinners() {
         // get the maximum amount of money of the players
         BigDecimal maxAmount = players.stream().map(bank::getBalance).max(BigDecimal::compareTo).orElseThrow();
         // get the players with the maximum amount of money
@@ -70,21 +101,20 @@ public class Game {
      * Game loop.
      * <p>
      * The game loop is composed of a turn for each player.
-     * Player's implementation of the turn is delegated to the player itself (see
-     * {@link Player#playTurn(Turn)})
+     * </p>
      */
     public void gameLoop() {
-        int maxTurns = 100;
+        int maxTurns = 200;
         int turn = 0;
         LOG.info("Game loop started");
         do {
             turn++;
             LOG.info("New turn {}", turn);
-            currentTurn = new Turn(this, getCurrentPlayer());
-            currentTurn.getPlayer().playTurn(currentTurn);
+            currentTurn = new TurnImpl(this, getCurrentPlayer());
+            strategyMap.get(getCurrentPlayer()).playTurn(currentTurn);
             if (!currentTurn.isFinished()) {
                 // finish the turn
-                endTurn(currentTurn);
+                currentTurn.endTurn();
             }
 
             if (turn >= maxTurns) {
@@ -100,7 +130,7 @@ public class Game {
         printStatistics();
     }
 
-    private void printStatistics() {
+    void printStatistics() {
         System.out.println("Statistics:");
         players.forEach(player -> {
             System.out.printf("Player %s%s balance: %s%n", player.getName(),
@@ -116,12 +146,12 @@ public class Game {
         });
     }
 
-    public List<Integer> getPlayerProperties(Player player) {
-        return this.landPlayerMap.keySet().stream().filter(landId -> player.equals(landPlayerMap.get(landId)))
+    List<Integer> getPlayerProperties(Player player) {
+        return this.landOwnerMap.keySet().stream().filter(landId -> player.equals(landOwnerMap.get(landId)))
                 .collect(Collectors.toList());
     }
 
-    private boolean nextPlayer() {
+    boolean nextPlayer() {
         int temp = currentPlayerId;
         do {
             temp++;
@@ -134,39 +164,19 @@ public class Game {
         return result;
     }
 
-    private Player getCurrentPlayer() {
+    Player getCurrentPlayer() {
         return players.get(currentPlayerId);
-    }
-
-    /**
-     * Initialize the game.
-     * <p>
-     * Initialize the player position.
-     * Initialize the belongings of the players.
-     * Initialize the player status.
-     * Initialize the bank, and give each player the initial amount of money.
-     * Initialize the position of the players on the board.
-     * Initialize the current player id.
-     */
-    public void initialize() throws BankException {
-        playerPos.clear();
-        landPlayerMap.clear();
-        playerStatus.clear();
-        bank.reset();
-        // bank add money to players
-        for (Player p : players) {
-            bank.addMoney(p, BigDecimal.valueOf(18));
-        }
-        currentPlayerId = 0;
-        for (Player player : this.players) {
-            playerPos.put(player, 0);
-            playerStatus.put(player, PlayerStatus.IN_GAME);
-        }
     }
 
     public int getJailPos() {
         List<Land> lands = board.getLands();
         return IntStream.range(0, lands.size()).filter(i -> lands.get(i).getType() == Land.Type.JAIL).findFirst()
+                .orElseThrow();
+    }
+
+    public int getStartPos() {
+        List<Land> lands = board.getLands();
+        return IntStream.range(0, lands.size()).filter(i -> lands.get(i).getType() == Land.Type.START).findFirst()
                 .orElseThrow();
     }
 
@@ -188,19 +198,23 @@ public class Game {
     }
 
     public boolean isOwned(int pos) {
-        return landPlayerMap.containsKey(pos);
+        return landOwnerMap.containsKey(pos);
     }
 
     public void setPlayerPos(Player player, int pos) {
         LOG.info("Player {} moved to {} ({})", player, pos, board.getLands().get(pos).getName());
         if (board.getLands().get(pos).getType() == Land.Type.PROPERTY) {
-            LOG.info("The {} is owned by {}", board.getLands().get(pos).getName(), landPlayerMap.get(pos));
+            if (landOwnerMap.get(pos) != null)
+                LOG.info("The {} is owned by {}", board.getLands().get(pos).getName(), landOwnerMap.get(pos));
+            else
+                LOG.info("The {} is free", board.getLands().get(pos).getName());
+
         }
         playerPos.put(player, pos);
     }
 
-    public Player getLandPlayer(int landId) {
-        return landPlayerMap.get(landId);
+    public Player getLandOwner(int landId) {
+        return landOwnerMap.get(landId);
     }
 
     public int rollDice() {
@@ -215,6 +229,7 @@ public class Game {
      * @throws BankException if the player doesn't have enough money
      */
     public void payTax(Player player, BigDecimal amount) throws BankException {
+        LOG.info("Player {} has to pay {} tax", player.getName(), amount);
         bank.withdraw(player, amount);
     }
 
@@ -227,6 +242,7 @@ public class Game {
      * @throws BankException if the player doesn't have enough money
      */
     public void payRent(Player player, Player owner, BigDecimal amount) throws BankException {
+        LOG.info("Player {} has to pay {} rent to {}", player.getName(), amount, owner.getName());
         bank.withdraw(player, amount);
         bank.addMoney(owner, amount);
     }
@@ -240,13 +256,14 @@ public class Game {
      * @throws BankException if the player doesn't have enough money
      */
     public void buyProperty(Player player, int landId, Property property) throws BankException {
-        assert getBoard().getLand(landId) == property;
+        if (getBoard().getLand(landId) != property)
+            throw new IllegalArgumentException("The landId is not correct");
         LOG.info("Player {} is buying property {}...", player, property);
         if (isOwned(landId)) {
             throw new IllegalStateException("Property is already owned");
         }
         bank.withdraw(player, property.getPrice());
-        landPlayerMap.put(landId, player);
+        landOwnerMap.put(landId, player);
         LOG.info("Player {} bought property {}", player, property);
     }
 
@@ -262,48 +279,14 @@ public class Game {
     }
 
     /**
-     * End the turn.
-     * <p>
-     * The turn is finished when the player has completed his mandatory action
-     * cards.
-     * If there are mandatory action cards, the player lost the game and the all
-     * belonging to him are returned to the bank.
-     * </p>
-     *
-     * @param turn the current turn
-     */
-    public void endTurn(Turn turn) {
-        assert currentTurn == turn;
-        List<ActionCard> mandatoryActionCards = turn.getActiveActionCards().stream()
-                .filter(actionCard -> actionCard.isMandatory()
-                        && actionCard.getType() != ActionCard.ActionType.END_TURN)
-                .collect(Collectors.toList());
-
-        if (mandatoryActionCards.size() > 0) {
-            // ask player to choose action card
-            LOG.info("Player {} has mandatory action cards: {}", turn.getPlayer(), mandatoryActionCards);
-            LOG.info("Player {} has lost the game", turn.getPlayer());
-            setPlayerStatus(turn.getPlayer(), PlayerStatus.OUT_OF_GAME);
-            // remove belongs from player
-            landPlayerMap.keySet()
-                    .stream()
-                    .filter(landId -> landPlayerMap.get(landId).equals(turn.getPlayer()))
-                    .forEach(landId -> removePlayerProperty(turn.getPlayer(), landId));
-        } else {
-            LOG.info("Ending turn for player {}", turn.getPlayer());
-            turn.endTurn();
-        }
-    }
-
-    /**
      * Remove the property from the player.
      *
      * @param player the player who owns the property
      * @param landId the id of the property
      */
-    private void removePlayerProperty(Player player, Integer landId) {
-        assert landPlayerMap.get(landId).equals(player);
-        landPlayerMap.remove(landId);
+    void removePlayerProperty(Player player, Integer landId) {
+        assert landOwnerMap.get(landId).equals(player);
+        landOwnerMap.remove(landId);
         LOG.info("Player {} lost property {}", player, board.getLand(landId));
     }
 
@@ -316,23 +299,101 @@ public class Game {
      * @param amount   the amount to pay
      * @throws BankException if the player does not allow to receive the money
      */
-    public void contract(Player player, int landId, Property property, BigDecimal amount) throws BankException {
+    public void doContract(Player player, int landId, Property property, BigDecimal amount) throws BankException {
         LOG.info("Player {} is contracting {} for {}", player, property, amount);
-        assert board.getLand(landId) == property;
+        if (board.getLand(landId) != property)
+            throw new IllegalStateException("Property don't belong to the player");
         bank.addMoney(player, amount);
-        Player p = landPlayerMap.remove(landId);
-        assert p == player;
+        Player p = landOwnerMap.remove(landId);
+        if (p != player)
+            throw new IllegalStateException("Property is not owned by the player");
         LOG.info("Player {} sold property {}", player, property);
     }
 
-    /**
-     * get the land on the board at the given position
-     *
-     * @param pos the position
-     * @return the land
-     */
-    public Land getLand(int pos) {
-        return board.getLand(pos);
+    public int foundLandByName(String name) {
+        for (int i = 0; i < board.getLands().size(); i++) {
+            if (board.getLands().get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        throw new NoSuchElementException("No land found with name " + name);
+    }
+
+    public List<Integer> foundLandsByColor(Property.Color color) {
+        List<Integer> lands = new ArrayList<>();
+        for (int i = 0; i < board.getLands().size(); i++) {
+            Land land = board.getLands().get(i);
+            if (land instanceof Property) {
+                Property property = (Property) land;
+                if (property.getColor() == color) {
+                    lands.add(i);
+                }
+            }
+        }
+        return lands;
+    }
+
+    public Chance popChanceCard() {
+        LOG.info("Popping chance card");
+        return chanceCards.pop();
+    }
+
+    public void returnChanceCard(Chance x) {
+        LOG.info("Returning chance card {}", x);
+        chanceCards.returnCard(x);
+    }
+
+    public void setPlayerLost(Player player) {
+        LOG.info("Player {} has lost the game", player);
+        setPlayerStatus(player, Game.PlayerStatus.OUT_OF_GAME);
+        removeBelongsFromPlayer(player);
+    }
+
+    void removeBelongsFromPlayer(Player player) {
+        getPlayerProperties(player).forEach(landId -> removePlayerProperty(player, landId));
+    }
+
+    public void leaveJail(Player player) {
+        LOG.info("Player {} is leaving jail", player);
+        if (getPlayerStatus(player) != PlayerStatus.IN_JAIL)
+            throw new IllegalStateException("Player is not in jail");
+        setPlayerStatus(player, PlayerStatus.IN_GAME);
+    }
+
+    public List<Land.Entry<Property>> getProperties(Player player) {
+        return landOwnerMap.keySet()
+                .stream()
+                .filter(landId -> landOwnerMap.get(landId).equals(player))
+                .map(landId -> new Land.Entry<>(landId, (Property) board.getLand(landId)))
+                .collect(Collectors.toList());
+    }
+
+    public void returnChanceCardToPlayer(Player player, ActionCard card) {
+        LOG.info("Returning chance card {} to player {}", card, player);
+        playerChanceCards.getOrDefault(player, new Pile<>()).add(card);
+    }
+
+    public List<ActionCard> getPlayerChanceCards(Player player) {
+        LOG.info("Getting chance cards from player {}", player);
+        Pile<ActionCard> chancePile = playerChanceCards.getOrDefault(player, new Pile<>());
+        return chancePile.popAll().stream()
+                .peek(x -> LOG.info("Got card {}", x))
+                .collect(Collectors.toList());
+    }
+
+    public List<Player> getPlayers() {
+        return ImmutableList.copyOf(players);
+    }
+
+    public void ownProperty(Player player, int landId, Property property) {
+        if (isOwned(landId)) {
+            LOG.info("Player {} owns property {} from {}", player, property, landOwnerMap.get(landId));
+            removePlayerProperty(landOwnerMap.get(landId), landId);
+            landOwnerMap.put(landId, player);
+        } else {
+            LOG.info("Player {} owns free property {}", player, property);
+            landOwnerMap.put(landId, player);
+        }
     }
 
     public enum PlayerStatus {
@@ -345,6 +406,10 @@ public class Game {
 
         PlayerStatus(boolean isFinal) {
             this.isFinal = isFinal;
+        }
+
+        public boolean isFinal() {
+            return isFinal;
         }
     }
 }

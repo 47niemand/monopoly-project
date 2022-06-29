@@ -9,12 +9,6 @@ public class ActionCardException extends Exception {
         this(e, actionCard, true);
     }
 
-    public ActionCardException(String message, ActionCard actionCard, boolean isFinal) {
-        super(message);
-        this.actionCard = actionCard;
-        this.isFinal = isFinal;
-    }
-
     public ActionCardException(Exception e, ActionCard actionCard, boolean isFinal) {
         super(e.getMessage());
         this.actionCard = actionCard;
@@ -22,7 +16,8 @@ public class ActionCardException extends Exception {
     }
 
     public ActionCardException(String message, ActionCard actionCard) {
-        this(message, actionCard, true);
+        super(message);
+        this.actionCard = actionCard;
+        this.isFinal = true;
     }
-
 }

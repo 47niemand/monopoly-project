@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.strategy;
+package pp.muza.monopoly.model.actions.cards;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -6,9 +6,8 @@ import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.turn.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 
 /**
@@ -23,18 +22,16 @@ public final class Buy extends ActionCard {
     private final Property property;
 
     Buy(int landId, Property property) {
-        super("Buy", ActionType.BUY, 100, false);
+        super("Buy", Action.BUY, Type.OPTIONAL, DEFAULT_PRIORITY);
         this.landId = landId;
         this.property = property;
     }
 
     @Override
     protected void onExecute(Turn turn) throws ActionCardException {
-        Game game = turn.getGame();
-        Player player = turn.getPlayer();
         try {
-            game.buyProperty(player, landId, property);
-        } catch (BankException e) {
+            turn.buyProperty(landId, property);
+        } catch (BankException | TurnException e) {
             throw new ActionCardException(e, this);
         }
     }

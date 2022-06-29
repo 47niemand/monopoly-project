@@ -1,12 +1,11 @@
-package pp.muza.monopoly.model.actions.strategy;
+package pp.muza.monopoly.model.actions.cards;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.player.Player;
-import pp.muza.monopoly.model.lands.Jail;
+import pp.muza.monopoly.model.turn.Turn;
 
 /**
  * This card starts the new turn.
@@ -16,7 +15,7 @@ import pp.muza.monopoly.model.lands.Jail;
 public final class NewTurn extends ActionCard {
 
     NewTurn() {
-        super("New Turn", ActionType.NEW_TURN, 0, true);
+        super("New Turn", Action.NEW_TURN, Type.OBLIGATION, NEW_TURN_PRIORITY);
     }
 
     public static NewTurn of() {
@@ -24,25 +23,23 @@ public final class NewTurn extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) {
-        Game game = turn.getGame();
-        Player player = turn.getPlayer();
-        int pos = game.getPlayerPos(player);
-        Game.PlayerStatus playerStatus = game.getPlayerStatus(player);
+    protected void onExecute(Turn turn) throws ActionCardException {
+        Game.PlayerStatus playerStatus = turn.getStatus();
 
-        //add EndTurn card to player's hand
+        // add EndTurn card to player's hand
         turn.addActionCard(new EndTurn());
 
         switch (playerStatus) {
             case IN_JAIL:
-                // If player is in jail, he/she can't move
-                Jail jail = (Jail) game.getBoard().getLand(pos);
                 // If player is in jail and has a get out by paying fine
-                turn.addActionCard(new Tax(jail.getFine()));
+                turn.addActionCard(new Tax(turn.getJailFine()));
                 break;
             case IN_GAME:
                 // If player is in game, he/she can move
                 turn.addActionCard(new RollDice());
+                break;
+            default:
+                // it seems that we don't need to do anything here
                 break;
         }
     }

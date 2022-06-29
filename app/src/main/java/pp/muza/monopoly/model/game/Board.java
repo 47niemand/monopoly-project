@@ -45,38 +45,38 @@ public final class Board<K> {
      * Returns the next position depending on the start position with the given
      * direction.
      *
-     * @param start     the current position
-     * @param direction the direction to move
+     * @param start the current position
      * @return the next position
      **/
-    private int getNeighborPos(int start, Direction direction) {
+    private int getNextPos(int start) {
         int next;
-        switch (direction) {
-            case NEXT:
-                next = (start + 1) % landList.size();
-                break;
-            case PREV:
-                next = (landList.size() + start - 1) % landList.size();
-                break;
-            default:
-                throw new IllegalStateException(String.format("Direction %s is not supported", direction));
-        }
+        next = (start + 1) % landList.size();
         return next;
     }
 
-    /**
-     * Get the path from start (exclusive) to end (inclusive)
-     *
-     * @param start     start position
-     * @param direction direction of the path
-     * @param distance  distance of the path
-     * @return path from start to end
-     */
-    public List<Integer> getPath(int start, Direction direction, int distance) {
-        List<Integer> path = new ArrayList<>();
+    public int getDestination(int start, int steps) {
+        if (steps <= 0) {
+            throw new IllegalArgumentException("Distance must be greater than 0");
+        }
         int current = start;
-        for (int i = distance; i > 0; i--) {
-            current = getNeighborPos(current, Direction.NEXT);
+        for (int i = steps; i > 0; i--) {
+            current = getNextPos(current);
+        }
+        return current;
+    }
+
+    /**
+     * Get the path from start (exclusive) to finish (inclusive).
+     * 
+     * @param startPos start position
+     * @param endPos   finish position
+     * @return path from startPos to endPos
+     */
+    public List<Integer> getPathTo(int startPos, int endPos) {
+        List<Integer> path = new ArrayList<>();
+        int current = startPos;
+        while (current != endPos) {
+            current = getNextPos(current);
             path.add(current);
         }
         return path;
@@ -89,9 +89,5 @@ public final class Board<K> {
      */
     public List<K> getLands() {
         return ImmutableList.copyOf(landList);
-    }
-
-    public enum Direction {
-        NEXT, PREV
     }
 }

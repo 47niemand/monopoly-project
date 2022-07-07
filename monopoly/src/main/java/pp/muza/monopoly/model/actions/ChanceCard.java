@@ -15,10 +15,10 @@ public enum ChanceCard {
     MOVE_FORWARD_ONE_SPACE("Move forward one space or take another chance card.", false),
     MOVE_FORWARD_UP_TO_5_SPACES("Move forward up to 5 spaces", false),
     GET_OUT_OF_JAIL_FREE("Get out of Jail Free", true),
-    GIVE_THIS_CARD_TO_A_PLAYER_1("Give this card to a player 1. On your next turn, go forward to any free space and buy it. If all are owned, by one space from any player.", false),
-    GIVE_THIS_CARD_TO_A_PLAYER_2("Give this card to a player 2. On your next turn, go forward to any free space and buy it. If all are owned, by one space from any player.", false),
-    GIVE_THIS_CARD_TO_A_PLAYER_3("Give this card to a player 3. On your next turn, go forward to any free space and buy it. If all are owned, by one space from any player.", false),
-    GIVE_THIS_CARD_TO_A_PLAYER_4("Give this card to a player 4. On your next turn, go forward to any free space and buy it. If all are owned, by one space from any player.", false);
+    GIVE_THIS_CARD_TO_A_PLAYER_1("Give this card to a player 1. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false),
+    GIVE_THIS_CARD_TO_A_PLAYER_2("Give this card to a player 2. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false),
+    GIVE_THIS_CARD_TO_A_PLAYER_3("Give this card to a player 3. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false),
+    GIVE_THIS_CARD_TO_A_PLAYER_4("Give this card to a player 4. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false);
 
     private final String description;
     private final boolean isGiftCard;

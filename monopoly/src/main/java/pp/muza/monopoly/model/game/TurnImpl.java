@@ -268,4 +268,15 @@ class TurnImpl implements Turn, TurnPlayer {
     public PlayerStatus getPlayerStatus(Player player) {
         return game.getPlayerStatus(player);
     }
+
+    @Override
+    public void tradeProperty(Player salePlayer, int landId, Property property) throws BankException, TurnException {
+        if (game.getPropertyOwner(landId) != salePlayer) {
+            throw new TurnException("Land is not owned by you");
+        }
+        BigDecimal price = property.getPrice();
+        game.withdraw(player, price);
+        game.addMoney(salePlayer, price);
+        game.setPropertyOwner(landId, player);
+    }
 }

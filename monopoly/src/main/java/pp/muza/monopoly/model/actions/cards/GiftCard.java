@@ -16,7 +16,7 @@ import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 
 /**
- * This is a special card that allows the player to get property from the game.
+ * This is a special card that allows the player to buy property from the game.
  */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
@@ -28,19 +28,18 @@ public class GiftCard extends ActionCard {
     private final int landId;
     private final Property property;
 
-     GiftCard(int landId, Property property) {
+    GiftCard(int landId, Property property) {
         super("Gift card", Action.GIFT, Type.CHANCE, HIGH_PRIORITY);
-         this.landId = landId;
-         this.property = property;
-     }
+        this.landId = landId;
+        this.property = property;
+    }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        try {
-            turn.ownProperty(landId, property);
-        } catch (TurnException e) {
-            LOG.info("Player cannot own property: {}", e.getMessage());
+        if (turn.getPropertyOwner(landId) == null) {
+            return ImmutableList.of(new BuyObligation(landId, property));
+        } else {
+            return ImmutableList.of(new Trade(landId, property));
         }
-        return ImmutableList.of();
     }
 }

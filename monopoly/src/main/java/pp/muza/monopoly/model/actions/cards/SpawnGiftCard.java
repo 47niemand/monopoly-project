@@ -20,7 +20,7 @@ public final class SpawnGiftCard extends ActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Spawn gift cards", Action.GIFT, Type.OPTIONAL, HIGH_PRIORITY);
+        super("Spawn gift cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
     }
 
     public static SpawnGiftCard of() {

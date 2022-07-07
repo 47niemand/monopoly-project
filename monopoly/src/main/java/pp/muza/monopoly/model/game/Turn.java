@@ -69,4 +69,6 @@ public interface Turn extends TurnPlayer {
     void createBirthday();
 
     PlayerStatus getPlayerStatus(Player player);
+
+    void tradeProperty(Player salePlayer, int landId, Property property) throws BankException, TurnException;
 }

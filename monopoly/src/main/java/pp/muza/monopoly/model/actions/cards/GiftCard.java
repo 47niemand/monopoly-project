@@ -21,7 +21,7 @@ import pp.muza.monopoly.model.lands.Property;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Getter
-public class GiftCard extends ActionCard {
+public final class GiftCard extends ActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(GiftCard.class);
 
@@ -36,10 +36,6 @@ public class GiftCard extends ActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        if (turn.getPropertyOwner(landId) == null) {
-            return ImmutableList.of(new BuyObligation(landId, property));
-        } else {
-            return ImmutableList.of(new Trade(landId, property));
-        }
+        return ImmutableList.of(new Trade(landId, property));
     }
 }

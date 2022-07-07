@@ -32,6 +32,7 @@ public final class SpawnGiftCard extends ActionCard {
         LOG.info("Spawning gift cards");
         List<Land.Entry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
+            // if there are no free properties, the player has to choose one of the properties he now owns
             properties = turn.getAllProperties().stream().filter(x -> turn.getPropertyOwner(x.getPosition()) != turn.getPlayer()).collect(Collectors.toList());
         }
         return properties.stream().map(x -> new GiftCard(x.getPosition(), x.getLand())).collect(Collectors.toList());

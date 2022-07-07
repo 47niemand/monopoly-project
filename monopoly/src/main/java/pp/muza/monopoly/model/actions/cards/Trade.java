@@ -28,7 +28,7 @@ import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPla
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Trade extends ActionCard {
+public final class Trade extends ActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Trade.class);
 

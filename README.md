@@ -2,6 +2,29 @@ monopoly-project
 ================
 
 The simple application which plays a game of monopoly with a given number of players.
+There is a board with a number of properties, each with a name, a price, and a color.
+Special lands are also on the board, such as the Go, Jail, and Chance spaces.
+On each turn, a player executes different actions, such as rolling the dice, buying a property, etc. 
+Depending on the rules of the game, different actions are available at the moment.
+
+A player is considered to be out of the game if they have enough money to cover their obligations.
+When there is only one player left in the game or when the maximum number of turns have been taken, 
+the game is over.
+
+Winning the game is determined by the amount of money the player has at the end of the game.
+
+
+     |              |          BLUE         |        |         INDIGO           |            |
+     | PARKING      | CINEMA    | THEATRE   | CHANCE | PET_SHOP   | TOY_SHOP    |GO_TO_JAIL  |
+     | GO_KARTS     | GREEN  |                                        | VIOLET  |AQUARIUM    |
+     | SWIMMING_POOL| GREEN  |                                        | VIOLET  |THE_ZOO     |
+     | CHANCE       |                                                           | CHANCE     |
+     | MUSEUM       | YELLOW |                                        | RAINBOW |PARK_LANE   |
+     | LIBRARY      | YELLOW |                                        | RAINBOW |MAYFAIR     |
+     |              |           ORANGE      |        |           RED            |            |
+     | JAIL         |  BURGER_JOINT| BAKERY | CHANCE | DONUT_SHOP | COFFEE_SHOP | START      |
+     |                                                                      <<--- Direction  |
+
 
 # Build
 

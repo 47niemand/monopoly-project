@@ -102,16 +102,7 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public List<Land.Entry<Property>> getProperties() {
-        List<Land> lands = game.getLands();
-        List<Land.Entry<Property>> result = new ArrayList<>();
-        for (int i = 0; i < lands.size(); i++) {
-            Land land = lands.get(i);
-            if (land.getType() == Land.Type.PROPERTY && game.getPropertyOwner(i) == player) {
-                Property property = (Property) land;
-                result.add(new Land.Entry<>(i, property));
-            }
-        }
-        return result;
+        return game.getProperties(player);
     }
 
     @Override
@@ -149,33 +140,10 @@ class TurnImpl implements Turn, TurnPlayer {
             throw new TurnException("Turn already finished");
         }
         LOG.info("Finishing turn for player {}", player.getName());
-        finished = true;
-        List<ActionCard> playerCards = game.getPlayerCards(player);
-        LOG.info("Not used cards: {}",
-                playerCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         LOG.info("Used cards: {}",
                 usedCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
-
-        List<ActionCard> mandatoryCards = playerCards.stream()
-                .filter(actionCard -> actionCard.getType().isMandatory())
-                .collect(Collectors.toList());
-
-        if (mandatoryCards.size() > 0) {
-            LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards);
-            // player has mandatory cards, so he has lost the game
-            game.setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
-            // return properties to game
-            getProperties().forEach(
-                    x -> game.propertyOwnerRemove(x.getPosition())
-            );
-            // return chance cards to game if any
-            playerCards.stream()
-                    .filter(x -> x.getAction() == ActionCard.Action.CHANCE)
-                    .forEach(x1 -> game.returnChanceCard((Chance) x1));
-            return;
-        }
-        // it seems that player in game, so we need to clear his non-keepable cards
-        game.resetPlayerCards(player);
+        game.endTurn(player);
+        finished = true;
     }
 
     @Override
@@ -185,11 +153,6 @@ class TurnImpl implements Turn, TurnPlayer {
         }
         game.addMoney(player, amount);
         game.propertyOwnerRemove(landId);
-    }
-
-    @Override
-    public void ownProperty(int landId, Property property) {
-        game.setPropertyOwner(landId, player);
     }
 
     @Override

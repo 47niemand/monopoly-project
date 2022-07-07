@@ -50,8 +50,6 @@ public interface Turn extends TurnPlayer {
 
     void doContract(int landId, Property property, BigDecimal amount) throws BankException, TurnException;
 
-    void ownProperty(int landId, Property property) throws TurnException;
-
     int getStartPos();
 
     int foundLandByName(String name);

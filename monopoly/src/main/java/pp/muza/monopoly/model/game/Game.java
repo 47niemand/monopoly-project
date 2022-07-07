@@ -296,10 +296,6 @@ public class Game {
         return board.getStartPosition();
     }
 
-    public int getDestination(int start, int distance) {
-        return board.getDestination(start, distance);
-    }
-
     public Land getLand(int position) {
         return board.getLand(position);
     }
@@ -342,6 +338,46 @@ public class Game {
                     return found;
                 }
         );
+    }
+
+    public void endTurn(Player player) {
+        List<ActionCard> playerCards = getPlayerCards(player);
+        LOG.info("Not used cards: {}",
+                playerCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+
+        List<ActionCard> mandatoryCards = playerCards.stream()
+                .filter(actionCard -> actionCard.getType().isMandatory())
+                .collect(Collectors.toList());
+
+        if (mandatoryCards.size() > 0) {
+            LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards);
+            // player has mandatory cards, so he has lost the game
+            setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
+            // return properties to game
+            getProperties(player).forEach(
+                    x -> propertyOwnerRemove(x.getPosition())
+            );
+            // return chance cards to game if any
+            playerCards.stream()
+                    .filter(x -> x.getAction() == ActionCard.Action.CHANCE)
+                    .forEach(x1 -> returnChanceCard((Chance) x1));
+            return;
+        }
+        // it seems that player in game, so we need to clear his non-keepable cards
+        resetPlayerCards(player);
+    }
+
+    public List<Land.Entry<Property>> getProperties(Player player) {
+        List<Land> lands = board.getLands();
+        List<Land.Entry<Property>> result = new ArrayList<>();
+        for (int i = 0; i < lands.size(); i++) {
+            Land land = lands.get(i);
+            if (land.getType() == Land.Type.PROPERTY && getPropertyOwner(i) == player) {
+                Property property = (Property) land;
+                result.add(new Land.Entry<>(i, property));
+            }
+        }
+        return result;
     }
 
     @Data

@@ -19,11 +19,11 @@ import java.util.List;
 import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
 
 /**
- * A contract for a property.
- * <p>
- * The player who owns the property can sale it to get a profit.
- * This card spawns when the player has no enough money to pay obligations.
- * </p>
+ * This card can be used to purchase a property from the board.
+ * If property is not owned, the player should buy it.
+ * If someone else owns the property, the player have to pay a price to the owner and then the property is bought.
+ * If player has not enough money, he can contract his property to earn money.
+ * It is obligation card, so if player cannot buy the property, he loses the game.
  */
 @Getter
 @ToString(callSuper = true)

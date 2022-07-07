@@ -5,21 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.player.Player;
 import pp.muza.monopoly.model.lands.Property;
+import pp.muza.monopoly.model.player.Player;
 
 /**
- * The player has to pay money to the property owner on which player is standing.
+ * The player has to pay money to the property owner on which player is
+ * standing.
  *
  * TODO: implement a pair of same color = double rent!
  */
@@ -44,7 +47,7 @@ public final class PayRent extends ActionCard {
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn)  {
+    protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
             turn.payRent(recipient, amount);

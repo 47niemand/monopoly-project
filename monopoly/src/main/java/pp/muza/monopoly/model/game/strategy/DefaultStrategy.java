@@ -29,7 +29,7 @@ public final class DefaultStrategy implements Strategy {
             actionCardsExecuted = 0;
             actionCards = currentTurn.getActiveActionCards();
             LOG.info("Active action cards: {}",
-                    actionCards.stream().map(ActionCard::getName).collect(Collectors.joining(", ")));
+                    actionCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
 
             for (ActionCard actionCard : actionCards) {
                 try {
@@ -37,28 +37,28 @@ public final class DefaultStrategy implements Strategy {
 
                         case OPTIONAL:
                             if (Math.random() < 0.5) {
-                                LOG.info("Executing optional card {}", actionCard);
+                                LOG.info("Executing optional card {}", actionCard.getName());
                                 if (currentTurn.executeActionCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
                             } else {
-                                LOG.info("Skipping optional card {}", actionCard);
+                                LOG.info("Skipping optional card {}", actionCard.getName());
                             }
                             break;
                         case CONTRACT:
                             if (Math.random() < 0.5) {
-                                LOG.info("Executing contract card {}", actionCard);
+                                LOG.info("Executing contract card {}", actionCard.getName());
                                 if (currentTurn.executeActionCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
                             } else {
-                                LOG.info("Skipping contract card {}", actionCard);
+                                LOG.info("Skipping contract card {}", actionCard.getName());
                             }
                             break;
                         case OBLIGATION:
                         case CHANCE:
                         case KEEPABLE:
-                            LOG.info("Executing card {}", actionCard);
+                            LOG.info("Executing card {}", actionCard.getName());
                             if (currentTurn.executeActionCard(actionCard)) {
                                 actionCardsExecuted++;
                             }

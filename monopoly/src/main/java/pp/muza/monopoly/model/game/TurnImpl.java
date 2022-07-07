@@ -152,9 +152,9 @@ class TurnImpl implements Turn, TurnPlayer {
         finished = true;
         List<ActionCard> playerCards = game.getPlayerCards(player);
         LOG.info("Not used cards: {}",
-                playerCards.stream().map(ActionCard::getName).collect(Collectors.joining(", ")));
+                playerCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         LOG.info("Used cards: {}",
-                usedCards.stream().map(ActionCard::getName).collect(Collectors.joining(", ")));
+                usedCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
 
         List<ActionCard> mandatoryCards = playerCards.stream()
                 .filter(actionCard -> actionCard.getType().isMandatory())

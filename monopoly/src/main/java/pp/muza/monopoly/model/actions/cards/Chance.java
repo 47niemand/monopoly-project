@@ -1,11 +1,17 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.game.PlayerStatus;
@@ -14,10 +20,6 @@ import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.lands.PropertyName;
 import pp.muza.monopoly.model.player.Player;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is a special card that stores the chance pile of the game. it should be returned to the game when the card is used.
@@ -75,8 +77,6 @@ public final class Chance extends ActionCard {
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result = new ArrayList<>();
-
-        // check the rest
         switch (card) {
             case ADVANCE_TO_MAYFAIR:
                 result.addAll(spawnGetOrPayByName(turn, PropertyName.MAYFAIR.getName()));
@@ -118,7 +118,7 @@ public final class Chance extends ActionCard {
                 break;
             case MOVE_FORWARD_ONE_SPACE:
                 result.add(new ChanceMove(1));
-                result.add(turn.popChanceCard());
+                result.add(new TakeChanceCard());
                 break;
             case MOVE_FORWARD_UP_TO_5_SPACES:
                 result.add(new Move(5));

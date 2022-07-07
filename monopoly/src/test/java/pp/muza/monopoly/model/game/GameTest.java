@@ -103,4 +103,27 @@ class GameTest {
         game.playTurn(turn);
         System.out.println(game.getPlayerInfo(player2));
     }
+
+    @Test
+    void gameTurnTestCase4() {
+        // testing scenario:
+        // player 1 gets chance card MOVE_FORWARD_ONE_SPACE,
+        // player 1 should decide to move forward one space or take a chance card.
+
+        List<Player> players = new ArrayList<>();
+        for (String s : Arrays.asList("@Player1", "@Player2")) {
+            players.add(new Player(s));
+        }
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Player player = players.get(0);
+
+        // test setup
+        game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.MOVE_FORWARD_ONE_SPACE));
+        game.sendCardToPlayer(player, EndTurn.of());
+        // test
+        Turn turn = new TurnImpl(game, player);
+        game.playTurn(turn);
+        System.out.println(game.getPlayerInfo(player));
+    }
+
 }

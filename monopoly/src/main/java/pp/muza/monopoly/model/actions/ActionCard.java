@@ -1,5 +1,7 @@
 package pp.muza.monopoly.model.actions;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,8 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
-
-import java.util.List;
 
 /**
  * ActionThe action card is a card that can be used by the player.
@@ -47,11 +47,11 @@ public abstract class ActionCard  {
     protected abstract List<ActionCard> onExecute(Turn turn);
 
     public enum Type {
-        OPTIONAL(false),
-        OBLIGATION(true),
-        CHANCE(true),
-        KEEPABLE(false),
-        CONTRACT(false);
+        OPTIONAL(false), // optional card, player can choose to use it
+        OBLIGATION(true), // obligation card, player must use it
+        CHANCE(true),  // chance card, player must use it, this type of card can be used only once
+        KEEPABLE(false), // keepable card, player can keep it and use it later
+        CONTRACT(false); // Using the contract card to sell a property is optional and up to the player.
 
         private final boolean mandatory;
 
@@ -72,7 +72,7 @@ public abstract class ActionCard  {
         ARRIVAL, // player arrives to a land
         BUY, // buy property
         PAY, // pay to player (rent, gift, etc.)
-        TAX, // pay tax or fine
+        TAX, // pay tax or fine to bank
         CONTRACT, // contract
         GO_TO_JAIL, // go to jail
         CHANCE, // get chance card, this is a special card that stores the chance pile of the

@@ -1,16 +1,17 @@
 package pp.muza.monopoly.model.actions.cards;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.game.Turn;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.lands.Land;
+import pp.muza.monopoly.model.lands.Property;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)

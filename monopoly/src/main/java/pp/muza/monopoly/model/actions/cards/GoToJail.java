@@ -1,12 +1,13 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
-
-import java.util.List;
 
 /**
  * This card lets the player go to jail.

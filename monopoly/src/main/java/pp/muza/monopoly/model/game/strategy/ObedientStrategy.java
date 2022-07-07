@@ -1,13 +1,14 @@
 package pp.muza.monopoly.model.game.strategy;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.game.TurnPlayer;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class ObedientStrategy implements Strategy {
 
@@ -28,11 +29,11 @@ public final class ObedientStrategy implements Strategy {
             actionCardsExecuted = 0;
             actionCards = currentTurn.getActiveActionCards();
             LOG.info("Active action cards: {}",
-                    actionCards.stream().map(ActionCard::getName).collect(Collectors.joining(", ")));
+                    actionCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
 
             for (ActionCard actionCard : actionCards) {
                 try {
-                    LOG.info("Executing card {}", actionCard);
+                    LOG.info("Executing card {}", actionCard.getName());
                     if (currentTurn.executeActionCard(actionCard)) {
                         actionCardsExecuted++;
                     }

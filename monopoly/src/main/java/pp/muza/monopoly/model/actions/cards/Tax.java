@@ -1,18 +1,19 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
 
 /**
  * The player has to pay money to the bank.

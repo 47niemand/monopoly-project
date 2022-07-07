@@ -81,5 +81,4 @@ public final class Board<K> {
         return ImmutableList.copyOf(landList);
     }
 
-
 }

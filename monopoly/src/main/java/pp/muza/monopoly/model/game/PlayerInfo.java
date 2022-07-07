@@ -23,8 +23,8 @@ final class PlayerInfo {
                 + ", position=" + this.getPosition()
                 + ", status=" + this.getStatus()
                 + ", money=" + this.getMoney()
-                + ", actionCards=[" + this.getActionCards().stream().map(ActionCard::getName).collect(Collectors.joining(",")) + "]"
-                + ", belongings=[" + this.getBelongings().stream().map(Property::getName).collect(Collectors.joining(",")) + "]"
+                + ", actionCards=" + this.getActionCards().stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ", belongings=" + this.getBelongings().stream().map(Property::getName).collect(Collectors.toList())
                 + ")";
     }
 }

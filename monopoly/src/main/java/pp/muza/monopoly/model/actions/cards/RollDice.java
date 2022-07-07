@@ -1,15 +1,16 @@
 package pp.muza.monopoly.model.actions.cards;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
-
-import java.util.List;
 
 /**
  * The player must roll dice by using this card.

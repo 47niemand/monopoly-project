@@ -34,13 +34,13 @@ public class Game {
     private final List<Player> players = new ArrayList<>();
     private final Map<Player, PayerStatus> playerStatus = new HashMap<>();
     private final Map<Integer, Player> propertyOwner = new HashMap<>();
-    private final Map<Player, List<ActionCard>> actionCards = new HashMap<>();
     int MAX_TURNS = 200;
     private int currentPlayerIndex;
 
     public Game(List<Player> players) {
         for (Player player : players) {
-            playerStatus.put(player, new PayerStatus(player, PlayerStatus.IN_GAME, getStartPosition(), DefaultStrategy.strategy));
+            playerStatus.put(player,
+                    new PayerStatus(player, PlayerStatus.IN_GAME, getStartPosition(), DefaultStrategy.strategy));
             try {
                 bank.addMoney(player, BigDecimal.valueOf(18));
             } catch (BankException e) {
@@ -104,14 +104,17 @@ public class Game {
             if (actionCard.getType() == ActionCard.Type.CHANCE) {
                 List<ActionCard> chances = playerStatus.get(player)
                         .getActionCards()
-                        .stream().filter(x -> x.getType() == ActionCard.Type.CHANCE && x.getPriority() <= actionCard.getPriority())
+                        .stream()
+                        .filter(x -> x.getType() == ActionCard.Type.CHANCE
+                                && x.getPriority() <= actionCard.getPriority())
                         .collect(Collectors.toList());
                 playerStatus.get(player).getActionCards().removeAll(chances);
-                LOG.info("Removing chance cards from player's hand: {}", chances);
+                LOG.info("Removing chance cards from player's hand: {}", chances.stream().map(ActionCard::getName).collect(Collectors.toList()));
             }
 
             // return chance cards to the game
-            if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE) && (actionCard.getType() != ActionCard.Type.KEEPABLE)) {
+            if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)
+                    && (actionCard.getType() != ActionCard.Type.KEEPABLE)) {
                 returnChanceCard((Chance) actionCard);
             }
 
@@ -139,7 +142,8 @@ public class Game {
 
     public void playTurn(Turn turn) {
         Player player = turn.getPlayer();
-        List<String> list = playerStatus.get(player).getActionCards().stream().map(ActionCard::getName).collect(Collectors.toList());
+        List<String> list = playerStatus.get(player).getActionCards().stream().map(ActionCard::getName)
+                .collect(Collectors.toList());
         LOG.info("Player's {} Action cards: {}", player.getName(), list);
 
         Strategy strategy = playerStatus.get(player).getStrategy();
@@ -234,8 +238,10 @@ public class Game {
                 .filter(entry -> entry.getValue() == player)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        List<Property> belongings = playersProperties.stream().map(x -> (Property) board.getLand(x)).collect(Collectors.toList());
-        return new PlayerInfo(player, a.getPosition(), a.getStatus(), bank.getBalance(player), ImmutableList.copyOf(a.getActionCards()), belongings);
+        List<Property> belongings = playersProperties.stream().map(x -> (Property) board.getLand(x))
+                .collect(Collectors.toList());
+        return new PlayerInfo(player, a.getPosition(), a.getStatus(), bank.getBalance(player),
+                ImmutableList.copyOf(a.getActionCards()), belongings);
     }
 
     List<Land> getLands() {

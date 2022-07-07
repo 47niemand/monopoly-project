@@ -40,10 +40,6 @@ public final class JailFine extends ActionCard {
         this.amount = amount;
     }
 
-    public static JailFine of(BigDecimal amount) {
-        return new JailFine(amount);
-    }
-
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
@@ -57,9 +53,7 @@ public final class JailFine extends ActionCard {
             result = ImmutableList.of(EndTurn.of());
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = new ArrayList<>();
-            result.add(this);
-            result.addAll(createContractsForPlayerPossession(turn));
+            result = ImmutableList.<ActionCard>builder().addAll(createContractsForPlayerPossession(turn)).add(this).build();
         } catch (TurnException e) {
             throw new IllegalStateException(e);
         }

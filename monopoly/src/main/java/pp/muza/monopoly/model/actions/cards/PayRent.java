@@ -23,7 +23,7 @@ import pp.muza.monopoly.model.player.Player;
 /**
  * The player has to pay money to the property owner on which player is
  * standing.
- *
+ * <p>
  * TODO: implement a pair of same color = double rent!
  */
 @Getter
@@ -54,9 +54,7 @@ public final class PayRent extends ActionCard {
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = new ArrayList<>();
-            result.add(this);
-            result.addAll(createContractsForPlayerPossession(turn));
+            result = ImmutableList.<ActionCard>builder().addAll(createContractsForPlayerPossession(turn)).add(this).build();
         }
         return result;
     }

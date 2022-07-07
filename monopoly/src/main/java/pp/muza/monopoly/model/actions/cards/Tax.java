@@ -33,10 +33,6 @@ public final class Tax extends ActionCard {
         this.amount = amount;
     }
 
-    public static Tax of(BigDecimal amount) {
-        return new Tax(amount);
-    }
-
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
@@ -44,9 +40,7 @@ public final class Tax extends ActionCard {
             turn.payTax(amount);
             result = ImmutableList.of();
         } catch (BankException e) {
-            result = new ArrayList<>();
-            result.add(this);
-            result.addAll(createContractsForPlayerPossession(turn));
+            return ImmutableList.<ActionCard>builder().addAll(createContractsForPlayerPossession(turn)).add(this).build();
         }
         return result;
     }

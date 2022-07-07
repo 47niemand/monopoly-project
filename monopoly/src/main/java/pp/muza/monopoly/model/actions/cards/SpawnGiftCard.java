@@ -23,10 +23,6 @@ public final class SpawnGiftCard extends ActionCard {
         super("Spawn gift cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
     }
 
-    public static SpawnGiftCard of() {
-        return new SpawnGiftCard();
-    }
-
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         LOG.info("Spawning gift cards");

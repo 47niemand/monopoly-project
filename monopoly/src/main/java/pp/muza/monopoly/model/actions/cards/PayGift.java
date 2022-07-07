@@ -17,6 +17,8 @@ import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.player.Player;
 
+import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
+
 /**
  * The player has to pay money to other player.
  */
@@ -48,9 +50,7 @@ public final class PayGift extends ActionCard {
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = new ArrayList<>();
-            result.add(this);
-            result.addAll(PayRent.createContractsForPlayerPossession(turn));
+            result = ImmutableList.<ActionCard>builder().addAll(createContractsForPlayerPossession(turn)).add(this).build();
         }
         return result;
     }

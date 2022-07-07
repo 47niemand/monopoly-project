@@ -30,10 +30,6 @@ public final class Move extends ActionCard {
         this.distance = distance;
     }
 
-    public static ActionCard of(int distance) {
-        return new Move(distance);
-    }
-
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int position = turn.nextPosition(distance);

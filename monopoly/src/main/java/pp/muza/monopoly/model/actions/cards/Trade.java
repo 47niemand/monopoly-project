@@ -13,7 +13,6 @@ import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.player.Player;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;

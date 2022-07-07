@@ -32,12 +32,6 @@ public final class Income extends ActionCard {
         this.amount = amount;
     }
 
-    public static ActionCard of(BigDecimal amount) {
-        return new Income(amount);
-    }
-
-
-
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> res;

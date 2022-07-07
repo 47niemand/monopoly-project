@@ -48,11 +48,4 @@ public class Bank {
         playerMoney.put(player, playerMoney.getOrDefault(player, BigDecimal.ZERO).subtract(price));
         LOG.info("Player {} has {}", player.getName(), playerMoney.get(player));
     }
-
-    /**
-     * Rest the bank system
-     */
-    public void reset() {
-        playerMoney.clear();
-    }
 }

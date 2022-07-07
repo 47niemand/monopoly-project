@@ -3,30 +3,16 @@
  */
 package pp.muza.monopoly;
 
-import java.util.ArrayList;
+import org.apache.commons.cli.*;
+import pp.muza.monopoly.model.game.Game;
+import pp.muza.monopoly.model.player.Player;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import pp.muza.monopoly.model.game.Bank;
-import pp.muza.monopoly.model.game.Board;
-import pp.muza.monopoly.model.game.BoardUtils;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.player.Player;
-
 /**
- * This is a simple Monopoly game.
- *
- * @author Muza
+ * This is a simple Monopoly game simulator
  */
 public class App {
 

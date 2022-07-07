@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
@@ -11,6 +13,7 @@ import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.player.Player;
 
 import java.util.List;
+
 
 /**
  * This is a special card that spawns action cards for the player, when player arrives at a land
@@ -24,6 +27,8 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class Arrival extends ActionCard {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 
     private final int position;
 
@@ -41,9 +46,14 @@ public final class Arrival extends ActionCard {
                 Property property = (Property) land;
                 Player owner = turn.getPropertyOwner(position);
                 if (owner == null) {
+                    LOG.info("Property is not owned by anyone, player can buy it");
                     result = ImmutableList.of(new Buy(position, property));
-                } else {
+                } else if (owner != turn.getPlayer()) {
+                    LOG.info("Property is owned by {}, player should pay rent", owner.getName());
                     result = ImmutableList.of(new PayRent(owner, property));
+                } else {
+                    LOG.info("Property is owned by player, player can do nothing");
+                    result = ImmutableList.of();
                 }
                 break;
             case GOTO_JAIL:

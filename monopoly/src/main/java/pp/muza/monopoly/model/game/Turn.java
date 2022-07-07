@@ -9,6 +9,10 @@ import pp.muza.monopoly.model.player.Player;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * This interface represents a turn in the game.
+ * There are methods to change the player status, move to position, to get the land, to get the owner of a property etc.
+ */
 public interface Turn extends TurnPlayer {
 
     int nextPosition(int distance);

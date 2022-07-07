@@ -1,7 +1,14 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
 }
+
+group 'pp.muza'
+version '0.1'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -33,4 +40,25 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.register('simJar', Jar) {
+    archiveClassifier = 'sim'
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes("Implementation-Title": "Monopoy Game Simulator",
+                "Implementation-Version": archiveVersion,
+                "Main-Class": application.mainClass
+
+        )
+    }
 }

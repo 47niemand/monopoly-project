@@ -95,12 +95,12 @@ class GameTest {
         Turn turn = new TurnImpl(game, player1);
         game.sendCardToPlayer(player1, EndTurn.of());
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo1(player1));
+        System.out.println(game.getPlayerInfo(player1));
         turn = new TurnImpl(game, player2);
         game.playTurn(turn);
         game.setPlayerStatus(player1, PlayerStatus.IN_JAIL);
         turn = new TurnImpl(game, player1);
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo1(player2));
+        System.out.println(game.getPlayerInfo(player2));
     }
 }

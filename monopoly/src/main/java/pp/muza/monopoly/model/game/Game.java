@@ -177,7 +177,7 @@ public class Game {
                 .orElseThrow(() -> new RuntimeException("No winner"));
         LOG.info("Winner: " + winner.getName());
         // print results
-        players.forEach(x -> LOG.info("{} - {}", x.getName(), getPlayerInfo1(x)));
+        players.forEach(x -> LOG.info("{} - {}", x.getName(), getPlayerInfo(x)));
     }
 
     Player getCurrentPlayer() {
@@ -228,7 +228,7 @@ public class Game {
         return result;
     }
 
-    PlayerInfo getPlayerInfo1(Player player) {
+    PlayerInfo getPlayerInfo(Player player) {
         PayerStatus a = playerStatus.get(player);
         List<Integer> playersProperties = propertyOwner.entrySet().stream()
                 .filter(entry -> entry.getValue() == player)

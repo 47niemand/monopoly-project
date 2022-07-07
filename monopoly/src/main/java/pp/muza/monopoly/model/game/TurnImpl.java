@@ -1,12 +1,9 @@
 package pp.muza.monopoly.model.game;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ActionCardExecute;
 import pp.muza.monopoly.model.actions.cards.Chance;
 import pp.muza.monopoly.model.actions.cards.PayGift;
 import pp.muza.monopoly.model.lands.Jail;
@@ -19,26 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
- * The turn of the game.
- * <p>
- * The turn is composed of a list of action cards.
- * There are different action cards (i.e. "Pay Rent", "New Turn", "Buy Land",
- * ...)
- * Players can execute action cards (actionCard.execute()).
- * Each action card has a boolean indicating if it is a mandatory: the ones that
- * have to be used during the turn (typeOfCard!=OPTIONAL) and the ones that are
- * not.
- * By executing an action card, the player can move to the next land or buy a
- * property or pay rent or pay tax etc. Or, player can get new action(s) card.
- * Actions can be executed in a priority order (the lowest first).
- * getActiveActionCards returns the list of action cards that can be executed at
- * the current moment.
- * The turn can be considered as finished when there are no more mandatory
- * action cards to execute.
- * </p>
+ * The turn of the game implementation.  This class implements the Turn and TurnPlayer interfaces.
  */
 
 @Data
@@ -58,6 +38,9 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public boolean executeActionCard(ActionCard actionCard) throws TurnException {
+        if (isFinished()) {
+            throw new TurnException("The turn is finished.");
+        }
         boolean result = game.executeActionCards(this, actionCard);
         LOG.info("Action card {} executed: {}", actionCard.getName(), result);
         usedCards.remove(actionCard);

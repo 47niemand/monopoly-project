@@ -4,8 +4,7 @@ public enum PlayerStatus {
 
     IN_GAME(false),
     IN_JAIL(false),
-    OUT_OF_GAME(true),
-    WINNER(true);
+    OUT_OF_GAME(true);
 
     private final boolean isFinal;
 

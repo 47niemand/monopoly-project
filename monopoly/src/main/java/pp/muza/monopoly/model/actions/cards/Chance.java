@@ -47,26 +47,26 @@ public final class Chance extends ActionCard {
         return new Chance(card);
     }
 
-    private static List<ActionCard> sendGiftCard(Turn turn, int playerid) {
+    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) {
         List<ActionCard> result = new ArrayList<>();
         List<Player> players = turn.getPlayers();
         Player player;
-        if (players.size() > playerid) {
-            player = players.get(playerid);
+        if (players.size() > playerId) {
+            player = players.get(playerId);
         } else {
             player = null;
         }
         if (player == null) {
-            LOG.warn("Player {} is not in the game, get another chance card", playerid);
+            LOG.warn("Player {} is not in the game, get another chance card", playerId);
             result.add(turn.popChanceCard());
         } else if (player == turn.getPlayer()) {
-            LOG.warn("Player {} is trying to give a chance card to himself, get another chance card", playerid);
+            LOG.warn("Player {} is trying to give a chance card to himself, get another chance card", playerId);
             result.add(turn.popChanceCard());
         } else if (turn.getPlayerStatus(player).isFinal()) {
-            LOG.warn("Player {} is out of the game, get another chance card", playerid);
+            LOG.warn("Player {} is out of the game, get another chance card", playerId);
             result.add(turn.popChanceCard());
         } else {
-            turn.sendCard(players.get(playerid), new SpawnGiftCard());
+            turn.sendCard(players.get(playerId), new SpawnGiftCard());
             result.add(turn.popChanceCard());
         }
         return result;

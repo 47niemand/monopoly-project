@@ -1,12 +1,18 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.lands.Land;
+import pp.muza.monopoly.model.lands.Start;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The player moves to a new position on the board.
@@ -18,11 +24,11 @@ public final class MoveTo extends ActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveTo.class);
 
-    private final int landId;
+    private final int position;
 
-    MoveTo(int landId) {
+    MoveTo(int position) {
         super("MoveTo", Action.MOVE, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.landId = landId;
+        this.position = position;
     }
 
     public static ActionCard of(int landId) {
@@ -30,7 +36,30 @@ public final class MoveTo extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) {
-        ActionUtils.onMoveTo(turn, landId);
+    protected List<ActionCard> onExecute(Turn turn) {
+        List<ActionCard> res;
+        LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), position, turn.getLand(position).getName());
+        List<Land> path = turn.moveTo(position);
+        if (path.size() == 0) {
+            LOG.warn("Staying on the same land");
+            res = ImmutableList.of();
+        } else {
+            res = onArrival(turn, path, position);
+        }
+        return res;
+    }
+
+    /**
+     * creates a list of action cards when the player moves to a new land.
+     */
+    static List<ActionCard> onArrival(Turn turn, List<Land> path, int position) {
+        List<ActionCard> res;
+        res = new ArrayList<>();
+        res.add(new Arrival(position));
+        path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
+            LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
+            res.add(new Income(((Start) land).getIncomeTax()));
+        });
+        return res;
     }
 }

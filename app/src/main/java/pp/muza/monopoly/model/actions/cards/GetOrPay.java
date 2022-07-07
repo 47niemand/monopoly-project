@@ -1,14 +1,19 @@
-package pp.muza.monopoly.model.actions.cards.chance;
+package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.cards.ActionUtils;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
 
+import java.util.List;
+
+/**
+ * This a chance card that allows the player to move on a specific land.
+ */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
@@ -19,12 +24,12 @@ public final class GetOrPay extends ActionCard {
     private final int landId;
 
     GetOrPay(int landId) {
-        super("GetOrPay", Action.MOVE, Type.CHANCE, DEFAULT_PRIORITY);
+        super("Get or pay", Action.MOVE, Type.CHANCE, DEFAULT_PRIORITY);
         this.landId = landId;
     }
 
     @Override
-    protected void onExecute(Turn turn) {
-        ActionUtils.onMoveTo(turn, landId);
+    protected List<ActionCard> onExecute(Turn turn) {
+        return ImmutableList.of(new MoveTo(landId));
     }
 }

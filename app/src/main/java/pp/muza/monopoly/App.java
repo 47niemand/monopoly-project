@@ -5,6 +5,8 @@ package pp.muza.monopoly;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -61,14 +63,8 @@ public class App {
     }
 
     static void game() {
-        List<Player> p = new ArrayList<>();
-        for (int i = 0; i < players; i++) {
-            p.add(new Player("@Player" + (i + 1)));
-        }
-
-        Board<Land> board = BoardUtils.defaultBoard();
-        Bank bank = new Bank();
-        Game game = new Game(board, bank, p);
+        List<Player> p = IntStream.range(0, players).mapToObj(i -> new Player("@Player" + (i + 1))).collect(Collectors.toList());
+        Game game = new Game(p);
         game.gameLoop();
     }
 

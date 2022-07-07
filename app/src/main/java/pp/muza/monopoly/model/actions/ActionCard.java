@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+
+import java.util.List;
 
 /**
  * ActionThe action card is a card that can be used by the player.
@@ -19,11 +21,11 @@ import pp.muza.monopoly.model.turn.Turn;
 @Getter
 @ToString
 @EqualsAndHashCode
-public abstract class ActionCard {
+public abstract class ActionCard  {
 
     public static final int HIGH_PRIORITY = 0;
-    public static final int NEW_TURN_PRIORITY = 10;
-    public static final int DEFAULT_PRIORITY = 100;
+    public static final int NEW_TURN_PRIORITY = 100;
+    public static final int DEFAULT_PRIORITY = 1000;
     public static final int LOW_PRIORITY = 10000;
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionCard.class);
@@ -42,21 +44,14 @@ public abstract class ActionCard {
         this.type = type;
     }
 
-    protected abstract void onExecute(Turn turn) throws ActionCardException;
-
-    public final void execute(Turn turn) throws ActionCardException {
-        LOG.info("Executing action card: {}", this);
-        try {
-            onExecute(turn);
-            turn.removeCardsWhenUsed(this);
-        } catch (ActionCardException e) {
-            LOG.warn("Action card execution failed: {}", this);
-            throw e;
-        }
-    }
+    protected abstract List<ActionCard> onExecute(Turn turn);
 
     public enum Type {
-        OPTIONAL(false), OBLIGATION(true), CHANCE(true), KEEPABLE(false), CONTRACT(false);
+        OPTIONAL(false),
+        OBLIGATION(true),
+        CHANCE(true),
+        KEEPABLE(false),
+        CONTRACT(false);
 
         private final boolean mandatory;
 
@@ -76,7 +71,7 @@ public abstract class ActionCard {
         MOVE, // move to next land
         ARRIVAL, // player arrives to a land
         BUY, // buy property
-        PAY_RENT, // pay rent
+        PAY, // pay to player (rent, gift, etc.)
         TAX, // pay tax or fine
         CONTRACT, // contract
         GO_TO_JAIL, // go to jail

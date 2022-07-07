@@ -1,15 +1,19 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * A contract for a property.
@@ -23,6 +27,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class Contract extends ActionCard {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
+
     private final int landId; // the id of the land to be traded
     private final Property property; // the property being sent
 
@@ -33,12 +39,13 @@ public class Contract extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) throws ActionCardException {
+    protected List<ActionCard> onExecute(Turn turn)  {
         try {
             BigDecimal amount = property.getPrice();
             turn.doContract(landId, property, amount);
-        } catch (BankException e) {
-            throw new ActionCardException(e, this);
+        } catch (BankException | TurnException e) {
+            LOG.info("Player cannot receive money: {}", e.getMessage());
         }
+        return ImmutableList.of();
     }
 }

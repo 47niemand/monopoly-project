@@ -1,13 +1,15 @@
-package pp.muza.monopoly.model.actions.cards.chance;
+package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.cards.ActionUtils;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+
+import java.util.List;
 
 /**
  * The player can decide to move on a specific distance.
@@ -28,7 +30,9 @@ public final class ChanceMove extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) {
-       ActionUtils.onMove(turn, distance);
+    protected List<ActionCard> onExecute(Turn turn) {
+        LOG.info("{} moving by {} steps", turn.getPlayer(), distance);
+        int position = turn.nextPosition(distance);
+        return ImmutableList.of(new MoveTo(position));
     }
 }

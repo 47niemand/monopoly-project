@@ -10,4 +10,8 @@ import lombok.ToString;
 public final class Player {
 
     private final String name;
+
+    public static <K, T> K getId(T t) {
+        return null;
+    }
 }

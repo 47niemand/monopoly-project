@@ -1,11 +1,13 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ActionCardException;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.PlayerStatus;
+import pp.muza.monopoly.model.game.Turn;
+
+import java.util.List;
 
 /**
  * This card starts the new turn.
@@ -23,24 +25,21 @@ public final class NewTurn extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) throws ActionCardException {
-        Game.PlayerStatus playerStatus = turn.getStatus();
-
-        // add EndTurn card to player's hand
-        turn.addActionCard(new EndTurn());
-
-        switch (playerStatus) {
-            case IN_JAIL:
-                // If player is in jail and has a get out by paying fine
-                turn.addActionCard(new Tax(turn.getJailFine()));
-                break;
+    protected List<ActionCard> onExecute(Turn turn) {
+        PlayerStatus status = turn.getStatus();
+        List<ActionCard> result;
+        switch (status)  {
             case IN_GAME:
-                // If player is in game, he/she can move
-                turn.addActionCard(new RollDice());
+                result = ImmutableList.of(new RollDice(), new EndTurn());
+                break;
+            case IN_JAIL:
+                result = ImmutableList.of(new JailFine(turn.getJailFine()), new EndTurn());
                 break;
             default:
-                // it seems that we don't need to do anything here
+                assert false : "Unexpected status: " + status;
+                result = ImmutableList.of(new EndTurn());
                 break;
         }
+        return result;
     }
 }

@@ -27,9 +27,9 @@ public class Bank {
      * @throws BankException if the player wallet is full
      */
     public void addMoney(Player player, BigDecimal amount) throws BankException {
-        LOG.info("Adding {} money to player {}", amount, player.getName());
+        LOG.info("Adding {} money to {}", amount, player.getName());
         playerMoney.put(player, playerMoney.getOrDefault(player, BigDecimal.ZERO).add(amount));
-        LOG.info("Player {} has {}", player.getName(), playerMoney.get(player));
+        LOG.info("{} has {}", player.getName(), playerMoney.get(player));
     }
 
     /**
@@ -42,7 +42,7 @@ public class Bank {
     public void withdraw(Player player, BigDecimal price) throws BankException {
         LOG.info("Withdrawing {} money from player {}", price, player.getName());
         if (playerMoney.get(player).compareTo(price) < 0) {
-            LOG.warn("Player {} has not enough money", player.getName());
+            LOG.warn("Player {} has not enough money {}, current balance: {}", player.getName(), price, playerMoney.get(player));
             throw new BankException("Not enough money");
         }
         playerMoney.put(player, playerMoney.getOrDefault(player, BigDecimal.ZERO).subtract(price));

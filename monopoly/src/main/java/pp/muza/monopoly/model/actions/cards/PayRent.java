@@ -1,7 +1,6 @@
 package pp.muza.monopoly.model.actions.cards;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
+import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
@@ -61,9 +61,9 @@ public final class PayRent extends ActionCard {
 
     public static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
         LOG.info("Creating contracts for player's possession");
-        List<Land.Entry<Property>> properties = turn.getProperties();
+        List<IndexedEntry<Property>> properties = turn.getProperties();
         return properties.stream()
-                .map(property -> new Contract(property.getPosition(), property.getLand()))
+                .map(property -> new Contract(property.getIndex(), property.getValue()))
                 .collect(Collectors.toList());
     }
 }

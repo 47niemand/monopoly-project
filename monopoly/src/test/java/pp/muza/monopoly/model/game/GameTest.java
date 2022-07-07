@@ -1,10 +1,12 @@
 package pp.muza.monopoly.model.game;
 
 import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.actions.cards.EndTurn;
-import pp.muza.monopoly.model.game.strategy.ObedientStrategy;
+import pp.muza.monopoly.strategy.DefaultStrategy;
+import pp.muza.monopoly.strategy.ObedientStrategy;
 import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
@@ -22,7 +24,7 @@ class GameTest {
             players.add(new Player(s));
         }
 
-        Game game = new Game(players);
+        Game game = new Game(players, DefaultStrategy.strategy);
         game.gameLoop();
     }
 
@@ -126,4 +128,30 @@ class GameTest {
         System.out.println(game.getPlayerInfo(player));
     }
 
+    @Test
+    void getGameInfo() {
+        // test saving and restoring game state
+
+        List<Player> players = new ArrayList<>();
+        for (String s : Arrays.asList("@Player1", "@Player2")) {
+            players.add(new Player(s));
+        }
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        game.maxTurns = 10;
+        // play 10 turns
+        game.gameLoop();
+        // save game state
+        GameInfo gameInfo = game.getGameInfo();
+
+        // create new game with same players and same game state
+        Game game2 = new Game(gameInfo, ImmutableList.of(ObedientStrategy.strategy));
+        GameInfo gameInfo2 = game2.getGameInfo();
+
+        // test if game state is the same
+        Assertions.assertEquals(gameInfo, gameInfo2);
+
+        // continue playing game
+        game2.maxTurns = 100;
+        game2.gameLoop();
+    }
 }

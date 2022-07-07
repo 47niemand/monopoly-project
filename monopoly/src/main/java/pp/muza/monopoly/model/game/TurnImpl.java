@@ -97,11 +97,11 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void addMoney(BigDecimal amount) throws BankException {
-        game.addMoney(player, amount);
+        game.deposit(player, amount);
     }
 
     @Override
-    public List<Land.Entry<Property>> getProperties() {
+    public List<IndexedEntry<Property>> getProperties() {
         return game.getProperties(player);
     }
 
@@ -117,7 +117,7 @@ class TurnImpl implements Turn, TurnPlayer {
     @Override
     public void payRent(Player recipient, BigDecimal amount) throws BankException {
         game.withdraw(player, amount);
-        game.addMoney(recipient, amount);
+        game.deposit(recipient, amount);
     }
 
     @Override
@@ -151,7 +151,7 @@ class TurnImpl implements Turn, TurnPlayer {
         if (game.getPropertyOwner(landId) != player) {
             throw new TurnException("Land is not owned by you");
         }
-        game.addMoney(player, amount);
+        game.deposit(player, amount);
         game.propertyOwnerRemove(landId);
     }
 
@@ -196,21 +196,21 @@ class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public List<Land.Entry<Property>> getFreeProperties() {
+    public List<IndexedEntry<Property>> getFreeProperties() {
         return getAllProperties().stream()
-                .filter(x -> game.getPropertyOwner(x.getPosition()) == null)
+                .filter(x -> game.getPropertyOwner(x.getIndex()) == null)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Land.Entry<Property>> getAllProperties() {
+    public List<IndexedEntry<Property>> getAllProperties() {
         List<Land> l = game.getLands();
-        List<Land.Entry<Property>> p = new ArrayList<>();
+        List<IndexedEntry<Property>> p = new ArrayList<>();
         for (int i = 0; i < l.size(); i++) {
             Land land = l.get(i);
             if (land.getType() == Land.Type.PROPERTY) {
                 Property property = (Property) land;
-                p.add(new Land.Entry<>(i, property));
+                p.add(new IndexedEntry<>(i, property));
             }
         }
         return p;
@@ -239,7 +239,7 @@ class TurnImpl implements Turn, TurnPlayer {
         }
         BigDecimal price = property.getPrice();
         game.withdraw(player, price);
-        game.addMoney(salePlayer, price);
+        game.deposit(salePlayer, price);
         game.setPropertyOwner(landId, player);
     }
 

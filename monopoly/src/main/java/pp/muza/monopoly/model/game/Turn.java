@@ -36,7 +36,7 @@ public interface Turn extends TurnPlayer {
 
     void addMoney(BigDecimal amount) throws BankException;
 
-    List<Land.Entry<Property>> getProperties();
+    List<IndexedEntry<Property>> getProperties();
 
     void buyProperty(int landId, Property property) throws BankException, TurnException;
 
@@ -60,9 +60,9 @@ public interface Turn extends TurnPlayer {
 
     void sendCard(Player player, ActionCard actionCard);
 
-    List<Land.Entry<Property>> getFreeProperties();
+    List<IndexedEntry<Property>> getFreeProperties();
 
-    List<Land.Entry<Property>> getAllProperties();
+    List<IndexedEntry<Property>> getAllProperties();
 
     void birthdayParty();
 

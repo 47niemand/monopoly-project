@@ -3,7 +3,6 @@ package pp.muza.monopoly.model.actions.cards;
 import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;

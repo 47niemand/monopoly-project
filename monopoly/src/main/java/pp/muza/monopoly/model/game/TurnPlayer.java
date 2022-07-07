@@ -11,6 +11,8 @@ import pp.muza.monopoly.model.actions.ActionCard;
  * executeActionCard() executes an action card. the result of the execution is true if the action card was executed successfully.
  * execution of an action card can can spawn new action cards. new action cards are added to the active action cards.
  * isFinished() returns true if the turn is finished.
+ *
+ * TODO: add a method to get game state, which can be used to make a decision about the next action.
   */
 public interface TurnPlayer {
 

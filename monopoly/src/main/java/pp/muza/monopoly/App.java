@@ -6,6 +6,7 @@ package pp.muza.monopoly;
 import org.apache.commons.cli.*;
 import pp.muza.monopoly.model.game.Game;
 import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.strategy.DefaultStrategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class App {
     static void game() {
         List<Player> p = IntStream.range(0, players).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
-        Game game = new Game(p);
+        Game game = new Game(p, DefaultStrategy.strategy);
         game.gameLoop();
     }
 

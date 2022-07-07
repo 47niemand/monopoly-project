@@ -9,8 +9,6 @@ import pp.muza.monopoly.model.actions.ActionCardExecute;
 import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.actions.cards.Chance;
 import pp.muza.monopoly.model.actions.cards.NewTurn;
-import pp.muza.monopoly.model.game.strategy.DefaultStrategy;
-import pp.muza.monopoly.model.game.strategy.Strategy;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.player.Player;
@@ -25,30 +23,43 @@ import java.util.stream.IntStream;
  * <p>
  * This class is responsible for managing the game.
  */
+
 public class Game {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
-    private final Board<Land> board = BoardUtils.defaultBoard();
+    private static final int DEFAULT_MAX_TURNS = 200;
     private final Bank bank = new Bank();
     private final LinkedList<Chance> chanceCards = new LinkedList<>();
     private final List<Player> players = new ArrayList<>();
-    private final Map<Player, PayerStatus> playerStatus = new HashMap<>();
+    private final Map<Player, PlayerData> playersData = new HashMap<>();
     private final Map<Integer, Player> propertyOwner = new HashMap<>();
-    int MAX_TURNS = 200;
+    private final Board<Land> board;
+    int maxTurns = DEFAULT_MAX_TURNS;
     private int currentPlayerIndex;
+    private int turnNumber;
 
-    public Game(List<Player> players) {
-        for (Player player : players) {
-            playerStatus.put(player,
-                    new PayerStatus(player, PlayerStatus.IN_GAME, getStartPosition(), DefaultStrategy.strategy));
-            try {
-                bank.addMoney(player, BigDecimal.valueOf(18));
-            } catch (BankException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public Game(List<Player> players, Strategy strategy) {
+        this(players, Collections.singletonList(strategy));
+    }
+
+    private Game(Board<Land> board) {
+        this.board = board;
+    }
+
+    public Game(List<Player> players, List<Strategy> strategies) {
+        this(BoardUtils.defaultBoard());
         this.players.addAll(players);
-        assert players.size() == playerStatus.keySet().size();
+        Iterator<Strategy> strategyIterator = strategies.iterator();
+        Strategy strategy = null;
+        for (Player player : players) {
+            if (strategyIterator.hasNext()) {
+                strategy = strategyIterator.next();
+            }
+            playersData.put(player,
+                    new PlayerData(player, PlayerStatus.IN_GAME, getStartPosition(), strategy));
+            bank.set(player, BigDecimal.valueOf(18));
+        }
+        assert players.size() == playersData.keySet().size();
         chanceCards.addAll(Arrays
                 .stream(ChanceCard.values())
                 .map(Chance::of)
@@ -57,59 +68,86 @@ public class Game {
         currentPlayerIndex = 0;
     }
 
-    public Game(List<Player> players, List<Strategy> strategies) {
-        this(players);
-        Iterator<Player> playerIterator = players.iterator();
+    public Game(GameInfo gameInfo, List<Strategy> strategies) {
+        this.board = gameInfo.getBoard();
+        this.players.addAll(gameInfo.getPlayers());
         Iterator<Strategy> strategyIterator = strategies.iterator();
         Strategy strategy = null;
-        while (playerIterator.hasNext()) {
-            Player player = playerIterator.next();
+
+        Map<Player, PlayerData> playersData = new HashMap<>();
+        for (PlayerInfo x : gameInfo.getPlayerInfo()) {
             if (strategyIterator.hasNext()) {
                 strategy = strategyIterator.next();
             }
-            playerStatus.get(player).setStrategy(strategy);
+            PlayerData playerData = new PlayerData(x.getPlayer(), x.getStatus(), x.getPosition(), strategy, x.getActionCards());
+            if (playersData.put(x.getPlayer(), playerData) != null) {
+                throw new IllegalStateException("Duplicate key");
+            }
+            this.bank.set(x.getPlayer(), x.getMoney());
+
+            for (IndexedEntry<Property> belonging : x.getBelongings()) {
+                if (this.propertyOwner.put(belonging.getIndex(), x.getPlayer()) != null) {
+                    throw new IllegalStateException("Duplicate key");
+                }
+            }
+
         }
+        this.playersData.putAll(playersData);
+        this.chanceCards.addAll(gameInfo.getChanceCards());
+        this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
+        this.turnNumber = gameInfo.getTurnNumber();
+        this.maxTurns = gameInfo.getMaxTurns();
+    }
+
+    List<Chance> getChanceCards() {
+        return ImmutableList.copyOf(chanceCards);
+    }
+
+    public final GameInfo getGameInfo() {
+        return new GameInfo(this);
     }
 
     public void setPlayerStatus(Player player, PlayerStatus status) {
-        playerStatus.get(player).setStatus(status);
+        playersData.get(player).setStatus(status);
     }
 
     public PlayerStatus getPlayerStatus(Player player) {
-        return playerStatus.get(player).getStatus();
+        return playersData.get(player).getStatus();
     }
 
+    //TODO: add constructor with GameInfo
+
     public void setPlayerPosition(Player player, int position) {
-        playerStatus.get(player).setPosition(position);
+        playersData.get(player).setPosition(position);
     }
 
     public boolean executeActionCards(Turn turn, ActionCard actionCard) throws TurnException {
         Player player = turn.getPlayer();
         boolean cardUsed;
         boolean newCardsSpawned;
-        if (playerStatus.get(player).getActionCards().removeIf(x -> x.equals(actionCard))) {
+        if (playersData.get(player).getActionCards().removeIf(x -> x.equals(actionCard))) {
             List<ActionCard> result = ActionCardExecute.execute(turn, actionCard);
             cardUsed = !result.contains(actionCard);
             // create collection that do no contains card that are already on player's hand
             List<ActionCard> newCards = result.stream().filter(x -> {
-                boolean found = playerStatus.get(player).getActionCards().contains(x);
+                boolean found = playersData.get(player).getActionCards().contains(x);
                 if (found) {
                     LOG.info("Card {} already on player's hand", x.getName());
                 }
                 return !found;
             }).collect(Collectors.toList());
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
-            playerStatus.get(player).getActionCards().addAll(newCards);
+            playersData.get(player).getActionCards().addAll(newCards);
 
             // Chance cards (ActionCard.Type.CHANCE) can only be used once, thus we must take them out of the player's hand.
             if (actionCard.getType() == ActionCard.Type.CHANCE) {
-                List<ActionCard> chances = playerStatus.get(player)
+                List<ActionCard> chances = playersData.get(player)
                         .getActionCards()
                         .stream()
                         .filter(x -> x.getType() == ActionCard.Type.CHANCE
                                 && x.getPriority() <= actionCard.getPriority())
                         .collect(Collectors.toList());
-                playerStatus.get(player).getActionCards().removeAll(chances);
+                playersData.get(player).getActionCards().removeAll(chances);
                 LOG.info("Removing chance cards from player's hand: {}", chances.stream().map(ActionCard::getName).collect(Collectors.toList()));
             }
 
@@ -125,28 +163,28 @@ public class Game {
     }
 
     public int getNextPosition(Player player, int distance) {
-        return board.getDestination(playerStatus.get(player).getPosition(), distance);
+        return board.getDestination(playersData.get(player).getPosition(), distance);
     }
 
     public int getPlayerPosition(Player player) {
-        return playerStatus.get(player).getPosition();
+        return playersData.get(player).getPosition();
     }
 
     public List<ActionCard> getPlayerCards(Player player) {
-        return ImmutableList.copyOf(playerStatus.get(player).getActionCards());
+        return ImmutableList.copyOf(playersData.get(player).getActionCards());
     }
 
     public void sendCardToPlayer(Player player, ActionCard actionCard) {
-        playerStatus.get(player).getActionCards().add(actionCard);
+        playersData.get(player).getActionCards().add(actionCard);
     }
 
     public void playTurn(Turn turn) {
         Player player = turn.getPlayer();
-        List<String> list = playerStatus.get(player).getActionCards().stream().map(ActionCard::getName)
+        List<String> list = playersData.get(player).getActionCards().stream().map(ActionCard::getName)
                 .collect(Collectors.toList());
         LOG.info("Player's {} Action cards: {}", player.getName(), list);
 
-        Strategy strategy = playerStatus.get(player).getStrategy();
+        Strategy strategy = playersData.get(player).getStrategy();
         strategy.playTurn(turn);
         if (!turn.isFinished()) {
             LOG.info("Player {} is not finished the turn", player);
@@ -160,23 +198,22 @@ public class Game {
     }
 
     public void gameLoop() {
-        int turnNumber = 0;
         do {
             turnNumber++;
             Player player = getCurrentPlayer();
             LOG.info("Turn {} - Player {}", turnNumber, player.getName());
             Turn turn = new TurnImpl(this, player);
-            playerStatus.get(player).getActionCards().add(NewTurn.of());
+            playersData.get(player).getActionCards().add(NewTurn.of());
             playTurn(turn);
 
-            if (turnNumber >= MAX_TURNS) {
+            if (turnNumber >= maxTurns) {
                 LOG.info("Game loop ended after {} turns", turnNumber);
                 break;
             }
         } while (nextPlayer());
         // get player with maximum money
         Player winner = players.stream()
-                .filter(x -> !playerStatus.get(x).getStatus().isFinal())
+                .filter(x -> !playersData.get(x).getStatus().isFinal())
                 .max(Comparator.comparing(bank::getBalance))
                 .orElseThrow(() -> new RuntimeException("No winner"));
         LOG.info("Winner: " + winner.getName());
@@ -188,6 +225,10 @@ public class Game {
         return players.get(currentPlayerIndex);
     }
 
+    int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
     boolean nextPlayer() {
         int temp = currentPlayerIndex;
         do {
@@ -195,7 +236,7 @@ public class Game {
             if (temp >= players.size()) {
                 temp = 0;
             }
-        } while (playerStatus.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
+        } while (playersData.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
         boolean result = temp != currentPlayerIndex;
         currentPlayerIndex = temp;
         if (result) {
@@ -208,15 +249,15 @@ public class Game {
 
     public List<ActionCard> getActiveActionCards(Player player) {
         List<ActionCard> result;
-        List<ActionCard> actionCards = playerStatus.get(player).getActionCards();
+        List<ActionCard> actionCards = playersData.get(player).getActionCards();
 
-        OptionalInt priority = playerStatus.get(player).getActionCards().stream()
+        OptionalInt priority = playersData.get(player).getActionCards().stream()
                 .filter(actionCard1 -> actionCard1.getType().isMandatory())
                 .mapToInt(ActionCard::getPriority)
                 .min();
 
         if (priority.isEmpty()) {
-            priority = playerStatus.get(player).getActionCards().stream()
+            priority = playersData.get(player).getActionCards().stream()
                     .mapToInt(ActionCard::getPriority)
                     .min();
         }
@@ -233,12 +274,12 @@ public class Game {
     }
 
     PlayerInfo getPlayerInfo(Player player) {
-        PayerStatus a = playerStatus.get(player);
+        PlayerData a = playersData.get(player);
         List<Integer> playersProperties = propertyOwner.entrySet().stream()
                 .filter(entry -> entry.getValue() == player)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        List<Property> belongings = playersProperties.stream().map(x -> (Property) board.getLand(x))
+        List<IndexedEntry<Property>> belongings = playersProperties.stream().map(x -> new IndexedEntry<>(x, (Property) board.getLand(x)))
                 .collect(Collectors.toList());
         return new PlayerInfo(player, a.getPosition(), a.getStatus(), bank.getBalance(player),
                 ImmutableList.copyOf(a.getActionCards()), belongings);
@@ -256,8 +297,8 @@ public class Game {
         return board.getPathTo(startPos, endPos);
     }
 
-    public void addMoney(Player player, BigDecimal amount) throws BankException {
-        bank.addMoney(player, amount);
+    public void deposit(Player player, BigDecimal amount) throws BankException {
+        bank.deposit(player, amount);
     }
 
     public Player getPropertyOwner(int landId) {
@@ -330,7 +371,7 @@ public class Game {
     }
 
     public void resetPlayerCards(Player player) {
-        playerStatus.get(player).actionCards.removeIf(x -> {
+        playersData.get(player).actionCards.removeIf(x -> {
                     boolean found = x.getType() != ActionCard.Type.KEEPABLE;
                     if (found) {
                         LOG.info("{} lost action card {}", player.getName(), x.getName());
@@ -355,7 +396,7 @@ public class Game {
             setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
             // return properties to game
             getProperties(player).forEach(
-                    x -> propertyOwnerRemove(x.getPosition())
+                    x -> propertyOwnerRemove(x.getIndex())
             );
             // return chance cards to game if any
             playerCards.stream()
@@ -367,14 +408,14 @@ public class Game {
         resetPlayerCards(player);
     }
 
-    public List<Land.Entry<Property>> getProperties(Player player) {
+    public List<IndexedEntry<Property>> getProperties(Player player) {
         List<Land> lands = board.getLands();
-        List<Land.Entry<Property>> result = new ArrayList<>();
+        List<IndexedEntry<Property>> result = new ArrayList<>();
         for (int i = 0; i < lands.size(); i++) {
             Land land = lands.get(i);
             if (land.getType() == Land.Type.PROPERTY && getPropertyOwner(i) == player) {
                 Property property = (Property) land;
-                result.add(new Land.Entry<>(i, property));
+                result.add(new IndexedEntry<>(i, property));
             }
         }
         return result;
@@ -382,18 +423,30 @@ public class Game {
 
     public void playerTurnStarted(Player player) {
         // there is no need to roll dice or move if player did something in this turn
-        playerStatus.get(player).actionCards.removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+        playersData.get(player).actionCards.removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+    }
+
+    public Board<Land> getBoard() {
+        return board;
+    }
+
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+
+    public int getMaxTurns() {
+        return maxTurns;
     }
 
     @Data
-    private static final class PayerStatus {
+    private static final class PlayerData {
         private final Player player;
         private final List<ActionCard> actionCards;
         private PlayerStatus status;
         private int position;
         private Strategy strategy;
 
-        public PayerStatus(Player player, PlayerStatus status, int position, Strategy strategy) {
+        public PlayerData(Player player, PlayerStatus status, int position, Strategy strategy) {
             this.player = player;
             this.status = status;
             this.position = position;
@@ -401,8 +454,9 @@ public class Game {
             this.strategy = strategy;
         }
 
-        public void setStrategy(Strategy strategy) {
-            this.strategy = strategy;
+        public PlayerData(Player player, PlayerStatus status, int position, Strategy strategy, List<ActionCard> actionCards) {
+            this(player, status, position, strategy);
+            this.actionCards.addAll(actionCards);
         }
 
         public void setPosition(int position) {

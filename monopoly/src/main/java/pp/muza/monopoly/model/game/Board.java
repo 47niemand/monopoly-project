@@ -1,22 +1,19 @@
 package pp.muza.monopoly.model.game;
 
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
+import lombok.Value;
+
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import lombok.*;
-
-@Getter
-@ToString
-@EqualsAndHashCode
-@AllArgsConstructor
+@Value
 public final class Board<K> {
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private final List<K> landList;
+    private final ImmutableList<K> landList;
     private final int startPosition = 0;
+
+    public Board(List<K> landList) {
+        this.landList = ImmutableList.copyOf(landList);
+    }
 
     public K getLand(int position) {
         return landList.get(position);
@@ -29,11 +26,11 @@ public final class Board<K> {
      * @return the list of all lands on the path
      **/
     public List<K> getLands(List<Integer> path) {
-        List<K> res = new ArrayList<>();
+        ImmutableList.Builder<K> tmp = ImmutableList.builder();
         for (Integer integer : path) {
-            res.add(getLand(integer));
+            tmp.add(getLand(integer));
         }
-        return res;
+        return tmp.build();
     }
 
     /**
@@ -62,23 +59,22 @@ public final class Board<K> {
 
     /**
      * Get the path from start (exclusive) to finish (inclusive).
-     * 
+     *
      * @param startPos start position
      * @param endPos   finish position
      * @return path from startPos to endPos
      */
     public List<Integer> getPathTo(int startPos, int endPos) {
-        List<Integer> path = new ArrayList<>();
+        ImmutableList.Builder<Integer> path = ImmutableList.builder();
         int current = startPos;
         while (current != endPos) {
             current = nextPosition(current);
             path.add(current);
         }
-        return path;
+        return path.build();
     }
 
     public List<K> getLands() {
-        return ImmutableList.copyOf(landList);
+        return landList;
     }
-
 }

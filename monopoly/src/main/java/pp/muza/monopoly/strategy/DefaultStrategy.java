@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game.strategy;
+package pp.muza.monopoly.strategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,9 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.game.Strategy;
 import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.game.TurnPlayer;
 
+/**
+ * This strategy executes action cards in the order they are in the player's hand.
+ * It can skip optional cards with a probability of 1/2
+ */
 public final class DefaultStrategy implements Strategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultStrategy.class);

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
@@ -26,11 +27,11 @@ public final class SpawnGiftCard extends ActionCard {
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         LOG.info("Spawning BuyOrTrade cards");
-        List<Land.Entry<Property>> properties = turn.getFreeProperties();
+        List<IndexedEntry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
             // if there are no free properties, the player has to choose one of the properties he now owns
-            properties = turn.getAllProperties().stream().filter(x -> turn.getPropertyOwner(x.getPosition()) != turn.getPlayer()).collect(Collectors.toList());
+            properties = turn.getAllProperties().stream().filter(x -> turn.getPropertyOwner(x.getIndex()) != turn.getPlayer()).collect(Collectors.toList());
         }
-        return properties.stream().map(x -> new BuyOrTrade(x.getPosition(), x.getLand())).collect(Collectors.toList());
+        return properties.stream().map(x -> new BuyOrTrade(x.getIndex(), x.getValue())).collect(Collectors.toList());
     }
 }

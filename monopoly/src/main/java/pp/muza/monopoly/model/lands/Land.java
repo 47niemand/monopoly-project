@@ -30,10 +30,4 @@ public abstract class Land {
             aClass = landClass;
         }
     }
-
-    @Value
-    public static class Entry<T extends Land> {
-        int position;
-        T land;
-    }
 }

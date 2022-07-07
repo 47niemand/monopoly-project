@@ -1,6 +1,4 @@
-package pp.muza.monopoly.model.game.strategy;
-
-import pp.muza.monopoly.model.game.TurnPlayer;
+package pp.muza.monopoly.model.game;
 
 public interface Strategy {
 

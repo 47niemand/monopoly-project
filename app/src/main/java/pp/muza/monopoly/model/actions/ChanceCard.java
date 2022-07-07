@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards.chance;
+package pp.muza.monopoly.model.actions;
 
 
 public enum ChanceCard {
@@ -10,7 +10,7 @@ public enum ChanceCard {
     ADVANCE_TO_GO_KARTS("Advance to Go Kart. If one is available get it for free, otherwise pay rent to the owner.", false),
     INCOME("Income", false),
     BIRTHDAY("Happy Birthday! Everyone gives you a present.", false),
-    LUXURY_TAX("Luxury Tax", false),
+    LUXURY_TAX("Luxury JailFine", false),
     ADVANCE_TO_GO("Advance to Go", false),
     MOVE_FORWARD_ONE_SPACE("Move forward one space or take another chance card.", false),
     MOVE_FORWARD_UP_TO_5_SPACES("Move forward up to 5 spaces", false),

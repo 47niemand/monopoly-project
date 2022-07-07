@@ -1,9 +1,12 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+
+import java.util.List;
 
 /**
  * This card lets the player go to jail.
@@ -16,7 +19,8 @@ public final class GoToJail extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) {
+    protected List<ActionCard> onExecute(Turn turn) {
         turn.setPlayerInJail();
+        return ImmutableList.of(new EndTurn());
     }
 }

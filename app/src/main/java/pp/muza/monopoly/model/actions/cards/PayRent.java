@@ -1,17 +1,19 @@
 package pp.muza.monopoly.model.actions.cards;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ActionCardException;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.player.Player;
 import pp.muza.monopoly.model.lands.Property;
@@ -26,11 +28,13 @@ import pp.muza.monopoly.model.lands.Property;
 @EqualsAndHashCode(callSuper = true)
 public final class PayRent extends ActionCard {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
+
     private final Player recipient;
     private final BigDecimal amount;
 
     PayRent(Player recipient, Land land) {
-        super("Pay Rent", Action.PAY_RENT, Type.OBLIGATION, DEFAULT_PRIORITY);
+        super("Pay Rent", Action.PAY, Type.OBLIGATION, DEFAULT_PRIORITY);
         this.recipient = recipient;
         if (land.getType() == Land.Type.PROPERTY) {
             this.amount = ((Property) land).getRent();
@@ -40,13 +44,25 @@ public final class PayRent extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) throws ActionCardException {
+    protected List<ActionCard> onExecute(Turn turn)  {
+        List<ActionCard> result;
         try {
             turn.payRent(recipient, amount);
+            result = ImmutableList.of();
         } catch (BankException e) {
-            // try to create a contract for each property in the player's possession
-            boolean contractCreated = ActionUtils.createContractsForPlayersPossession(turn);
-            throw new ActionCardException(e, this, !contractCreated);
+            LOG.info("Player cannot pay money: {}", e.getMessage());
+            result = new ArrayList<>();
+            result.add(this);
+            result.addAll(createContractsForPlayerPossession(turn));
         }
+        return result;
+    }
+
+    public static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
+        LOG.info("Creating contracts for player's possession");
+        List<Land.Entry<Property>> properties = turn.getProperties();
+        return properties.stream()
+                .map(property -> new Contract(property.getPosition(), property.getLand()))
+                .collect(Collectors.toList());
     }
 }

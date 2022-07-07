@@ -4,9 +4,13 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
+import pp.muza.monopoly.model.game.PlayerStatus;
 import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.game.TurnException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,29 +27,39 @@ import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPla
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Tax extends ActionCard {
+public final class JailFine extends ActionCard {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JailFine.class);
 
     private final BigDecimal amount;
 
-    Tax(BigDecimal amount) {
-        super("Tax", Action.TAX, Type.OBLIGATION, DEFAULT_PRIORITY);
+    JailFine(BigDecimal amount) {
+        super("JailFine", Action.TAX, Type.OBLIGATION, DEFAULT_PRIORITY);
         this.amount = amount;
     }
 
-    public static Tax of(BigDecimal amount) {
-        return new Tax(amount);
+    public static JailFine of(BigDecimal amount) {
+        return new JailFine(amount);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.payTax(amount);
-            result = ImmutableList.of();
+            if (turn.getStatus() == PlayerStatus.IN_JAIL) {
+                turn.payTax(amount);
+                turn.leaveJail();
+            } else {
+                LOG.warn("Player is not in jail, cancel jail fine");
+            }
+            result = ImmutableList.of(EndTurn.of());
         } catch (BankException e) {
+            LOG.info("Player cannot pay money: {}", e.getMessage());
             result = new ArrayList<>();
             result.add(this);
             result.addAll(createContractsForPlayerPossession(turn));
+        } catch (TurnException e) {
+            throw new IllegalStateException(e);
         }
         return result;
     }

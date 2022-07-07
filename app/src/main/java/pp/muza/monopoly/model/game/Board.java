@@ -5,12 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @ToString
@@ -23,8 +18,8 @@ public final class Board<K> {
     private final List<K> landList;
     private final int startPosition = 0;
 
-    public K getLand(int pos) {
-        return landList.get(pos);
+    public K getLand(int position) {
+        return landList.get(position);
     }
 
     /**
@@ -48,19 +43,19 @@ public final class Board<K> {
      * @param start the current position
      * @return the next position
      **/
-    private int getNextPos(int start) {
+    private int nextPosition(int start) {
         int next;
         next = (start + 1) % landList.size();
         return next;
     }
 
-    public int getDestination(int start, int steps) {
-        if (steps <= 0) {
+    public int getDestination(int start, int distance) {
+        if (distance <= 0) {
             throw new IllegalArgumentException("Distance must be greater than 0");
         }
         int current = start;
-        for (int i = steps; i > 0; i--) {
-            current = getNextPos(current);
+        for (int i = distance; i > 0; i--) {
+            current = nextPosition(current);
         }
         return current;
     }
@@ -76,18 +71,15 @@ public final class Board<K> {
         List<Integer> path = new ArrayList<>();
         int current = startPos;
         while (current != endPos) {
-            current = getNextPos(current);
+            current = nextPosition(current);
             path.add(current);
         }
         return path;
     }
 
-    /**
-     * Returns list of all lands in the board.
-     *
-     * @return list of lands
-     */
     public List<K> getLands() {
         return ImmutableList.copyOf(landList);
     }
+
+
 }

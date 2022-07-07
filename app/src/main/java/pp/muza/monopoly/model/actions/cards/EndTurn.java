@@ -1,11 +1,15 @@
 package pp.muza.monopoly.model.actions.cards;
 
+import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.game.TurnException;
+
+import java.util.List;
 
 
 /**
@@ -21,9 +25,17 @@ public final class EndTurn extends ActionCard {
         super("End Turn", Action.END_TURN, Type.OBLIGATION, LOW_PRIORITY);
     }
 
+    public static ActionCard of() {
+        return new EndTurn();
+    }
+
     @Override
-    protected void onExecute(Turn turn) {
-        LOG.info("End turn");
-        turn.endTurn();
+    protected List<ActionCard> onExecute(Turn turn) {
+        try {
+            turn.endTurn();
+        } catch (TurnException e) {
+            throw new IllegalStateException(e);
+        }
+        return ImmutableList.of();
     }
 }

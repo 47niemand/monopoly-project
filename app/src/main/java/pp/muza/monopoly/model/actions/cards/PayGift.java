@@ -4,49 +4,54 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
-
 /**
- * The player has to pay money to the bank.
- * <p>
- * if the player is in jail, successfully pay the bill will allow to end the turn.
- * </p>
+ * The player has to pay money to other player.
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Tax extends ActionCard {
+public final class PayGift extends ActionCard {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PayGift.class);
+
+    private final Player recipient;
     private final BigDecimal amount;
 
-    Tax(BigDecimal amount) {
-        super("Tax", Action.TAX, Type.OBLIGATION, DEFAULT_PRIORITY);
+    PayGift(Player recipient, BigDecimal amount) {
+        super("Pay Gift", Action.PAY, Type.OBLIGATION, DEFAULT_PRIORITY);
+        this.recipient = recipient;
         this.amount = amount;
     }
 
-    public static Tax of(BigDecimal amount) {
-        return new Tax(amount);
+    public static ActionCard of(Player recipient, BigDecimal amount) {
+        return new PayGift(recipient, amount);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.payTax(amount);
+            turn.payRent(recipient, amount);
             result = ImmutableList.of();
         } catch (BankException e) {
+            LOG.info("Player cannot pay money: {}", e.getMessage());
             result = new ArrayList<>();
             result.add(this);
-            result.addAll(createContractsForPlayerPossession(turn));
+            result.addAll(PayRent.createContractsForPlayerPossession(turn));
         }
         return result;
     }
+
+
 }

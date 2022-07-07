@@ -6,7 +6,10 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.turn.Turn;
+import pp.muza.monopoly.model.game.Turn;
+import pp.muza.monopoly.model.lands.Land;
+
+import java.util.List;
 
 /**
  * The player specifies the distance to take to move to a new location on the board.
@@ -31,7 +34,14 @@ public final class Move extends ActionCard {
     }
 
     @Override
-    protected void onExecute(Turn turn) {
-        ActionUtils.onMove(turn, distance);
+    protected List<ActionCard> onExecute(Turn turn) {
+        int position = turn.nextPosition(distance);
+        LOG.info("{} moving by {} steps to {} ({})", turn.getPlayer(), distance, position, turn.getLand(position).getName());
+        List<ActionCard> res;
+        List<Land> path = turn.moveTo(position);
+        assert path.size() == distance;
+        res = MoveTo.onArrival(turn, path, position);
+        return res;
+
     }
 }

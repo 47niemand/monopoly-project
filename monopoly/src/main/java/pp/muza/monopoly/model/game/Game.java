@@ -101,6 +101,7 @@ public class Game {
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
             playerStatus.get(player).getActionCards().addAll(newCards);
 
+            // Chance cards (ActionCard.Type.CHANCE) can only be used once, thus we must take them out of the player's hand.
             if (actionCard.getType() == ActionCard.Type.CHANCE) {
                 List<ActionCard> chances = playerStatus.get(player)
                         .getActionCards()
@@ -112,12 +113,11 @@ public class Game {
                 LOG.info("Removing chance cards from player's hand: {}", chances.stream().map(ActionCard::getName).collect(Collectors.toList()));
             }
 
-            // return chance cards to the game
+            // return chance card (ActionCard.Action.CHANCE) to the game
             if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)
                     && (actionCard.getType() != ActionCard.Type.KEEPABLE)) {
                 returnChanceCard((Chance) actionCard);
             }
-
         } else {
             throw new TurnException("Action card not found");
         }
@@ -331,6 +331,17 @@ public class Game {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public void resetPlayerCards(Player player) {
+        playerStatus.get(player).actionCards.removeIf(x -> {
+                    boolean found = x.getType() != ActionCard.Type.KEEPABLE;
+                    if (found) {
+                        LOG.info("{} lost action card {}", player.getName(), x.getName());
+                    }
+                    return found;
+                }
+        );
     }
 
     @Data

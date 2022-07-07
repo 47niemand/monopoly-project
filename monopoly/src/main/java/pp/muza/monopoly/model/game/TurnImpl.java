@@ -161,17 +161,21 @@ class TurnImpl implements Turn, TurnPlayer {
                 .collect(Collectors.toList());
 
         if (mandatoryCards.size() > 0) {
-            // ask player to choose action card
             LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards);
+            // player has mandatory cards, so he has lost the game
             game.setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
             // return properties to game
             getProperties().forEach(
                     x -> game.propertyOwnerRemove(x.getPosition())
             );
+            // return chance cards to game if any
             playerCards.stream()
                     .filter(x -> x.getAction() == ActionCard.Action.CHANCE)
                     .forEach(x1 -> game.returnChanceCard((Chance) x1));
+            return;
         }
+        // it seems that player in game, so we need to clear his non-keepable cards
+        game.resetPlayerCards(player);
     }
 
     @Override

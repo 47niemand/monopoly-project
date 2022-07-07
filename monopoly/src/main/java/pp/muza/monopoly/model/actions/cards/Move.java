@@ -12,6 +12,8 @@ import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 
+import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
+
 /**
  * The player specifies the distance to take to move to a new location on the board.
  */
@@ -37,7 +39,7 @@ public final class Move extends ActionCard {
         List<ActionCard> res;
         List<Land> path = turn.moveTo(position);
         assert path.size() == distance;
-        res = MoveTo.onArrival(turn, path, position);
+        res = onArrival(turn, path, position);
         return res;
 
     }

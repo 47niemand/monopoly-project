@@ -217,7 +217,7 @@ class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public void createBirthday() {
+    public void birthdayParty() {
         game.getPlayers().stream()
                 .filter(x -> x != player && !game.getPlayerStatus(x).isFinal())
                 .forEach(x -> {
@@ -241,5 +241,11 @@ class TurnImpl implements Turn, TurnPlayer {
         game.withdraw(player, price);
         game.addMoney(salePlayer, price);
         game.setPropertyOwner(landId, player);
+    }
+
+    @Override
+    public void playerStartedTurn() {
+        // there is no need to roll dice or move if player did something in this turn
+        game.playerTurnStarted(player);
     }
 }

@@ -16,6 +16,8 @@ import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Start;
 
+import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
+
 /**
  * The player moves to a new position on the board.
  */
@@ -47,17 +49,4 @@ public final class MoveTo extends ActionCard {
         return res;
     }
 
-    /**
-     * creates a list of action cards when the player moves to a new land.
-     */
-    static List<ActionCard> onArrival(Turn turn, List<Land> path, int position) {
-        List<ActionCard> res;
-        res = new ArrayList<>();
-        res.add(new Arrival(position));
-        path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
-            LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
-            res.add(new Income(((Start) land).getIncomeTax()));
-        });
-        return res;
-    }
 }

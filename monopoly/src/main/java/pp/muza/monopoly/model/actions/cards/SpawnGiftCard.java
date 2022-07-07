@@ -20,17 +20,17 @@ public final class SpawnGiftCard extends ActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Spawn gift cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
+        super("Spawn BuyOrTrade cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Spawning gift cards");
+        LOG.info("Spawning BuyOrTrade cards");
         List<Land.Entry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
             // if there are no free properties, the player has to choose one of the properties he now owns
             properties = turn.getAllProperties().stream().filter(x -> turn.getPropertyOwner(x.getPosition()) != turn.getPlayer()).collect(Collectors.toList());
         }
-        return properties.stream().map(x -> new GiftCard(x.getPosition(), x.getLand())).collect(Collectors.toList());
+        return properties.stream().map(x -> new BuyOrTrade(x.getPosition(), x.getLand())).collect(Collectors.toList());
     }
 }

@@ -108,7 +108,7 @@ public final class Chance extends ActionCard {
                 // proof of concept: create instance of Turn for rest players.
                 // add an action to transfer the money to current player.
                 // execute the action for rest players.
-                turn.createBirthday();
+                turn.birthdayParty();
                 break;
             case LUXURY_TAX:
                 result.add(new Tax(BigDecimal.valueOf(2)));

@@ -64,9 +64,11 @@ public interface Turn extends TurnPlayer {
 
     List<Land.Entry<Property>> getAllProperties();
 
-    void createBirthday();
+    void birthdayParty();
 
     PlayerStatus getPlayerStatus(Player player);
 
     void tradeProperty(Player salePlayer, int landId, Property property) throws BankException, TurnException;
+
+    void playerStartedTurn();
 }

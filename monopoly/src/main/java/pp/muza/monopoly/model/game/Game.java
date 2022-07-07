@@ -380,6 +380,11 @@ public class Game {
         return result;
     }
 
+    public void playerTurnStarted(Player player) {
+        // there is no need to roll dice or move if player did something in this turn
+        playerStatus.get(player).actionCards.removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+    }
+
     @Data
     private static final class PayerStatus {
         private final Player player;

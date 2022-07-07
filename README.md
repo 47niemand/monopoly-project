@@ -1,5 +1,5 @@
-monopoy-project
-===============
+monopoly-project
+================
 
 The simple application which plays a game of monopoly with a given number of players.
 

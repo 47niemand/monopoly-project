@@ -8,7 +8,7 @@ import java.util.List;
 public final class TakeChanceCard extends AbstractActionCard {
 
     TakeChanceCard() {
-        super("Take Chance Card", Action.CHANCE, Type.CHANCE, DEFAULT_PRIORITY);
+        super("Take Chance Card", Action.CHANCE, Type.CHOOSE, DEFAULT_PRIORITY);
     }
 
     @Override

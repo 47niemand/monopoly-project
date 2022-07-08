@@ -23,7 +23,7 @@ public final class ChanceMove extends AbstractActionCard {
     private final int distance;
 
     ChanceMove(int distance) {
-        super("Chance to move", Action.MOVE, Type.CHANCE, DEFAULT_PRIORITY);
+        super("Chance to move", Action.MOVE, Type.CHOOSE, DEFAULT_PRIORITY);
         assert distance > 0;
         this.distance = distance;
     }

@@ -139,16 +139,16 @@ public class Game {
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
             playersData.get(player).getActionCards().addAll(newCards);
 
-            // Chance cards (ActionCard.Type.CHANCE) can only be used once, thus we must take them out of the player's hand.
-            if (actionCard.getType() == ActionCard.Type.CHANCE) {
-                List<ActionCard> chances = playersData.get(player)
+            // Choose cards (ActionCard.Type.CHOOSE) can only be used once, thus we must take them out of the player's hand.
+            if (actionCard.getType() == ActionCard.Type.CHOOSE) {
+                List<ActionCard> chooses = playersData.get(player)
                         .getActionCards()
                         .stream()
-                        .filter(x -> x.getType() == ActionCard.Type.CHANCE
+                        .filter(x -> x.getType() == ActionCard.Type.CHOOSE
                                 && x.getPriority() <= actionCard.getPriority())
                         .collect(Collectors.toList());
-                playersData.get(player).getActionCards().removeAll(chances);
-                LOG.info("Removing chance cards from player's hand: {}", chances.stream().map(ActionCard::getName).collect(Collectors.toList()));
+                playersData.get(player).getActionCards().removeAll(chooses);
+                LOG.info("Removing choose cards from player's hand: {}", chooses.stream().map(ActionCard::getName).collect(Collectors.toList()));
             }
 
             // return chance card (ActionCard.Action.CHANCE) to the game
@@ -373,7 +373,8 @@ public class Game {
         playersData.get(player).actionCards.removeIf(x -> {
                     boolean found = false;
                     LOG.info("{} lost action card {}", player.getName(), x.getName());
-                    if (x.getType() == ActionCard.Type.CHANCE) {
+                    if (x.getAction() == ActionCard.Action.CHANCE) {
+                        // return chance card to pile
                         returnChanceCard((Chance) x);
                         found = true;
                     }
@@ -387,7 +388,7 @@ public class Game {
                     boolean found = x.getType() != ActionCard.Type.KEEPABLE;
                     if (found) {
                         LOG.info("{} lost action card {}", player.getName(), x.getName());
-                        if (x.getType() == ActionCard.Type.CHANCE) {
+                        if (x.getAction() == ActionCard.Action.CHANCE) {
                             returnChanceCard((Chance) x);
                         }
                     }

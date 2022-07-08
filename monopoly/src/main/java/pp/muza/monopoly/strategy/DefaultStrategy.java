@@ -61,7 +61,7 @@ public final class DefaultStrategy implements Strategy {
                             }
                             break;
                         case OBLIGATION:
-                        case CHANCE:
+                        case CHOOSE:
                         case KEEPABLE:
                             LOG.info("Executing card {}", actionCard.getName());
                             if (currentTurn.executeActionCard(actionCard)) {

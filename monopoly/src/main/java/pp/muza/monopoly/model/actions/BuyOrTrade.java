@@ -29,7 +29,7 @@ public final class BuyOrTrade extends AbstractActionCard {
     private final Property property;
 
     BuyOrTrade(int landId, Property property) {
-        super("Buy Or Trade", Action.GIFT, Type.CHANCE, HIGH_PRIORITY);
+        super("Buy Or Trade", Action.GIFT, Type.CHOOSE, HIGH_PRIORITY);
         this.landId = landId;
         this.property = property;
     }

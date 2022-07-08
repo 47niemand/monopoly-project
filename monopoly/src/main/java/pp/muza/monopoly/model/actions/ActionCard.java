@@ -41,8 +41,8 @@ public interface ActionCard {
     int getPriority();
 
     enum Type {
-        // The action card is a chance card. Chance card, player must use it, this type of card can be used only once
-        CHANCE(true),
+        // The action card is a special type of cards. Player must use it, this type of card can be used only once.
+        CHOOSE(true),
         // Using the contract card to sell a property is optional and up to the player.
         CONTRACT(false),
         // keepable card, player can keep it and use it later

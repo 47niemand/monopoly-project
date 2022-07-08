@@ -11,7 +11,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
 
 /**
- * ActionThe action card is a card that can be used by the player.
+ * ActionCard is a card that can be used by a player.
  * The action card has a name, a type of action (like buying a property, paying
  * rent, etc.), a type of card (like chance, obligation, etc.), and a priority.
  * onExecute is a method that is executed when the card is using. It should be

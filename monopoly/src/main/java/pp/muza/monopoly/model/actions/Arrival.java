@@ -17,7 +17,7 @@ import pp.muza.monopoly.model.player.Player;
 
 
 /**
- * This is a special card that spawns action cards for the player, when player arrives at a land for instance:
+ * This is a special card that spawns action cards for the player, when player arrives at a land. 
  * - when player arrives at the property, depending on property owner, he/she can buy it, or he/she should pay rent.
  * - when player arrives at the goto jail, he/she should move to jail.
  * - when player arrives at the chance, he/she should draw a card.

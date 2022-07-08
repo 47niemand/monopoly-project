@@ -27,8 +27,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     implementation 'commons-cli:commons-cli:1.5.0'
-
-    implementation 'io.prometheus:simpleclient_pushgateway:0.9.0'
 }
 
 application {

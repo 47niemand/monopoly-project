@@ -9,9 +9,10 @@ import pp.muza.monopoly.model.actions.ActionCardExecute;
 import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.actions.Chance;
 import pp.muza.monopoly.model.actions.NewTurn;
+import pp.muza.monopoly.model.lands.Board;
+import pp.muza.monopoly.model.lands.MonopolyBoard;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -47,7 +48,7 @@ public class Game {
     }
 
     public Game(List<Player> players, List<Strategy> strategies) {
-        this(BoardUtils.defaultBoard());
+        this(MonopolyBoard.defaultBoard());
         this.players.addAll(players);
         Iterator<Strategy> strategyIterator = strategies.iterator();
         Strategy strategy = null;

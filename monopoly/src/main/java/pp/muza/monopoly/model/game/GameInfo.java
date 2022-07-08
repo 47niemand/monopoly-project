@@ -3,8 +3,8 @@ package pp.muza.monopoly.model.game;
 import com.google.common.collect.ImmutableList;
 import lombok.Value;
 import pp.muza.monopoly.model.actions.Chance;
+import pp.muza.monopoly.model.lands.Board;
 import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.player.Player;
 
 import java.util.List;
 

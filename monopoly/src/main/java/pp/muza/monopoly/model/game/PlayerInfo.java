@@ -3,7 +3,6 @@ package pp.muza.monopoly.model.game;
 import lombok.Value;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
 import java.util.List;

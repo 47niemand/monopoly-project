@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.player;
+package pp.muza.monopoly.model.game;
 
 import lombok.Value;
 

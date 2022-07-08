@@ -9,7 +9,6 @@ import pp.muza.monopoly.model.actions.PayGift;
 import pp.muza.monopoly.model.lands.Jail;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

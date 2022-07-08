@@ -5,7 +5,7 @@ package pp.muza.monopoly;
 
 import org.apache.commons.cli.*;
 import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 import pp.muza.monopoly.strategy.DefaultStrategy;
 
 import java.util.List;

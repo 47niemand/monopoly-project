@@ -10,7 +10,7 @@ import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 
 import java.util.List;
 

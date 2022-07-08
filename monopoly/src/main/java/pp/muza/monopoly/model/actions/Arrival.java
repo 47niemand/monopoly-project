@@ -13,7 +13,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 
 
 /**

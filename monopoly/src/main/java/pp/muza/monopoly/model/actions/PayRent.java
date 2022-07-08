@@ -17,7 +17,7 @@ import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 
 /**
  * The player has to pay money to the property owner on which player is

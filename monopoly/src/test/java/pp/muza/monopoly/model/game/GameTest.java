@@ -8,7 +8,6 @@ import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.actions.EndTurn;
 import pp.muza.monopoly.strategy.DefaultStrategy;
 import pp.muza.monopoly.strategy.ObedientStrategy;
-import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

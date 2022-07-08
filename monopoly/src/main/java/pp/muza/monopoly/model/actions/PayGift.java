@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 
 import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
 

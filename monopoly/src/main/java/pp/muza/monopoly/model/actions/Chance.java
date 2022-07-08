@@ -17,7 +17,7 @@ import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.TurnException;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.lands.PropertyName;
-import pp.muza.monopoly.model.player.Player;
+import pp.muza.monopoly.model.game.Player;
 
 /**
  * This is a special card that stores the chance pile of the game. it should be returned to the game when the card is used.

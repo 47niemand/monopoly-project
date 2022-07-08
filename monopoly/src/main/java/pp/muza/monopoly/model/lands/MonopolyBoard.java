@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game;
+package pp.muza.monopoly.model.lands;
 
 import static pp.muza.monopoly.model.lands.PropertyName.AQUARIUM;
 import static pp.muza.monopoly.model.lands.PropertyName.BAKERY;
@@ -21,16 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import pp.muza.monopoly.model.lands.Chance;
-import pp.muza.monopoly.model.lands.GotoJail;
-import pp.muza.monopoly.model.lands.Jail;
-import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.lands.Parking;
-import pp.muza.monopoly.model.lands.Property;
-import pp.muza.monopoly.model.lands.PropertyName;
-import pp.muza.monopoly.model.lands.Start;
-
-public class BoardUtils {
+public class MonopolyBoard {
 
     /*@formatter:off
      *              |          BLUE         |         |           INDIGO        |           |

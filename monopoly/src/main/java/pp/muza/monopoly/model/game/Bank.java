@@ -7,8 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pp.muza.monopoly.model.player.Player;
-
 public class Bank {
 
     private static final Logger LOG = LoggerFactory.getLogger(Bank.class);

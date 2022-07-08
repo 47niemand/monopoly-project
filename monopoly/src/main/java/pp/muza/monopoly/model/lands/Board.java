@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game;
+package pp.muza.monopoly.model.lands;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Value;

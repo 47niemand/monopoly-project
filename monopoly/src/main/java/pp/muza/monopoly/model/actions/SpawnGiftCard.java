@@ -27,7 +27,7 @@ public final class SpawnGiftCard extends AbstractActionCard {
         LOG.info("Spawning BuyOrTrade cards");
         List<IndexedEntry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
-            // if there are no free properties, the player has to choose one of the properties he now owns
+            // if there are no free properties, the player has to choose one of the properties he do not owns
             properties = turn.getAllProperties().stream().filter(x -> turn.getPropertyOwner(x.getIndex()) != turn.getPlayer()).collect(Collectors.toList());
         }
         return properties.stream().map(x -> new BuyOrTrade(x.getIndex(), x.getValue())).collect(Collectors.toList());

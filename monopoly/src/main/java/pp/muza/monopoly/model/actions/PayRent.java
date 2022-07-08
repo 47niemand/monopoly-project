@@ -22,7 +22,6 @@ import pp.muza.monopoly.model.player.Player;
 /**
  * The player has to pay money to the property owner on which player is
  * standing.
- * <p>
  * TODO: implement a pair of same color = double rent!
  */
 @Getter

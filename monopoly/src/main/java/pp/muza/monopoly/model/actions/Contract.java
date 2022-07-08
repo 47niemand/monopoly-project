@@ -30,8 +30,14 @@ public final class Contract extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
-    private final int landId; // the id of the land to be traded
-    private final Property property; // the property being sent
+    /**
+     * the id of the land to be traded
+     */
+    private final int landId;
+    /**
+     * the property being sent
+     */
+    private final Property property;
 
     Contract(int landId, Property property) {
         super("Contract", Action.CONTRACT, Type.CONTRACT, DEFAULT_PRIORITY);

@@ -18,7 +18,9 @@ public interface TurnPlayer {
 
     /**
      * Returns the active action cards for the player at the moment.
-     **/
+     *
+     * @return the list of active action cards.
+     */
     List<ActionCard> getActiveActionCards();
 
     /**
@@ -32,6 +34,8 @@ public interface TurnPlayer {
 
     /**
      * Returns true if the turn is finished.
-     **/
+     *
+     * @return true if the turn is finished.
+     */
     boolean isFinished();
 }

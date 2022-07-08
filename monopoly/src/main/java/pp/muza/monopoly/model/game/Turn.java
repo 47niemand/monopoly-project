@@ -55,16 +55,22 @@ public interface Turn extends TurnPlayer {
 
     /**
      * get player's status.
+     *
+     * @return return status.
      */
     PlayerStatus getStatus();
 
     /**
      * returns a fine to pay in order to get out of jail.
+     *
+     * @return amount to pay.
      */
     BigDecimal getJailFine();
 
     /**
      * returns current player.
+     *
+     * @return player.
      */
     Player getPlayer();
 

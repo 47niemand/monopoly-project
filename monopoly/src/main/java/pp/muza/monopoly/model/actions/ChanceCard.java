@@ -1,7 +1,11 @@
 package pp.muza.monopoly.model.actions;
 
-
+/**
+ * There are chances cards in the game.
+ * @author dmitr
+ */
 public enum ChanceCard {
+    // all available chance cards
     ADVANCE_TO_MAYFAIR("Advance to Mayfair. If one is available get it for free, otherwise pay rent to the owner.", false),
     ADVANCE_TO_YELLOW_OR_RAINBOW("Advance to Yellow or Rainbow. If one is available get it for free, otherwise pay rent to the owner.", false),
     ADVANCE_TO_GREEN_OR_VIOLET("Advance to Green or Violet. If one is available get it for free, otherwise pay rent to the owner.", false),
@@ -20,7 +24,14 @@ public enum ChanceCard {
     GIVE_THIS_CARD_TO_A_PLAYER_3("Give this card to a player 3. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false),
     GIVE_THIS_CARD_TO_A_PLAYER_4("Give this card to a player 4. On your next turn, go forward to any free space and buy it. If all are owned, buy one from any player.", false);
 
+    /**
+     * The description of the card.
+     */
     private final String description;
+
+    /**
+     * true if the card is obligatory, false otherwise
+     */
     private final boolean isGiftCard;
 
     ChanceCard(String s, boolean isGiftCard) {

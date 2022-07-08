@@ -3,8 +3,9 @@ package pp.muza.monopoly.model.game;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pp.muza.monopoly.model.actions.Chance;
 import pp.muza.monopoly.model.actions.ChanceCard;
-import pp.muza.monopoly.model.actions.cards.EndTurn;
+import pp.muza.monopoly.model.actions.EndTurn;
 import pp.muza.monopoly.strategy.DefaultStrategy;
 import pp.muza.monopoly.strategy.ObedientStrategy;
 import pp.muza.monopoly.model.player.Player;
@@ -12,7 +13,9 @@ import pp.muza.monopoly.model.player.Player;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class GameTest {
 
@@ -23,9 +26,17 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
             players.add(new Player(s));
         }
-
-        Game game = new Game(players, DefaultStrategy.strategy);
+        Game game = new Game(players, DefaultStrategy.STRATEGY);
+        int a = game.getChanceCards().size();
+        String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
         game.gameLoop();
+        game.endGame();
+        int b = game.getChanceCards().size();
+        String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+        System.out.println(a1);
+        System.out.println(b1);
+        Assertions.assertEquals(a, b, "Chance cards should be the same size");
+        Assertions.assertEquals(a1, b1, "Chance cards should be the same");
     }
 
 
@@ -42,7 +53,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player = players.get(0);
         // test setup
         game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_3));
@@ -65,7 +76,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2", "@Player3")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player = players.get(0);
         // test setup
         game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.BIRTHDAY));
@@ -87,7 +98,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player1 = players.get(0);
         Player player2 = players.get(1);
         // test setup
@@ -116,7 +127,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player = players.get(0);
 
         // test setup
@@ -136,7 +147,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.strategy));
+        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         game.maxTurns = 10;
         // play 10 turns
         game.gameLoop();
@@ -144,7 +155,7 @@ class GameTest {
         GameInfo gameInfo = game.getGameInfo();
 
         // create new game with same players and same game state
-        Game game2 = new Game(gameInfo, ImmutableList.of(ObedientStrategy.strategy));
+        Game game2 = new Game(gameInfo, ImmutableList.of(ObedientStrategy.STRATEGY));
         GameInfo gameInfo2 = game2.getGameInfo();
 
         // test if game state is the same

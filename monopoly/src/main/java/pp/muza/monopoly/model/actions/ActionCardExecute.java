@@ -12,9 +12,16 @@ public class ActionCardExecute {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionCardExecute.class);
 
+    /**
+     * it is only one way to execute action card.
+     *
+     * @param turn       the turn of the game.
+     * @param actionCard the action card to execute.
+     * @return list of action cards spawned by the action card.
+     */
     public static List<ActionCard> execute(Turn turn, ActionCard actionCard) {
         LOG.info("Executing card {}", actionCard);
-        List<ActionCard> result = actionCard.onExecute(turn);
+        List<ActionCard> result = ((AbstractActionCard) actionCard).onExecute(turn);
         LOG.info("Resulting: {}", result.stream().map(ActionCard::getName).collect(Collectors.toList()));
         return result;
     }

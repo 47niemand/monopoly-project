@@ -6,10 +6,10 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-public final class Board<K> {
+public class Board<K> {
 
-    private final ImmutableList<K> landList;
-    private final int startPosition = 0;
+    ImmutableList<K> landList;
+    int startPosition = 0;
 
     public Board(List<K> landList) {
         this.landList = ImmutableList.copyOf(landList);

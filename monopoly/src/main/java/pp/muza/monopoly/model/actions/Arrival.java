@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
@@ -18,17 +17,16 @@ import pp.muza.monopoly.model.player.Player;
 
 
 /**
- * This is a special card that spawns action cards for the player, when player arrives at a land
- * for instance:
- * when player arrives at the property, depending on property owner, he/she can buy it, or he/she should pay rent.
- * when player arrives at the goto jail, he/she should move to jail.
- * when player arrives at the chance, he/she should draw a card.
- * etc.
+ * This is a special card that spawns action cards for the player, when player arrives at a land for instance:
+ * - when player arrives at the property, depending on property owner, he/she can buy it, or he/she should pay rent.
+ * - when player arrives at the goto jail, he/she should move to jail.
+ * - when player arrives at the chance, he/she should draw a card.
+ * - etc.
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Arrival extends ActionCard {
+public final class Arrival extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 

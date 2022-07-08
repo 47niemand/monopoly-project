@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
@@ -22,7 +21,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Getter
-public final class BuyOrTrade extends ActionCard {
+public final class BuyOrTrade extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(BuyOrTrade.class);
 

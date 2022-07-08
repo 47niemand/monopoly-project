@@ -1,26 +1,24 @@
 package pp.muza.monopoly.model.game;
 
-import lombok.ToString;
 import lombok.Value;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.cards.Chance;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.player.Player;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Value
-final class PlayerInfo {
-    private final Player player;
-    private final int position;
-    private final PlayerStatus status;
-    private final BigDecimal money;
-    private final List<ActionCard> actionCards;
-    private final List<IndexedEntry<Property>> belongings;
+class PlayerInfo {
+    Player player;
+    int position;
+    PlayerStatus status;
+    BigDecimal money;
+    List<ActionCard> actionCards;
+    List<IndexedEntry<Property>> belongings;
 
+    @Override
     public String toString() {
         return "PlayerInfo(player=" + this.getPlayer().getName()
                 + ", position=" + this.getPosition()

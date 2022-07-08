@@ -1,0 +1,21 @@
+package pp.muza.monopoly.model.lands;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+
+/**
+ * @author dmitr
+ */
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
+@AllArgsConstructor
+abstract class AbstractLand implements Land {
+
+    private final String name;
+    private final Type type;
+
+}

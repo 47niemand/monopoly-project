@@ -1,12 +1,11 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import com.google.common.collect.ImmutableList;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 
 import java.util.List;
 
-public final class TakeChanceCard extends ActionCard {
+public final class TakeChanceCard extends AbstractActionCard {
 
     TakeChanceCard() {
         super("Take Chance Card", Action.CHANCE, Type.CHANCE, DEFAULT_PRIORITY);

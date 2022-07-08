@@ -1,28 +1,37 @@
 package pp.muza.monopoly.model.lands;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.Value;
-import lombok.experimental.FieldDefaults;
+/**
+ * @author dmitr
+ */
+public interface Land {
 
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
-@AllArgsConstructor
-public abstract class Land {
+    /**
+     * get name of the land
+     *
+     * @return return name of the land
+     */
+    String getName();
 
-    private final String name;
-    private final Type type;
+    /**
+     * get type of the land
+     *
+     * @return return type of the land
+     */
+    Type getType();
 
-    public enum Type {
-        START(Start.class), // Start is a subclass of Land
-        PROPERTY(Property.class), // Property is a subclass of Land
-        JAIL(Jail.class), // Jail is a subclass of Land
-        PARKING(Parking.class), // Parking is a subclass of Land
-        GOTO_JAIL(GotoJail.class), // GotoJail is a subclass of Land
-        CHANCE(Chance.class); // Chance is a subclass of Land
+    enum Type {
+        // Start is a subclass of Land
+        START(Start.class),
+        // Property is a subclass of Land
+        PROPERTY(Property.class),
+        // Jail is a subclass of Land
+        JAIL(Jail.class),
+        // Parking is a subclass of Land
+        PARKING(Parking.class),
+        // GotoJail is a subclass of Land
+        GOTO_JAIL(GotoJail.class),
+        // Chance is a subclass of Land
+        CHANCE(Chance.class);
 
         final Class<? extends Land> aClass;
 

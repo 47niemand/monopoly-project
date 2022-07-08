@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.TurnException;
@@ -15,7 +14,7 @@ import pp.muza.monopoly.model.player.Player;
 
 import java.util.List;
 
-import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
+import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
 
 /**
  * This card can be used to purchase a property from the board.
@@ -23,16 +22,23 @@ import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPla
  * If someone else owns the property, the player have to pay a price to the owner and then the property is bought.
  * If player has not enough money, he can contract his property to earn money.
  * It is obligation card, so if player cannot buy the property, he loses the game.
+ * @author dmitr
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Trade extends ActionCard {
+public final class Trade extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Trade.class);
 
-    private final int landId; // the id of the land to be traded
-    private final Property property; // the property being sent
+    /**
+     * the id of the land to be traded
+     */
+    private final int landId;
+    /**
+     * the property being sent
+     */
+    private final Property property;
 
 
     Trade(int landId, Property property) {

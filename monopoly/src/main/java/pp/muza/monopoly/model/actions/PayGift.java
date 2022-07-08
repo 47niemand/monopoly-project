@@ -1,7 +1,6 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,12 +11,11 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.player.Player;
 
-import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPlayerPossession;
+import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
 
 /**
  * The player has to pay money to other player.
@@ -25,7 +23,7 @@ import static pp.muza.monopoly.model.actions.cards.PayRent.createContractsForPla
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class PayGift extends ActionCard {
+public final class PayGift extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayGift.class);
 

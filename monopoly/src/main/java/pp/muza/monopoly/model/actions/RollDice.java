@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 
 /**
@@ -17,7 +16,7 @@ import pp.muza.monopoly.model.game.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class RollDice extends ActionCard {
+public final class RollDice extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(RollDice.class);
 

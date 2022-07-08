@@ -1,8 +1,8 @@
 package pp.muza.monopoly.model.lands;
 
-public final class GotoJail extends Land {
+public final class GotoJail extends AbstractLand {
 
     public GotoJail() {
-        super("GotoJail", Land.Type.GOTO_JAIL);
+        super("GotoJail", AbstractLand.Type.GOTO_JAIL);
     }
 }

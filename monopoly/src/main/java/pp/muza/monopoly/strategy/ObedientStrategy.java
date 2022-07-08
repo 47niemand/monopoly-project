@@ -18,7 +18,7 @@ public final class ObedientStrategy implements Strategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObedientStrategy.class);
 
-    public static final ObedientStrategy strategy = new ObedientStrategy();
+    public static final ObedientStrategy STRATEGY = new ObedientStrategy();
 
     @Override
     public void playTurn(TurnPlayer currentTurn) {

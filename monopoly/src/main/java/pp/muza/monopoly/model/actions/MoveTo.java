@@ -1,6 +1,5 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,12 +10,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.lands.Start;
 
-import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
+import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
 
 /**
  * The player moves to a new position on the board.
@@ -24,7 +21,7 @@ import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class MoveTo extends ActionCard {
+public final class MoveTo extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveTo.class);
 

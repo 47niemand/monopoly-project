@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
@@ -25,11 +24,12 @@ import pp.muza.monopoly.model.player.Player;
  * standing.
  * <p>
  * TODO: implement a pair of same color = double rent!
+ * @author dmitr
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class PayRent extends ActionCard {
+public final class PayRent extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
 
@@ -40,7 +40,7 @@ public final class PayRent extends ActionCard {
         super("Pay Rent", Action.PAY, Type.OBLIGATION, DEFAULT_PRIORITY);
         this.recipient = recipient;
         if (land.getType() == Land.Type.PROPERTY) {
-            this.amount = ((Property) land).getRent();
+            this.amount = ((Property) land).getPrice();
         } else {
             throw new IllegalArgumentException("Land must be a property");
         }

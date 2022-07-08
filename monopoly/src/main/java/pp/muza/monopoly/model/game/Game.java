@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.ActionCardExecute;
 import pp.muza.monopoly.model.actions.ChanceCard;
-import pp.muza.monopoly.model.actions.cards.Chance;
-import pp.muza.monopoly.model.actions.cards.NewTurn;
+import pp.muza.monopoly.model.actions.Chance;
+import pp.muza.monopoly.model.actions.NewTurn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.player.Player;
@@ -121,7 +121,7 @@ public class Game {
         playersData.get(player).setPosition(position);
     }
 
-    public boolean executeActionCards(Turn turn, ActionCard actionCard) throws TurnException {
+    public boolean executeActionCard(Turn turn, ActionCard actionCard) throws TurnException {
         Player player = turn.getPlayer();
         boolean cardUsed;
         boolean newCardsSpawned;
@@ -152,8 +152,7 @@ public class Game {
             }
 
             // return chance card (ActionCard.Action.CHANCE) to the game
-            if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)
-                    && (actionCard.getType() != ActionCard.Type.KEEPABLE)) {
+            if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)) {
                 returnChanceCard((Chance) actionCard);
             }
         } else {
@@ -274,15 +273,15 @@ public class Game {
     }
 
     PlayerInfo getPlayerInfo(Player player) {
-        PlayerData a = playersData.get(player);
+        PlayerData playerData = playersData.get(player);
         List<Integer> playersProperties = propertyOwner.entrySet().stream()
                 .filter(entry -> entry.getValue() == player)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         List<IndexedEntry<Property>> belongings = playersProperties.stream().map(x -> new IndexedEntry<>(x, (Property) board.getLand(x)))
                 .collect(Collectors.toList());
-        return new PlayerInfo(player, a.getPosition(), a.getStatus(), bank.getBalance(player),
-                ImmutableList.copyOf(a.getActionCards()), belongings);
+        return new PlayerInfo(player, playerData.getPosition(), playerData.getStatus(), bank.getBalance(player),
+                ImmutableList.copyOf(playerData.getActionCards()), belongings);
     }
 
     List<Land> getLands() {
@@ -370,11 +369,27 @@ public class Game {
         return players;
     }
 
-    public void resetPlayerCards(Player player) {
+    public void returnAllChanceCards(Player player) {
+        playersData.get(player).actionCards.removeIf(x -> {
+                    boolean found = false;
+                    LOG.info("{} lost action card {}", player.getName(), x.getName());
+                    if (x.getType() == ActionCard.Type.CHANCE) {
+                        returnChanceCard((Chance) x);
+                        found = true;
+                    }
+                    return found;
+                }
+        );
+    }
+
+    public void returnPlayerCards(Player player) {
         playersData.get(player).actionCards.removeIf(x -> {
                     boolean found = x.getType() != ActionCard.Type.KEEPABLE;
                     if (found) {
                         LOG.info("{} lost action card {}", player.getName(), x.getName());
+                        if (x.getType() == ActionCard.Type.CHANCE) {
+                            returnChanceCard((Chance) x);
+                        }
                     }
                     return found;
                 }
@@ -399,13 +414,11 @@ public class Game {
                     x -> propertyOwnerRemove(x.getIndex())
             );
             // return chance cards to game if any
-            playerCards.stream()
-                    .filter(x -> x.getAction() == ActionCard.Action.CHANCE)
-                    .forEach(x1 -> returnChanceCard((Chance) x1));
+            returnAllChanceCards(player);
             return;
         }
         // it seems that player in game, so we need to clear his non-keepable cards
-        resetPlayerCards(player);
+        returnPlayerCards(player);
     }
 
     public List<IndexedEntry<Property>> getProperties(Player player) {
@@ -436,6 +449,17 @@ public class Game {
 
     public int getMaxTurns() {
         return maxTurns;
+    }
+
+    public void endGame() {
+        LOG.info("Game ended");
+        for (Player player : players) {
+            for (ActionCard actionCard : playersData.get(player).getActionCards()) {
+                if (actionCard.getAction() == ActionCard.Action.CHANCE) {
+                    returnChanceCard((Chance) actionCard);
+                }
+            }
+        }
     }
 
     @Data

@@ -1,14 +1,10 @@
 package pp.muza.monopoly.model.player;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
 
-@Getter
-@AllArgsConstructor
-@ToString(includeFieldNames = false)
-public final class Player {
+@Value
+public class Player {
 
-    private final String name;
+    String name;
 
 }

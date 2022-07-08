@@ -19,7 +19,7 @@ public final class DefaultStrategy implements Strategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultStrategy.class);
 
-    public static final DefaultStrategy strategy = new DefaultStrategy();
+    public static final DefaultStrategy STRATEGY = new DefaultStrategy();
 
     @Override
     public void playTurn(TurnPlayer currentTurn) {
@@ -68,6 +68,8 @@ public final class DefaultStrategy implements Strategy {
                                 actionCardsExecuted++;
                             }
                             break;
+                        default:
+                            throw new IllegalArgumentException("Unknown action card type: " + actionCard.getType());
                     }
                 } catch (TurnException e) {
                     LOG.error("Error executing action card {}: {}", actionCard.getName(), e.getMessage());

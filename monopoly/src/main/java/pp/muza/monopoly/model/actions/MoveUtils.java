@@ -1,8 +1,7 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Start;
@@ -10,7 +9,10 @@ import pp.muza.monopoly.model.lands.Start;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MoveUtils  {
+/**
+ * @author dmitr
+ */
+public final class MoveUtils  {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveUtils.class);
     /**

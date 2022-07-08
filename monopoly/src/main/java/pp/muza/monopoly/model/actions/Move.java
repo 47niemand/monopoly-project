@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.util.List;
 
@@ -8,11 +8,10 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 
-import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
+import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
 
 /**
  * The player specifies the distance to take to move to a new location on the board.
@@ -20,7 +19,7 @@ import static pp.muza.monopoly.model.actions.cards.MoveUtils.onArrival;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Move extends ActionCard {
+public final class Move extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Move.class);
 

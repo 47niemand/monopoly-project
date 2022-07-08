@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,15 +8,13 @@ import org.slf4j.LoggerFactory;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
-import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class SpawnGiftCard extends ActionCard {
+public final class SpawnGiftCard extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 

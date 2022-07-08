@@ -52,7 +52,7 @@ public class App {
     static void game() {
         List<Player> p = IntStream.range(0, players).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
-        Game game = new Game(p, DefaultStrategy.strategy);
+        Game game = new Game(p, DefaultStrategy.STRATEGY);
         game.gameLoop();
     }
 

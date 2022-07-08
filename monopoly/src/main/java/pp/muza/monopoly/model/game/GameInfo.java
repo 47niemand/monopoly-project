@@ -2,7 +2,7 @@ package pp.muza.monopoly.model.game;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Value;
-import pp.muza.monopoly.model.actions.cards.Chance;
+import pp.muza.monopoly.model.actions.Chance;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.player.Player;
 
@@ -12,14 +12,14 @@ import java.util.List;
  * This class represents the state of the game.
  */
 @Value
-final class GameInfo {
-    private final List<Player> players;
-    private final List<PlayerInfo> playerInfo;
-    private final Board<Land> board;
-    private final List<Chance> chanceCards;
-    private final int currentPlayerIndex;
-    private final int turnNumber;
-    private final int maxTurns;
+class GameInfo {
+    List<Player> players;
+    List<PlayerInfo> playerInfo;
+    Board<Land> board;
+    List<Chance> chanceCards;
+    int currentPlayerIndex;
+    int turnNumber;
+    int maxTurns;
 
     public GameInfo(Game game) {
         this.players = ImmutableList.copyOf(game.getPlayers());

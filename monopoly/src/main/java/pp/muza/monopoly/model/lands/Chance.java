@@ -1,8 +1,8 @@
 package pp.muza.monopoly.model.lands;
 
-public final class Chance extends Land {
+public final class Chance extends AbstractLand {
 
     public Chance() {
-        super("Chance", Land.Type.CHANCE);
+        super("Chance", AbstractLand.Type.CHANCE);
     }
 }

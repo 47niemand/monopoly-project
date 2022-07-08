@@ -3,9 +3,9 @@ package pp.muza.monopoly.model.game;
 import lombok.Value;
 
 @Value
-public final class IndexedEntry<T> {
-    private final int index;
-    private final T value;
+public class IndexedEntry<T> {
+    int index;
+    T value;
 
     public IndexedEntry(int index, T value) {
         this.index = index;

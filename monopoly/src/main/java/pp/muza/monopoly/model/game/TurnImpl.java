@@ -4,8 +4,8 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.cards.Chance;
-import pp.muza.monopoly.model.actions.cards.PayGift;
+import pp.muza.monopoly.model.actions.Chance;
+import pp.muza.monopoly.model.actions.PayGift;
 import pp.muza.monopoly.model.lands.Jail;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
@@ -36,12 +36,13 @@ class TurnImpl implements Turn, TurnPlayer {
         return game.getActiveActionCards(player);
     }
 
+
     @Override
     public boolean executeActionCard(ActionCard actionCard) throws TurnException {
         if (isFinished()) {
             throw new TurnException("The turn is finished.");
         }
-        boolean result = game.executeActionCards(this, actionCard);
+        boolean result = game.executeActionCard(this, actionCard);
         LOG.info("Action card {} executed: {}", actionCard.getName(), result);
         usedCards.remove(actionCard);
         usedCards.add(actionCard);
@@ -151,6 +152,7 @@ class TurnImpl implements Turn, TurnPlayer {
         if (game.getPropertyOwner(landId) != player) {
             throw new TurnException("Land is not owned by you");
         }
+        assert game.getLand(landId) == property;
         game.deposit(player, amount);
         game.propertyOwnerRemove(landId);
     }

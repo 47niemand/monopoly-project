@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.actions.cards;
+package pp.muza.monopoly.model.actions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ChanceCard;
 import pp.muza.monopoly.model.game.PlayerStatus;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.TurnException;
@@ -27,7 +25,7 @@ import pp.muza.monopoly.model.player.Player;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Chance extends ActionCard {
+public final class Chance extends AbstractActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Chance.class);
     private static final int PLAYER_1 = 0;

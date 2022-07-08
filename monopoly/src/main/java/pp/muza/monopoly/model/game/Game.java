@@ -228,7 +228,7 @@ public class Game {
         return currentPlayerIndex;
     }
 
-    boolean nextPlayer() {
+    private int getNextPlayerId() {
         int temp = currentPlayerIndex;
         do {
             temp++;
@@ -236,6 +236,11 @@ public class Game {
                 temp = 0;
             }
         } while (playersData.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
+        return temp;
+    }
+
+    boolean nextPlayer() {
+        int temp = getNextPlayerId();
         boolean result = temp != currentPlayerIndex;
         currentPlayerIndex = temp;
         if (result) {

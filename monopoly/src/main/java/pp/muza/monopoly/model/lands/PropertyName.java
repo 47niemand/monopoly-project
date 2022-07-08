@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 
 public enum PropertyName {
-    // properties for the game board
+    // properties for a game board
     COFFEE_SHOP("Coffee Shop", BigDecimal.valueOf(1), Property.Color.RED),
     DONUT_SHOP("Donut Shop", BigDecimal.valueOf(1), Property.Color.RED),
     BAKERY("Bakery", BigDecimal.valueOf(1), Property.Color.ORANGE),

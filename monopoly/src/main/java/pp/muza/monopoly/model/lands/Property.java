@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * @author dmitr
- */
 @Getter
 @ToString(callSuper = true)
 public final class Property extends AbstractLand {

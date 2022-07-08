@@ -13,8 +13,6 @@ import pp.muza.monopoly.model.actions.ActionCard;
  * isFinished() returns true if the turn is finished.
  * <p>
  * TODO: add a method to get game state, which can be used to make a decision about the next action.
- *
- * @author dmitr
  */
 public interface TurnPlayer {
 

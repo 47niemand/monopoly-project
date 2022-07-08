@@ -1,8 +1,5 @@
 package pp.muza.monopoly.model.lands;
 
-/**
- * @author dmitr
- */
 public interface Land {
 
     /**

@@ -22,7 +22,6 @@ import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPos
  * If someone else owns the property, the player have to pay a price to the owner and then the property is bought.
  * If player has not enough money, he can contract his property to earn money.
  * It is obligation card, so if player cannot buy the property, he loses the game.
- * @author dmitr
  */
 @Getter
 @ToString(callSuper = true)

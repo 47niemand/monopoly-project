@@ -9,9 +9,6 @@ import pp.muza.monopoly.model.lands.Start;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author dmitr
- */
 public final class MoveUtils  {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveUtils.class);

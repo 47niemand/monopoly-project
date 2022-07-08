@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.actions;
 
 /**
  * There are chances cards in the game.
- * @author dmitr
  */
 public enum ChanceCard {
     // all available chance cards

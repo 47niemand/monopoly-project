@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-/**
- * @author dmitr
- */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString

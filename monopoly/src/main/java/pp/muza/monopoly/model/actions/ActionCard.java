@@ -3,8 +3,6 @@ package pp.muza.monopoly.model.actions;
 
 /**
  * this interface is used to represent an action card.
- *
- * @author dmitr
  */
 public interface ActionCard {
 

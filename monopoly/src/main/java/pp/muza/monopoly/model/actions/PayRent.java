@@ -24,7 +24,6 @@ import pp.muza.monopoly.model.player.Player;
  * standing.
  * <p>
  * TODO: implement a pair of same color = double rent!
- * @author dmitr
  */
 @Getter
 @ToString(callSuper = true)

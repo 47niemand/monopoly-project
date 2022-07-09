@@ -14,12 +14,12 @@ import pp.muza.monopoly.model.lands.Property;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class SpawnGiftCard extends AbstractActionCard {
+public final class SpawnGiftCard extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Spawn BuyOrTrade cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
+        super("Spawn \"BuyOrTrade\" cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
     }
 
     @Override

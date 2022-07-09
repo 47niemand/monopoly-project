@@ -1,8 +1,8 @@
 package pp.muza.monopoly.model.lands;
 
-public final class Parking extends AbstractLand {
+public final class Parking extends BaseLand {
 
     public Parking() {
-        super("Parking", AbstractLand.Type.PARKING);
+        super("Parking", BaseLand.Type.PARKING);
     }
 }

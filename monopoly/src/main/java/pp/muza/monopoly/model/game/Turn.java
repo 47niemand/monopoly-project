@@ -67,13 +67,6 @@ public interface Turn extends TurnPlayer {
     BigDecimal getJailFine();
 
     /**
-     * returns current player.
-     *
-     * @return player.
-     */
-    Player getPlayer();
-
-    /**
      * Moves the player to the given position.
      *
      * @param position the position.

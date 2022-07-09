@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import pp.muza.monopoly.model.game.PlayerStatus;
 import pp.muza.monopoly.model.game.Turn;
 
@@ -13,8 +14,9 @@ import pp.muza.monopoly.model.game.Turn;
  * This card starts the new turn.
  */
 @Getter
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class NewTurn extends AbstractActionCard {
+public final class NewTurn extends BaseActionCard {
 
     NewTurn() {
         super("New Turn", Action.NEW_TURN, Type.OBLIGATION, NEW_TURN_PRIORITY);

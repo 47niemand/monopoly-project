@@ -32,17 +32,20 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public List<ActionCard> getActiveActionCards() {
-        return game.getActiveActionCards(player);
+        List<ActionCard> result = game.getActiveActionCards(player);
+        LOG.info("{}: active action cards: {}", player.getName(),
+                result.stream().map(ActionCard::getName).collect(Collectors.toList()));
+        return result;
     }
 
-
     @Override
-    public boolean executeActionCard(ActionCard actionCard) throws TurnException {
+    public boolean playCard(ActionCard actionCard) throws TurnException {
         if (isFinished()) {
             throw new TurnException("The turn is finished.");
         }
-        boolean result = game.executeActionCard(this, actionCard);
-        LOG.info("Action card {} executed: {}", actionCard.getName(), result);
+        LOG.info("{}: playing card {}", player.getName(), actionCard.getName());
+        boolean result = game.playCard(this, actionCard);
+        LOG.debug("Card {} played: {}", actionCard, result);
         usedCards.remove(actionCard);
         usedCards.add(actionCard);
         return result;
@@ -248,5 +251,13 @@ class TurnImpl implements Turn, TurnPlayer {
     public void playerStartedTurn() {
         // there is no need to roll dice or move if player did something in this turn
         game.playerTurnStarted(player);
+    }
+
+    @Override
+    public String toString() {
+        return "TurnImpl(game=" + this.getGame()
+                + ", player=" + this.getPlayer().getName()
+                + ", usedCards=" + this.getUsedCards().stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ", finished=" + this.isFinished() + ")";
     }
 }

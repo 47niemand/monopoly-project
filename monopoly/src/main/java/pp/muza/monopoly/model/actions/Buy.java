@@ -21,7 +21,7 @@ import pp.muza.monopoly.model.lands.Property;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Buy extends AbstractActionCard {
+public final class Buy extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
 

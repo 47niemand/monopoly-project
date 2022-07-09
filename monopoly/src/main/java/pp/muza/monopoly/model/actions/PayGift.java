@@ -15,7 +15,7 @@ import pp.muza.monopoly.model.game.BankException;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.Player;
 
-import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
+import static pp.muza.monopoly.model.actions.CardUtils.createContractsForPlayerPossession;
 
 /**
  * The player has to pay money to other player.
@@ -23,7 +23,7 @@ import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPos
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class PayGift extends AbstractActionCard {
+public final class PayGift extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayGift.class);
 

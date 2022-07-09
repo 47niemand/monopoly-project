@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class ChanceMove extends AbstractActionCard {
+public final class ChanceMove extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChanceMove.class);
 
@@ -30,7 +30,7 @@ public final class ChanceMove extends AbstractActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("{} moving by {} steps", turn.getPlayer(), distance);
+        LOG.info("{} chose to move by {} steps", turn.getPlayer().getName(), distance);
         int position = turn.nextPosition(distance);
         return ImmutableList.of(new MoveTo(position));
     }

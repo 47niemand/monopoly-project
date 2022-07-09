@@ -11,7 +11,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
 
 /**
- * ActionCard is a card that can be used by a player.
+ * BaseActionCard is a card that can be used by a player.
  * The action card has a name, a type of action (like buying a property, paying
  * rent, etc.), a type of card (like chance, obligation, etc.), and a priority.
  * onExecute is a method that is executed when the card is using. It should be
@@ -20,9 +20,9 @@ import pp.muza.monopoly.model.game.Turn;
 @Getter
 @ToString
 @EqualsAndHashCode
-abstract class AbstractActionCard implements ActionCard {
+abstract class BaseActionCard implements ActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractActionCard.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseActionCard.class);
 
     private final String name;
     private final Action action;
@@ -31,7 +31,7 @@ abstract class AbstractActionCard implements ActionCard {
     @EqualsAndHashCode.Exclude
     private final int priority;
 
-    protected AbstractActionCard(String name, Action action, Type type, int priority) {
+    protected BaseActionCard(String name, Action action, Type type, int priority) {
         this.name = name;
         this.action = action;
         this.priority = priority;

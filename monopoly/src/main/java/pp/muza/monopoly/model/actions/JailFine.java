@@ -1,7 +1,5 @@
 package pp.muza.monopoly.model.actions;
 
-import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,6 +16,8 @@ import pp.muza.monopoly.model.game.PlayerStatus;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.game.TurnException;
 
+import static pp.muza.monopoly.model.actions.CardUtils.createContractsForPlayerPossession;
+
 /**
  * The player has to pay money to the bank.
  * <p>
@@ -27,7 +27,7 @@ import pp.muza.monopoly.model.game.TurnException;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class JailFine extends AbstractActionCard {
+public final class JailFine extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(JailFine.class);
 

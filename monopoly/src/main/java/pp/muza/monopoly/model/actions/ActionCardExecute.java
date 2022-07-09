@@ -1,7 +1,6 @@
 package pp.muza.monopoly.model.actions;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,9 @@ public class ActionCardExecute {
      * @return list of action cards spawned by the action card.
      */
     public static List<ActionCard> execute(Turn turn, ActionCard actionCard) {
-        LOG.info("Executing card {}", actionCard);
-        List<ActionCard> result = ((AbstractActionCard) actionCard).onExecute(turn);
-        LOG.info("Resulting: {}", result.stream().map(ActionCard::getName).collect(Collectors.toList()));
+        LOG.debug("Executing card {} for player {}", actionCard, turn.getPlayer().getName());
+        List<ActionCard> result = ((BaseActionCard) actionCard).onExecute(turn);
+        LOG.debug("Resulting: {}", result);
         return result;
     }
 

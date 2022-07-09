@@ -13,7 +13,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 
-import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
+import static pp.muza.monopoly.model.actions.CardUtils.onArrival;
 
 /**
  * The player moves to a new position on the board.
@@ -21,7 +21,7 @@ import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class MoveTo extends AbstractActionCard {
+public final class MoveTo extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveTo.class);
 

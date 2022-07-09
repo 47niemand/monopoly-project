@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model.actions;
 
-import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
+import static pp.muza.monopoly.model.actions.CardUtils.createContractsForPlayerPossession;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,7 +22,7 @@ import pp.muza.monopoly.model.game.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Tax extends AbstractActionCard {
+public final class Tax extends BaseActionCard {
 
     private final BigDecimal amount;
 

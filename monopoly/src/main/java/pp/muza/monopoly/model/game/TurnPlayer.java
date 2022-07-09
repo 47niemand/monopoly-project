@@ -30,7 +30,7 @@ public interface TurnPlayer {
      * @return true if the action card was executed successfully.
      * @throws TurnException if it is impossible to execute the action card.
      */
-    boolean executeActionCard(ActionCard actionCard) throws TurnException;
+    boolean playCard(ActionCard actionCard) throws TurnException;
 
     /**
      * Returns true if the turn is finished.
@@ -38,4 +38,11 @@ public interface TurnPlayer {
      * @return true if the turn is finished.
      */
     boolean isFinished();
+
+    /**
+     * returns current player.
+     *
+     * @return player.
+     */
+    Player getPlayer();
 }

@@ -14,7 +14,7 @@ import pp.muza.monopoly.model.game.Player;
 
 import java.util.List;
 
-import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPossession;
+import static pp.muza.monopoly.model.actions.CardUtils.createContractsForPlayerPossession;
 
 /**
  * This card can be used to purchase a property from the board.
@@ -26,7 +26,7 @@ import static pp.muza.monopoly.model.actions.PayRent.createContractsForPlayerPos
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Trade extends AbstractActionCard {
+public final class Trade extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Trade.class);
 

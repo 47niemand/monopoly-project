@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.actions;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +12,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.game.BankException;
-import pp.muza.monopoly.model.game.IndexedEntry;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
 import pp.muza.monopoly.model.game.Player;
+
+import static pp.muza.monopoly.model.actions.CardUtils.createContractsForPlayerPossession;
 
 /**
  * The player has to pay money to the property owner on which player is
@@ -27,7 +27,7 @@ import pp.muza.monopoly.model.game.Player;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class PayRent extends AbstractActionCard {
+public final class PayRent extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
 
@@ -57,11 +57,5 @@ public final class PayRent extends AbstractActionCard {
         return result;
     }
 
-    public static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
-        LOG.info("Creating contracts for player's possession");
-        List<IndexedEntry<Property>> properties = turn.getProperties();
-        return properties.stream()
-                .map(property -> new Contract(property.getIndex(), property.getValue()))
-                .collect(Collectors.toList());
-    }
+
 }

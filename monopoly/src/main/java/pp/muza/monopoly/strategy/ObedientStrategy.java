@@ -29,20 +29,18 @@ public final class ObedientStrategy implements Strategy {
             if (loopCount > 20) {
                 throw new RuntimeException("Too many loops in turn execution");
             }
-            LOG.info("Executing step {}", loopCount);
+            LOG.info("Step {}", loopCount);
             actionCardsExecuted = 0;
             actionCards = currentTurn.getActiveActionCards();
-            LOG.info("Active action cards: {}",
-                    actionCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+
 
             for (ActionCard actionCard : actionCards) {
                 try {
-                    LOG.info("Executing card {}", actionCard.getName());
-                    if (currentTurn.executeActionCard(actionCard)) {
+                    if (currentTurn.playCard(actionCard)) {
                         actionCardsExecuted++;
                     }
                 } catch (TurnException e) {
-                    LOG.warn("Error executing action card {}: {}", actionCard.getName(), e.getMessage());
+                    LOG.warn("Error playing card {}: {}", actionCard.getName(), e.getMessage());
                     break;
                 }
             }

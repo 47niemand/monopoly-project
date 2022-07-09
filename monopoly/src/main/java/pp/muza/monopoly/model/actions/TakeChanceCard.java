@@ -5,7 +5,7 @@ import pp.muza.monopoly.model.game.Turn;
 
 import java.util.List;
 
-public final class TakeChanceCard extends AbstractActionCard {
+public final class TakeChanceCard extends BaseActionCard {
 
     TakeChanceCard() {
         super("Take Chance Card", Action.CHANCE, Type.CHOOSE, DEFAULT_PRIORITY);

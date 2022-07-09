@@ -30,11 +30,9 @@ public final class DefaultStrategy implements Strategy {
             if (loopCount > 20) {
                 throw new RuntimeException("Too many loops in turn execution");
             }
-            LOG.info("Executing step {}", loopCount);
+            LOG.info("Step {}", loopCount);
             actionCardsExecuted = 0;
             actionCards = currentTurn.getActiveActionCards();
-            LOG.info("Active action cards: {}",
-                    actionCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
 
             for (ActionCard actionCard : actionCards) {
                 try {
@@ -42,8 +40,7 @@ public final class DefaultStrategy implements Strategy {
 
                         case OPTIONAL:
                             if (Math.random() < 0.5) {
-                                LOG.info("Executing optional card {}", actionCard.getName());
-                                if (currentTurn.executeActionCard(actionCard)) {
+                                if (currentTurn.playCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
                             } else {
@@ -52,8 +49,7 @@ public final class DefaultStrategy implements Strategy {
                             break;
                         case CONTRACT:
                             if (Math.random() < 0.5) {
-                                LOG.info("Executing contract card {}", actionCard.getName());
-                                if (currentTurn.executeActionCard(actionCard)) {
+                                if (currentTurn.playCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
                             } else {
@@ -63,8 +59,7 @@ public final class DefaultStrategy implements Strategy {
                         case OBLIGATION:
                         case CHOOSE:
                         case KEEPABLE:
-                            LOG.info("Executing card {}", actionCard.getName());
-                            if (currentTurn.executeActionCard(actionCard)) {
+                            if (currentTurn.playCard(actionCard)) {
                                 actionCardsExecuted++;
                             }
                             break;
@@ -72,7 +67,7 @@ public final class DefaultStrategy implements Strategy {
                             throw new IllegalArgumentException("Unknown action card type: " + actionCard.getType());
                     }
                 } catch (TurnException e) {
-                    LOG.error("Error executing action card {}: {}", actionCard.getName(), e.getMessage());
+                    LOG.error("Error playing action card {}: {}", actionCard.getName(), e.getMessage());
                     break;
                 }
             }

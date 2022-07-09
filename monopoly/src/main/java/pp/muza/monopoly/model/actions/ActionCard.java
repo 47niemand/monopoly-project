@@ -11,7 +11,6 @@ public interface ActionCard {
     int DEFAULT_PRIORITY = 1000;
     int LOW_PRIORITY = 10000;
 
-
     /**
      * returns the name of the card. i.e. "Roll Dice",  "End Turn" etc.
      *

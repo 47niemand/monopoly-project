@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 public class Game {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
-    private static final int DEFAULT_MAX_TURNS = 200;
+    private static final int DEFAULT_MAX_TURNS = 100;
     private final Bank bank = new Bank();
     private final LinkedList<Chance> chanceCards = new LinkedList<>();
     private final List<Player> players = new ArrayList<>();
@@ -122,7 +122,7 @@ public class Game {
         playersData.get(player).setPosition(position);
     }
 
-    public boolean executeActionCard(Turn turn, ActionCard actionCard) throws TurnException {
+    public boolean playCard(Turn turn, ActionCard actionCard) throws TurnException {
         Player player = turn.getPlayer();
         boolean cardUsed;
         boolean newCardsSpawned;
@@ -133,11 +133,15 @@ public class Game {
             List<ActionCard> newCards = result.stream().filter(x -> {
                 boolean found = playersData.get(player).getActionCards().contains(x);
                 if (found) {
-                    LOG.info("Card {} already on player's hand", x.getName());
+                    LOG.debug("Card {} already on player's hand", x);
                 }
                 return !found;
             }).collect(Collectors.toList());
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
+            LOG.info("{} used {} and spawned {} new cards{}", player.getName(),
+                    actionCard.getName(),
+                    newCardsSpawned ? "some" : "no",
+                    (newCardsSpawned ? ": " + newCards.stream().map(ActionCard::getName).collect(Collectors.toList()) : ""));
             playersData.get(player).getActionCards().addAll(newCards);
 
             // Choose cards (ActionCard.Type.CHOOSE) can only be used once, thus we must take them out of the player's hand.
@@ -182,8 +186,7 @@ public class Game {
         Player player = turn.getPlayer();
         List<String> list = playersData.get(player).getActionCards().stream().map(ActionCard::getName)
                 .collect(Collectors.toList());
-        LOG.info("Player's {} Action cards: {}", player.getName(), list);
-
+        LOG.info("Player's {} action cards: {}", player.getName(), list);
         Strategy strategy = playersData.get(player).getStrategy();
         strategy.playTurn(turn);
         if (!turn.isFinished()) {
@@ -269,7 +272,7 @@ public class Game {
 
         int currentPriority = priority.orElse(ActionCard.LOW_PRIORITY);
 
-        LOG.info("Current priority: {}", currentPriority);
+        LOG.debug("Player's {} current priority: {}", player.getName(), currentPriority);
         result = actionCards.stream()
                 .filter(actionCard -> actionCard.getPriority() <= currentPriority)
                 .sorted(Comparator.comparing(ActionCard::getPriority))
@@ -316,7 +319,7 @@ public class Game {
 
     public void setPropertyOwner(int landId, Player player) {
         Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now owned by {}", landId, property, player.getName());
+        LOG.info("Property {} ({}) is now owned by {}", landId, property.getName(), player.getName());
         Player oldOwner = propertyOwner.put(landId, player);
         if (oldOwner != null) {
             LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
@@ -378,7 +381,6 @@ public class Game {
     public void returnAllChanceCards(Player player) {
         playersData.get(player).actionCards.removeIf(x -> {
                     boolean found = false;
-                    LOG.info("{} lost action card {}", player.getName(), x.getName());
                     if (x.getAction() == ActionCard.Action.CHANCE) {
                         // return chance card to pile
                         returnChanceCard((Chance) x);

@@ -20,7 +20,7 @@ import pp.muza.monopoly.model.game.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Income extends AbstractActionCard {
+public final class Income extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Income.class);
 

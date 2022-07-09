@@ -48,7 +48,7 @@ public class Bank {
     }
 
     void set(Player player, BigDecimal amount) {
-        LOG.warn("Setting {} money to {}", amount, player.getName());
+        LOG.info("Setting {} money to {}", amount, player.getName());
         playerMoney.put(player, amount);
     }
 }

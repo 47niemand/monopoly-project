@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 
 @Getter
 @ToString(callSuper = true)
-public final class Start extends AbstractLand {
+public final class Start extends BaseLand {
 
     private final BigDecimal incomeTax;
 
     public Start(BigDecimal incomeTax) {
-        super("Start", AbstractLand.Type.START);
+        super("Start", BaseLand.Type.START);
         this.incomeTax = incomeTax;
     }
 }

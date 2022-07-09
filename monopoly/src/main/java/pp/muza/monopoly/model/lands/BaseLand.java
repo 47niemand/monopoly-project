@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 @AllArgsConstructor
-abstract class AbstractLand implements Land {
+abstract class BaseLand implements Land {
 
     private final String name;
     private final Type type;

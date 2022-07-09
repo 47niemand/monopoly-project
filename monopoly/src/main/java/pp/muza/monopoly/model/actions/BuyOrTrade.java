@@ -21,7 +21,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Getter
-public final class BuyOrTrade extends AbstractActionCard {
+public final class BuyOrTrade extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(BuyOrTrade.class);
 
@@ -29,7 +29,7 @@ public final class BuyOrTrade extends AbstractActionCard {
     private final Property property;
 
     BuyOrTrade(int landId, Property property) {
-        super("Buy Or Trade", Action.GIFT, Type.CHOOSE, HIGH_PRIORITY);
+        super("BuyOrTrade", Action.GIFT, Type.CHOOSE, HIGH_PRIORITY);
         this.landId = landId;
         this.property = property;
     }

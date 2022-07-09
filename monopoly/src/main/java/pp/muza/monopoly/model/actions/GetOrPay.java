@@ -18,7 +18,7 @@ import pp.muza.monopoly.model.game.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class GetOrPay extends AbstractActionCard {
+public final class GetOrPay extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(GetOrPay.class);
 

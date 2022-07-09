@@ -18,7 +18,7 @@ import pp.muza.monopoly.model.game.TurnException;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class EndTurn extends AbstractActionCard {
+public final class EndTurn extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(EndTurn.class);
 

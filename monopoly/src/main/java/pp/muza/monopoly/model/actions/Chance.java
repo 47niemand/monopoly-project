@@ -25,7 +25,7 @@ import pp.muza.monopoly.model.game.Player;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Chance extends AbstractActionCard {
+public final class Chance extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Chance.class);
     private static final int PLAYER_1 = 0;

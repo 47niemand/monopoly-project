@@ -26,7 +26,7 @@ import pp.muza.monopoly.model.game.Player;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Arrival extends AbstractActionCard {
+public final class Arrival extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 

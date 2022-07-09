@@ -7,13 +7,13 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public final class Property extends AbstractLand {
+public final class Property extends BaseLand {
 
     private final BigDecimal price;
     private final Color color;
 
     public Property(String name, BigDecimal price, Color color) {
-        super(name, AbstractLand.Type.PROPERTY);
+        super(name, BaseLand.Type.PROPERTY);
         this.price = price;
         this.color = color;
     }

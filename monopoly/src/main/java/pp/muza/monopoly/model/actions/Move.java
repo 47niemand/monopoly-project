@@ -11,7 +11,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.game.Turn;
 import pp.muza.monopoly.model.lands.Land;
 
-import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
+import static pp.muza.monopoly.model.actions.CardUtils.onArrival;
 
 /**
  * The player specifies the distance to take to move to a new location on the board.
@@ -19,7 +19,7 @@ import static pp.muza.monopoly.model.actions.MoveUtils.onArrival;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Move extends AbstractActionCard {
+public final class Move extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Move.class);
 
@@ -34,7 +34,7 @@ public final class Move extends AbstractActionCard {
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int position = turn.nextPosition(distance);
-        LOG.info("{} moving by {} steps to {} ({})", turn.getPlayer(), distance, position, turn.getLand(position).getName());
+        LOG.info("{} moving by {} steps to {} ({})", turn.getPlayer().getName(), distance, position, turn.getLand(position).getName());
         List<ActionCard> res;
         List<Land> path = turn.moveTo(position);
         assert path.size() == distance;

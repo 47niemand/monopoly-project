@@ -47,7 +47,7 @@ usage: monopoly
       
 ## Execution example:
 
-    java -jar build/libs/monopoly-0.1-sim.jar -p 2
+    java -jar build/libs/monopoly-0.1-sim.jar -p 4
 
     This is a game of Monopoly!
     Number of players: 4

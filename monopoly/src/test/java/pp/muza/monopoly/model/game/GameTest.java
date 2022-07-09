@@ -20,22 +20,22 @@ class GameTest {
 
     @Test
     void gameLoop1() {
-        // test game loop with four players
-        List<Player> players = new ArrayList<>();
-        for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
-            players.add(new Player(s));
+        for (int i = 0; i < 100; i++) {
+            // test game loop with four players
+            List<Player> players = new ArrayList<>();
+            for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
+                players.add(new Player(s));
+            }
+            Game game = new Game(players, DefaultStrategy.STRATEGY);
+            int a = game.getChanceCards().size();
+            String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+            game.gameLoop();
+            game.endGame();
+            int b = game.getChanceCards().size();
+            String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+            Assertions.assertEquals(a, b, "Chance cards should be the same size");
+            Assertions.assertEquals(a1, b1, "Chance cards should be the same");
         }
-        Game game = new Game(players, DefaultStrategy.STRATEGY);
-        int a = game.getChanceCards().size();
-        String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
-        game.gameLoop();
-        game.endGame();
-        int b = game.getChanceCards().size();
-        String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
-        System.out.println(a1);
-        System.out.println(b1);
-        Assertions.assertEquals(a, b, "Chance cards should be the same size");
-        Assertions.assertEquals(a1, b1, "Chance cards should be the same");
     }
 
 
@@ -55,7 +55,7 @@ class GameTest {
         Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player = players.get(0);
         // test setup
-        game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_3));
+        game.sendCard(player, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_3));
         game.bringChanceCardToTop(ChanceCard.ADVANCE_TO_BLUE_OR_ORANGE);
         // test
         Turn turn = new TurnImpl(game, player);
@@ -78,7 +78,7 @@ class GameTest {
         Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
         Player player = players.get(0);
         // test setup
-        game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.BIRTHDAY));
+        game.sendCard(player, game.removeChanceCard(ChanceCard.BIRTHDAY));
         game.withdraw(players.get(1), BigDecimal.valueOf(18));
         // test
         Turn turn = new TurnImpl(game, player);
@@ -101,11 +101,11 @@ class GameTest {
         Player player1 = players.get(0);
         Player player2 = players.get(1);
         // test setup
-        game.sendCardToPlayer(player1, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_2));
+        game.sendCard(player1, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_2));
         game.bringChanceCardToTop(ChanceCard.GET_OUT_OF_JAIL_FREE);
         // test
         Turn turn = new TurnImpl(game, player1);
-        game.sendCardToPlayer(player1, EndTurn.of());
+        game.sendCard(player1, EndTurn.of());
         game.playTurn(turn);
         System.out.println(game.getPlayerInfo(player1));
         turn = new TurnImpl(game, player2);
@@ -130,8 +130,8 @@ class GameTest {
         Player player = players.get(0);
 
         // test setup
-        game.sendCardToPlayer(player, game.removeChanceCard(ChanceCard.MOVE_FORWARD_ONE_SPACE));
-        game.sendCardToPlayer(player, EndTurn.of());
+        game.sendCard(player, game.removeChanceCard(ChanceCard.MOVE_FORWARD_ONE_SPACE));
+        game.sendCard(player, EndTurn.of());
         // test
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);

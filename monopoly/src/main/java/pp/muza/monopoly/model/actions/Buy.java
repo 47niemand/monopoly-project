@@ -26,18 +26,16 @@ public final class Buy extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
 
     private final int landId;
-    private final Property property;
 
     Buy(int landId, Property property) {
         super("Buy", Action.BUY, Type.OPTIONAL, DEFAULT_PRIORITY);
         this.landId = landId;
-        this.property = property;
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.buyProperty(landId, property);
+            turn.buyProperty(landId);
         } catch (BankException | TurnException e) {
             LOG.info("Player cannot buy property: {}", e.getMessage());
         }

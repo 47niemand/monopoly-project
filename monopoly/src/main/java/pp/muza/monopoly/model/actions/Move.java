@@ -34,7 +34,7 @@ public final class Move extends BaseActionCard {
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int position = turn.nextPosition(distance);
-        LOG.info("{} moving by {} steps to {} ({})", turn.getPlayer().getName(), distance, position, turn.getLand(position).getName());
+        LOG.info("{}: moving by {} steps to {} ({})", turn.getPlayer().getName(), distance, position, turn.getLand(position).getName());
         List<ActionCard> res;
         List<Land> path = turn.moveTo(position);
         assert path.size() == distance;

@@ -50,7 +50,7 @@ public final class Arrival extends BaseActionCard {
                     result = ImmutableList.of(new Buy(position, property));
                 } else if (owner != turn.getPlayer()) {
                     LOG.info("Property is owned by {}, player should pay rent", owner.getName());
-                    result = ImmutableList.of(new PayRent(owner, property));
+                    result = ImmutableList.of(new PayRent(owner, property, position, property));
                 } else {
                     LOG.info("Property is owned by player, player can do nothing");
                     result = ImmutableList.of();

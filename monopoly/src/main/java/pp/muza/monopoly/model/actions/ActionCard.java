@@ -86,6 +86,7 @@ public interface ActionCard {
         GO_TO_JAIL,
         // get chance card, this is a special card that stores the chance pile of the
         // game. it should be returned to the game when the card is used.
+        // Card with this type must be instance of {@link Chance} class.
         CHANCE,
         // get income
         INCOME,

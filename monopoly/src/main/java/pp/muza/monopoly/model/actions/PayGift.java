@@ -44,7 +44,7 @@ public final class PayGift extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.payRent(recipient, amount);
+            turn.pay(recipient, amount);
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());

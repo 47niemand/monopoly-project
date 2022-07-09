@@ -49,7 +49,7 @@ public final class Contract extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn)  {
         try {
             BigDecimal amount = property.getPrice();
-            turn.doContract(landId, property, amount);
+            turn.doContract(landId, amount);
         } catch (BankException | TurnException e) {
             LOG.info("Player cannot receive money: {}", e.getMessage());
         }

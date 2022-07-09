@@ -51,7 +51,7 @@ public final class Trade extends BaseActionCard {
         try {
             Player salePlayer = turn.getPropertyOwner(landId);
             if (salePlayer == null) {
-                turn.buyProperty(landId, property);
+                turn.buyProperty(landId);
             } else {
                 turn.tradeProperty(salePlayer, landId, property);
             }

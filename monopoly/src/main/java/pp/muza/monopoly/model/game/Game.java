@@ -4,15 +4,9 @@ import com.google.common.collect.ImmutableList;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.ActionCardExecute;
-import pp.muza.monopoly.model.actions.ChanceCard;
+import pp.muza.monopoly.model.actions.*;
 import pp.muza.monopoly.model.actions.Chance;
-import pp.muza.monopoly.model.actions.NewTurn;
-import pp.muza.monopoly.model.lands.Board;
-import pp.muza.monopoly.model.lands.MonopolyBoard;
-import pp.muza.monopoly.model.lands.Land;
-import pp.muza.monopoly.model.lands.Property;
+import pp.muza.monopoly.model.lands.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,7 +19,7 @@ import java.util.stream.IntStream;
  * This class is responsible for managing the game.
  */
 
-public class Game {
+public class Game implements GameTurn {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
     private static final int DEFAULT_MAX_TURNS = 100;
@@ -104,24 +98,44 @@ public class Game {
         return ImmutableList.copyOf(chanceCards);
     }
 
+    @Override
     public final GameInfo getGameInfo() {
         return new GameInfo(this);
     }
 
-    public void setPlayerStatus(Player player, PlayerStatus status) {
-        playersData.get(player).setStatus(status);
-    }
-
+    @Override
     public PlayerStatus getPlayerStatus(Player player) {
         return playersData.get(player).getStatus();
     }
 
-    //TODO: add constructor with GameInfo
+    @Override
+    public void birthdayParty(Player player) {
+        players.stream()
+                .filter(x -> x != player && !getPlayerStatus(x).isFinal())
+                .forEach(x -> {
+                    Turn subTurn = new TurnImpl(this, x);
+                    sendCard(x, PayGift.of(player, BigDecimal.valueOf(1)));
+                    playTurn(subTurn);
+                });
+    }
+
+    @Override
+    public void tradeProperty(Player player, Player salePlayer, int landId) throws BankException, TurnException {
+        Property property = (Property) board.getLand(landId);
+        if (getPropertyOwner(landId) != salePlayer) {
+            throw new TurnException("Land is not owned by " + salePlayer.getName());
+        }
+        BigDecimal price = property.getPrice();
+        withdraw(player, price);
+        deposit(salePlayer, price);
+        setPropertyOwner(landId, player);
+    }
 
     public void setPlayerPosition(Player player, int position) {
         playersData.get(player).setPosition(position);
     }
 
+    @Override
     public boolean playCard(Turn turn, ActionCard actionCard) throws TurnException {
         Player player = turn.getPlayer();
         boolean cardUsed;
@@ -158,6 +172,7 @@ public class Game {
 
             // return chance card (ActionCard.Action.CHANCE) to the game
             if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)) {
+                LOG.debug("Returning chance card {} to the game", actionCard);
                 returnChanceCard((Chance) actionCard);
             }
         } else {
@@ -166,20 +181,50 @@ public class Game {
         return cardUsed || newCardsSpawned;
     }
 
+    @Override
     public int getNextPosition(Player player, int distance) {
         return board.getDestination(playersData.get(player).getPosition(), distance);
     }
 
-    public int getPlayerPosition(Player player) {
+    @Override
+    public int getPosition(Player player) {
         return playersData.get(player).getPosition();
+    }
+
+    @Override
+    public List<Land> moveTo(Player player, int position) {
+        List<Integer> path = getPathTo(getPosition(player), position);
+        List<Land> lands = getLands(path);
+        setPlayerPosition(player, position);
+        return lands;
+    }
+
+    @Override
+    public void addMoney(Player player, BigDecimal amount) throws BankException {
+        bank.deposit(player, amount);
     }
 
     public List<ActionCard> getPlayerCards(Player player) {
         return ImmutableList.copyOf(playersData.get(player).getActionCards());
     }
 
-    public void sendCardToPlayer(Player player, ActionCard actionCard) {
+    @Override
+    public void sendCard(Player player, ActionCard actionCard) {
         playersData.get(player).getActionCards().add(actionCard);
+    }
+
+    @Override
+    public List<IndexedEntry<Property>> getAllProperties() {
+        List<Land> l = getLands();
+        List<IndexedEntry<Property>> p = new ArrayList<>();
+        for (int i = 0; i < l.size(); i++) {
+            Land land = l.get(i);
+            if (land.getType() == Land.Type.PROPERTY) {
+                Property property = (Property) land;
+                p.add(new IndexedEntry<>(i, property));
+            }
+        }
+        return p;
     }
 
     public void playTurn(Turn turn) {
@@ -255,6 +300,7 @@ public class Game {
         return result;
     }
 
+    @Override
     public List<ActionCard> getActiveActionCards(Player player) {
         List<ActionCard> result;
         List<ActionCard> actionCards = playersData.get(player).getActionCards();
@@ -309,6 +355,7 @@ public class Game {
         bank.deposit(player, amount);
     }
 
+    @Override
     public Player getPropertyOwner(int landId) {
         return propertyOwner.get(landId);
     }
@@ -334,23 +381,56 @@ public class Game {
 
     public void propertyOwnerRemove(int landId) {
         Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now free", landId, property);
+        LOG.info("Property {} ({}) is now free", landId, property.getName());
         Player oldOwner = propertyOwner.remove(landId);
         if (oldOwner != null) {
             LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
         }
     }
 
+    @Override
     public int getStartPosition() {
         return board.getStartPosition();
     }
 
+    @Override
+    public int findLandByName(String name) {
+        for (int i = 0; i < getLands().size(); i++) {
+            if (getLands().get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        throw new NoSuchElementException("No land found with name " + name);
+    }
+
+    @Override
+    public List<Integer> findLandsByColor(Property.Color color) {
+        List<Integer> lands = new ArrayList<>();
+        for (int i = 0; i < getLands().size(); i++) {
+            Land land = getLands().get(i);
+            if (land instanceof Property) {
+                Property property = (Property) land;
+                if (property.getColor() == color) {
+                    lands.add(i);
+                }
+            }
+        }
+        return lands;
+    }
+
+    @Override
     public Land getLand(int position) {
         return board.getLand(position);
     }
 
+    @Override
     public Chance popChanceCard() {
         return chanceCards.pop();
+    }
+
+    @Override
+    public void setPlayerInJail(Player player) {
+        playersData.get(player).setStatus(PlayerStatus.IN_JAIL);
     }
 
     void bringChanceCardToTop(ChanceCard card) {
@@ -374,6 +454,7 @@ public class Game {
         return result;
     }
 
+    @Override
     public List<Player> getPlayers() {
         return players;
     }
@@ -405,6 +486,7 @@ public class Game {
         );
     }
 
+    @Override
     public void endTurn(Player player) {
         List<ActionCard> playerCards = getPlayerCards(player);
         LOG.info("Not used cards: {}",
@@ -430,6 +512,22 @@ public class Game {
         returnPlayerCards(player);
     }
 
+    @Override
+    public void doContract(Player player, int landId, BigDecimal amount) throws TurnException, BankException {
+        Property property = (Property) getLand(landId);
+        if (getPropertyOwner(landId) != player) {
+            throw new TurnException("Land is not owned by you");
+        }
+        LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
+        deposit(player, amount);
+        propertyOwnerRemove(landId);
+    }
+
+    void setPlayerStatus(Player player, PlayerStatus status) {
+        playersData.get(player).setStatus(status);
+    }
+
+    @Override
     public List<IndexedEntry<Property>> getProperties(Player player) {
         List<Land> lands = board.getLands();
         List<IndexedEntry<Property>> result = new ArrayList<>();
@@ -443,9 +541,64 @@ public class Game {
         return result;
     }
 
+    @Override
+    public void buyProperty(Player player, int landId) throws TurnException, BankException {
+        Property property = (Property) getLand(landId);
+        BigDecimal price = property.getPrice();
+        if (getPropertyOwner(landId) != null) {
+            throw new TurnException("Land is already owned");
+        }
+        bank.withdraw(player, price);
+        setPropertyOwner(landId, player);
+    }
+
+    @Override
+    public void payRent(Player player, int landId) throws TurnException, BankException {
+        Property property = (Property) getLand(landId);
+        BigDecimal rent = property.getPrice();
+        Player owner = getPropertyOwner(landId);
+        if (owner == null) {
+            throw new TurnException("Land is not owned");
+        }
+        LOG.info("{} pays {} to {} for {}", player.getName(), rent, owner.getName(), property.getName());
+        bank.withdraw(player, rent);
+        bank.deposit(owner, rent);
+    }
+
+    @Override
+    public void pay(Player player, Player recipient, BigDecimal amount) throws BankException {
+        bank.withdraw(player, amount);
+        bank.deposit(recipient, amount);
+
+    }
+
+    @Override
+    public void payTax(Player player, BigDecimal amount) throws BankException {
+        bank.withdraw(player, amount);
+
+    }
+
+    @Override
+    public void leaveJail(Player player) throws TurnException {
+        if (getPlayerStatus(player) != PlayerStatus.IN_JAIL) {
+            throw new TurnException("Player is not in jail");
+        }
+        playersData.get(player).setStatus(PlayerStatus.IN_GAME);
+    }
+
+    @Override
     public void playerTurnStarted(Player player) {
         // there is no need to roll dice or move if player did something in this turn
         playersData.get(player).actionCards.removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+    }
+
+    @Override
+    public BigDecimal getJailFine() {
+        return getLands().stream()
+                .filter(land -> land.getType() == Land.Type.JAIL)
+                .map(x -> ((Jail) x).getFine())
+                .findFirst()
+                .orElse(BigDecimal.ZERO);
     }
 
     public Board<Land> getBoard() {
@@ -494,7 +647,7 @@ public class Game {
 
         public void setPosition(int position) {
             if (this.position != position) {
-                LOG.info("{} changing position from {} to {}", this.player.getName(), this.position, position);
+                LOG.info("{}: changing position from {} to {}", this.player.getName(), this.position, position);
                 this.position = position;
             } else {
                 LOG.info("{} at position {}", this.player.getName(), this.position);
@@ -504,9 +657,9 @@ public class Game {
         public void setStatus(PlayerStatus status) {
             assert status != null;
             if (this.status == null) {
-                LOG.info("set status to {}", status);
+                LOG.debug("{} set status to {}", player.getName(), status);
             } else {
-                LOG.info("{} changing status from {} to {}", this.player.getName(), this.status, status);
+                LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
             }
             this.status = status;
         }

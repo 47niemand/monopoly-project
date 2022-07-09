@@ -1,34 +1,33 @@
 package pp.muza.monopoly.model.game;
 
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.actions.ActionCard;
 import pp.muza.monopoly.model.actions.Chance;
-import pp.muza.monopoly.model.actions.PayGift;
-import pp.muza.monopoly.model.lands.Jail;
 import pp.muza.monopoly.model.lands.Land;
 import pp.muza.monopoly.model.lands.Property;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
  * The turn of the game implementation.  This class implements the Turn and TurnPlayer interfaces.
  */
-
-@Data
 class TurnImpl implements Turn, TurnPlayer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
-    private final Game game;
+    private final GameTurn game;
     private final Player player;
     private final List<ActionCard> usedCards = new ArrayList<>();
     private boolean finished;
+
+    TurnImpl(GameTurn game, Player player) {
+        this.game = game;
+        this.player = player;
+    }
 
     @Override
     public List<ActionCard> getActiveActionCards() {
@@ -49,6 +48,21 @@ class TurnImpl implements Turn, TurnPlayer {
         usedCards.remove(actionCard);
         usedCards.add(actionCard);
         return result;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return finished;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public GameInfo getGameInfo() {
+        return game.getGameInfo();
     }
 
     @Override
@@ -73,7 +87,7 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void setPlayerInJail() {
-        game.setPlayerStatus(player, PlayerStatus.IN_JAIL);
+        game.setPlayerInJail(player);
     }
 
     @Override
@@ -82,25 +96,23 @@ class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
+    public int getPosition() {
+        return game.getPosition(player);
+    }
+
+    @Override
     public BigDecimal getJailFine() {
-        return game.getLands().stream()
-                .filter(land -> land.getType() == Land.Type.JAIL)
-                .map(x -> ((Jail) x).getFine())
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
+        return game.getJailFine();
     }
 
     @Override
     public List<Land> moveTo(int position) {
-        List<Integer> path = game.getPathTo(game.getPlayerPosition(player), position);
-        List<Land> lands = game.getLands(path);
-        game.setPlayerPosition(player, position);
-        return lands;
+        return game.moveTo(player, position);
     }
 
     @Override
     public void addMoney(BigDecimal amount) throws BankException {
-        game.deposit(player, amount);
+        game.addMoney(player, amount);
     }
 
     @Override
@@ -109,31 +121,28 @@ class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public void buyProperty(int landId, Property property) throws BankException, TurnException {
-        if (game.getPropertyOwner(landId) != null) {
-            throw new TurnException("Land is already owned");
-        }
-        game.withdraw(player, property.getPrice());
-        game.setPropertyOwner(landId, player);
+    public void buyProperty(int landId) throws BankException, TurnException {
+        game.buyProperty(player, landId);
     }
 
     @Override
-    public void payRent(Player recipient, BigDecimal amount) throws BankException {
-        game.withdraw(player, amount);
-        game.deposit(recipient, amount);
+    public void payRent(int landId) throws BankException, TurnException {
+        game.payRent(player, landId);
+    }
+
+    @Override
+    public void pay(Player recipient, BigDecimal amount) throws BankException {
+        game.pay(player, recipient, amount);
     }
 
     @Override
     public void payTax(BigDecimal amount) throws BankException {
-        game.withdraw(player, amount);
+        game.payTax(player, amount);
     }
 
     @Override
     public void leaveJail() throws TurnException {
-        if (getStatus() != PlayerStatus.IN_JAIL) {
-            throw new TurnException("Player is not in jail");
-        }
-        game.setPlayerStatus(player, PlayerStatus.IN_GAME);
+        game.leaveJail(player);
     }
 
     @Override
@@ -150,13 +159,8 @@ class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public void doContract(int landId, Property property, BigDecimal amount) throws BankException, TurnException {
-        if (game.getPropertyOwner(landId) != player) {
-            throw new TurnException("Land is not owned by you");
-        }
-        assert game.getLand(landId) == property;
-        game.deposit(player, amount);
-        game.propertyOwnerRemove(landId);
+    public void doContract(int landId, BigDecimal amount) throws BankException, TurnException {
+        game.doContract(player, landId, amount);
     }
 
     @Override
@@ -166,27 +170,12 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public int foundLandByName(String name) {
-        for (int i = 0; i < game.getLands().size(); i++) {
-            if (game.getLands().get(i).getName().equals(name)) {
-                return i;
-            }
-        }
-        throw new NoSuchElementException("No land found with name " + name);
+        return game.findLandByName(name);
     }
 
     @Override
     public List<Integer> foundLandsByColor(Property.Color color) {
-        List<Integer> lands = new ArrayList<>();
-        for (int i = 0; i < game.getLands().size(); i++) {
-            Land land = game.getLands().get(i);
-            if (land instanceof Property) {
-                Property property = (Property) land;
-                if (property.getColor() == color) {
-                    lands.add(i);
-                }
-            }
-        }
-        return lands;
+        return game.findLandsByColor(color);
     }
 
     @Override
@@ -196,7 +185,7 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void sendCard(Player player, ActionCard actionCard) {
-        game.sendCardToPlayer(player, actionCard);
+        game.sendCard(player, actionCard);
     }
 
     @Override
@@ -208,27 +197,12 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public List<IndexedEntry<Property>> getAllProperties() {
-        List<Land> l = game.getLands();
-        List<IndexedEntry<Property>> p = new ArrayList<>();
-        for (int i = 0; i < l.size(); i++) {
-            Land land = l.get(i);
-            if (land.getType() == Land.Type.PROPERTY) {
-                Property property = (Property) land;
-                p.add(new IndexedEntry<>(i, property));
-            }
-        }
-        return p;
+        return game.getAllProperties();
     }
 
     @Override
     public void birthdayParty() {
-        game.getPlayers().stream()
-                .filter(x -> x != player && !game.getPlayerStatus(x).isFinal())
-                .forEach(x -> {
-                    Turn subTurn = new TurnImpl(game, x);
-                    game.sendCardToPlayer(x, PayGift.of(this.player, BigDecimal.valueOf(1)));
-                    game.playTurn(subTurn);
-                });
+        game.birthdayParty(player);
     }
 
     @Override
@@ -238,26 +212,20 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void tradeProperty(Player salePlayer, int landId, Property property) throws BankException, TurnException {
-        if (game.getPropertyOwner(landId) != salePlayer) {
-            throw new TurnException("Land is not owned by you");
-        }
-        BigDecimal price = property.getPrice();
-        game.withdraw(player, price);
-        game.deposit(salePlayer, price);
-        game.setPropertyOwner(landId, player);
+        game.tradeProperty(player, salePlayer, landId);
     }
 
     @Override
-    public void playerStartedTurn() {
+    public void playerTurnStarted() {
         // there is no need to roll dice or move if player did something in this turn
         game.playerTurnStarted(player);
     }
 
     @Override
     public String toString() {
-        return "TurnImpl(game=" + this.getGame()
+        return "TurnImpl(game=" + this.game
                 + ", player=" + this.getPlayer().getName()
-                + ", usedCards=" + this.getUsedCards().stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ", usedCards=" + this.usedCards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ", finished=" + this.isFinished() + ")";
     }
 }

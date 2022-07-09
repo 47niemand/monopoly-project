@@ -53,13 +53,6 @@ public interface Turn extends TurnPlayer {
     void setPlayerInJail();
 
     /**
-     * get player's status.
-     *
-     * @return return status.
-     */
-    PlayerStatus getStatus();
-
-    /**
      * returns a fine to pay in order to get out of jail.
      *
      * @return amount to pay.
@@ -92,21 +85,19 @@ public interface Turn extends TurnPlayer {
     /**
      * Buys the property at the given position.
      *
-     * @param landId   the land id.
-     * @param property the property.
+     * @param landId the land id.
      * @throws BankException if player doesn't have enough money.
      * @throws TurnException if operation fails.
      */
-    void buyProperty(int landId, Property property) throws BankException, TurnException;
+    void buyProperty(int landId) throws BankException, TurnException;
 
     /**
      * Pays rent
      *
-     * @param recipient the recipient.
-     * @param amount    the amount to pay.
+     * @param landId the land id.
      * @throws BankException if operation fails.
      */
-    void payRent(Player recipient, BigDecimal amount) throws BankException;
+    void payRent(int landId) throws BankException, TurnException;
 
     /**
      * Pays tax.
@@ -133,13 +124,12 @@ public interface Turn extends TurnPlayer {
     /**
      * Executes the contract
      *
-     * @param landId   the land id.
-     * @param property the property of the land.
-     * @param amount   the amount to pay.
+     * @param landId the land id.
+     * @param amount the amount to pay.
      * @throws BankException if operation fails.
      * @throws TurnException if property do not belong to the player.
      */
-    void doContract(int landId, Property property, BigDecimal amount) throws BankException, TurnException;
+    void doContract(int landId, BigDecimal amount) throws BankException, TurnException;
 
     /**
      * return the game's start postion
@@ -221,5 +211,7 @@ public interface Turn extends TurnPlayer {
     /**
      * removes start_turn/roll_dice actions from the player's stack.
      */
-    void playerStartedTurn();
+    void playerTurnStarted();
+
+    void pay(Player recipient, BigDecimal amount) throws BankException;
 }

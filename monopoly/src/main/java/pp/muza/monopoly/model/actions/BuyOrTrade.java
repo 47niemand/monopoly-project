@@ -26,21 +26,19 @@ public final class BuyOrTrade extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(BuyOrTrade.class);
 
     private final int landId;
-    private final Property property;
 
-    BuyOrTrade(int landId, Property property) {
+    BuyOrTrade(int landId) {
         super("BuyOrTrade", Action.GIFT, Type.CHOOSE, HIGH_PRIORITY);
         this.landId = landId;
-        this.property = property;
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        assert turn.getLand(landId) == property;
-        LOG.info("{} moving to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
+        Property property = (Property) turn.getLand(landId);
+        LOG.info("{}: moving to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
         List<Land> path = turn.moveTo(landId);
         if (path.size() == 0) {
-            LOG.warn("Staying on the same land");
+            LOG.warn("{}: Staying on the same land", turn.getPlayer().getName());
         } else {
             path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
                 LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
@@ -53,7 +51,7 @@ public final class BuyOrTrade extends BaseActionCard {
 
         }
         // there is no need to roll dice or move if player did this action
-        turn.playerStartedTurn();
+        turn.playerTurnStarted();
         return ImmutableList.of(new Trade(landId, property), new EndTurn());
     }
 }

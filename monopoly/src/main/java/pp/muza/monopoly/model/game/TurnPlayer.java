@@ -1,12 +1,16 @@
 package pp.muza.monopoly.model.game;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import pp.muza.monopoly.model.actions.ActionCard;
+import pp.muza.monopoly.model.lands.Land;
+import pp.muza.monopoly.model.lands.Property;
 
 /**
  * It is a turn API, which is used by players to play the game.
  * There are methods to get the active action cards, and to execute the action cards.
+ * There are methods to get the current game information to make the turn decision.
  */
 public interface TurnPlayer {
 
@@ -62,4 +66,70 @@ public interface TurnPlayer {
      */
     GameInfo getGameInfo();
 
+    /**
+     * Calculates the next position of the player.
+     *
+     * @param distance the distance to move.
+     * @return the new position.
+     */
+    int nextPosition(int distance);
+
+    /**
+     * Returns the land at the given position.
+     *
+     * @param position the position.
+     * @return the land.
+     */
+    Land getLand(int position);
+
+    /**
+     * Returns the owner of the property at the given position.
+     *
+     * @param position the position.
+     * @return the owner.
+     */
+    Player getPropertyOwner(int position);
+
+    /**
+     * returns a fine to pay in order to get out of jail.
+     *
+     * @return amount to pay.
+     */
+    BigDecimal getJailFine();
+
+    /**
+     * Returns the properties of the player.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getProperties();
+
+    /**
+     * return the game's start postion
+     *
+     * @return the start position.
+     */
+    int getStartPos();
+
+    /**
+     * returns all players in the game.
+     *
+     * @return the players.
+     */
+    List<Player> getPlayers();
+
+    /**
+     * returns all properties on the board.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getAllProperties();
+
+    /**
+     * returns the status of the player.
+     *
+     * @param player the player.
+     * @return the status.
+     */
+    PlayerStatus getPlayerStatus(Player player);
 }

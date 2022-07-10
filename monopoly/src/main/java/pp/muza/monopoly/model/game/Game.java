@@ -513,12 +513,13 @@ public class Game implements GameTurn {
     }
 
     @Override
-    public void doContract(Player player, int landId, BigDecimal amount) throws TurnException, BankException {
+    public void doContract(Player player, int landId) throws TurnException, BankException {
         Property property = (Property) getLand(landId);
         if (getPropertyOwner(landId) != player) {
             throw new TurnException("Land is not owned by you");
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
+        BigDecimal amount = property.getPrice();
         deposit(player, amount);
         propertyOwnerRemove(landId);
     }

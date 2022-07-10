@@ -17,30 +17,6 @@ import java.util.NoSuchElementException;
 public interface Turn extends TurnPlayer {
 
     /**
-     * Calculates the next position of the player.
-     *
-     * @param distance the distance to move.
-     * @return the new position.
-     */
-    int nextPosition(int distance);
-
-    /**
-     * Returns the land at the given position.
-     *
-     * @param position the position.
-     * @return the land.
-     */
-    Land getLand(int position);
-
-    /**
-     * Returns the owner of the property at the given position.
-     *
-     * @param position the position.
-     * @return the owner.
-     */
-    Player getPropertyOwner(int position);
-
-    /**
      * Gets a chance card from the top of the deck.
      *
      * @return the chance card.
@@ -51,13 +27,6 @@ public interface Turn extends TurnPlayer {
      * set player to jail.
      */
     void setPlayerInJail();
-
-    /**
-     * returns a fine to pay in order to get out of jail.
-     *
-     * @return amount to pay.
-     */
-    BigDecimal getJailFine();
 
     /**
      * Moves the player to the given position.
@@ -76,13 +45,6 @@ public interface Turn extends TurnPlayer {
     void addMoney(BigDecimal amount) throws BankException;
 
     /**
-     * Returns the properties of the player.
-     *
-     * @return the properties.
-     */
-    List<IndexedEntry<Property>> getProperties();
-
-    /**
      * Buys the property at the given position.
      *
      * @param landId the land id.
@@ -95,7 +57,8 @@ public interface Turn extends TurnPlayer {
      * Pays rent
      *
      * @param landId the land id.
-     * @throws BankException if operation fails.
+     * @throws BankException if player doesn't have enough money.
+     * @throws TurnException if operation fails (e.g. if the player doesn't own the property).
      */
     void payRent(int landId) throws BankException, TurnException;
 
@@ -132,13 +95,6 @@ public interface Turn extends TurnPlayer {
     void doContract(int landId, BigDecimal amount) throws BankException, TurnException;
 
     /**
-     * return the game's start postion
-     *
-     * @return the start position.
-     */
-    int getStartPos();
-
-    /**
      * returns the postion of land by the given name.
      *
      * @param name the name of the land.
@@ -156,13 +112,6 @@ public interface Turn extends TurnPlayer {
     List<Integer> foundLandsByColor(Property.Color color);
 
     /**
-     * returns all players in the game.
-     *
-     * @return the players.
-     */
-    List<Player> getPlayers();
-
-    /**
      * send a card to the player.
      *
      * @param player     the player.
@@ -171,31 +120,9 @@ public interface Turn extends TurnPlayer {
     void sendCard(Player player, ActionCard actionCard);
 
     /**
-     * reruns not owned properties on the board.
-     *
-     * @return the properties.
-     */
-    List<IndexedEntry<Property>> getFreeProperties();
-
-    /**
-     * returns all properties on the board.
-     *
-     * @return the properties.
-     */
-    List<IndexedEntry<Property>> getAllProperties();
-
-    /**
      * Birthday party.
      */
     void birthdayParty();
-
-    /**
-     * returns the status of the player.
-     *
-     * @param player the player.
-     * @return the status.
-     */
-    PlayerStatus getPlayerStatus(Player player);
 
     /**
      * trades the property.
@@ -213,5 +140,19 @@ public interface Turn extends TurnPlayer {
      */
     void playerTurnStarted();
 
+    /**
+     * pay the amount of money to the recipient.
+     *
+     * @param recipient the recipient.
+     * @param amount    the amount to pay.
+     * @throws BankException if operation fails (player doesn't have enough money).
+     */
     void pay(Player recipient, BigDecimal amount) throws BankException;
+
+    /**
+     * reruns not owned properties on the board.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getFreeProperties();
 }

@@ -160,7 +160,7 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void doContract(int landId, BigDecimal amount) throws BankException, TurnException {
-        game.doContract(player, landId, amount);
+        game.doContract(player, landId);
     }
 
     @Override
@@ -217,7 +217,6 @@ class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public void playerTurnStarted() {
-        // there is no need to roll dice or move if player did something in this turn
         game.playerTurnStarted(player);
     }
 

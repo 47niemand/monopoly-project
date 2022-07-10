@@ -20,22 +20,20 @@ class GameTest {
 
     @Test
     void gameLoop1() {
-        for (int i = 0; i < 100; i++) {
-            // test game loop with four players
-            List<Player> players = new ArrayList<>();
-            for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
-                players.add(new Player(s));
-            }
-            Game game = new Game(players, DefaultStrategy.STRATEGY);
-            int a = game.getChanceCards().size();
-            String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
-            game.gameLoop();
-            game.endGame();
-            int b = game.getChanceCards().size();
-            String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
-            Assertions.assertEquals(a, b, "Chance cards should be the same size");
-            Assertions.assertEquals(a1, b1, "Chance cards should be the same");
+        // test game loop with four players
+        List<Player> players = new ArrayList<>();
+        for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
+            players.add(new Player(s));
         }
+        Game game = new Game(players, DefaultStrategy.STRATEGY);
+        int a = game.getChanceCards().size();
+        String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+        game.gameLoop();
+        game.endGame();
+        int b = game.getChanceCards().size();
+        String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+        Assertions.assertEquals(a, b, "Chance cards should be the same size");
+        Assertions.assertEquals(a1, b1, "Chance cards should be the same");
     }
 
 

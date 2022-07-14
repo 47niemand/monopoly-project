@@ -19,7 +19,7 @@ Special lands are also on the board, such as the Go, Jail, and Chance spaces.
 On each turn, a player executes different actions, such as rolling the dice, buying a property, etc. 
 Depending on the rules of the game, different actions are available at the moment.
 
-A player is considered to be out of the game if they have enough money to cover their obligations.
+It is considered that a player is out of the game if they cannot complete their obligations (such as pay rent).
 When there is only one player left in the game or when the maximum number of turns have been taken, 
 the game is over.
 

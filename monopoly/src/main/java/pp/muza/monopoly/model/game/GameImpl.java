@@ -488,7 +488,7 @@ public class GameImpl implements Game {
 
     Fortune removeFortuneCard(Fortune.Chance chance) {
         Fortune result;
-        // find chance by given chance
+        // find fortune by given chance
         OptionalInt index = IntStream.range(0, fortuneCards.size())
                 .filter(i -> fortuneCards.get(i).getChance() == chance)
                 .findFirst();

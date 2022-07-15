@@ -275,7 +275,7 @@ public class GameImpl implements Game {
             playTurn(turn);
 
             if (turnNumber >= maxTurns) {
-                LOG.info("GameImpl loop ended after {} turns", turnNumber);
+                LOG.info("Game loop ended after {} turns", turnNumber);
                 break;
             }
         } while (nextPlayer());
@@ -663,7 +663,7 @@ public class GameImpl implements Game {
     }
 
     public void endGame() {
-        LOG.info("GameImpl ended");
+        LOG.info("Game ended");
         for (Player player : players) {
             getBackAllChanceCards(player);
         }

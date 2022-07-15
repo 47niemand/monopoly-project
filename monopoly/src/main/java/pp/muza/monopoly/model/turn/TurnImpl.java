@@ -225,7 +225,7 @@ public class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public String toString() {
-        return "TurnImpl(game=" + this.game
+        return "Turn(game=" + this.game
                 + ", player=" + this.getPlayer().getName()
                 + ", usedCards=" + this.usedCards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ", finished=" + this.isFinished() + ")";

@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.bank;
+package pp.muza.monopoly.model;
 
 import java.math.BigDecimal;
 

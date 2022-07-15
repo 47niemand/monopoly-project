@@ -25,7 +25,7 @@ import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.bank.Bank;
+import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.Board;

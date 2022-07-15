@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.errors.BankException;
 

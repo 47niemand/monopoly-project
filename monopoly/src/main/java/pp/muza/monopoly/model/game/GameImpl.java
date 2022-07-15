@@ -493,10 +493,10 @@ public class GameImpl implements Game {
                 .filter(i -> fortuneCards.get(i).getChance() == chance)
                 .findFirst();
         if (index.isPresent()) {
-            LOG.info("FortuneCard chance {} removed from pile", chance.name());
+            LOG.info("Fortune card {} removed from pile", chance.name());
             result = fortuneCards.remove(index.getAsInt());
         } else {
-            LOG.error("FortuneCard chance {} not found", chance.name());
+            LOG.error("Fortune card {} not found", chance.name());
             result = null;
         }
         return result;
@@ -507,7 +507,7 @@ public class GameImpl implements Game {
         return players;
     }
 
-    public void returnAllChanceCards(Player player) {
+    public void getBackAllChanceCards(Player player) {
         playerData.get(player).actionCards.removeIf(x -> {
                     boolean found = false;
                     if (x.getAction() == ActionCard.Action.CHANCE) {
@@ -520,7 +520,7 @@ public class GameImpl implements Game {
         );
     }
 
-    public void returnPlayerCards(Player player) {
+    public void getBackAllPlayerCards(Player player) {
         playerData.get(player).actionCards.removeIf(x -> {
                     boolean found = x.getType() != ActionCard.Type.KEEPABLE;
                     if (found) {
@@ -553,11 +553,11 @@ public class GameImpl implements Game {
                     x -> propertyOwnerRemove(x.getIndex())
             );
             // return chance cards to game if any
-            returnAllChanceCards(player);
+            getBackAllChanceCards(player);
             return;
         }
         // it seems that player in the game, so we need to clear his non-keepable cards
-        returnPlayerCards(player);
+        getBackAllPlayerCards(player);
     }
 
     @Override
@@ -665,11 +665,7 @@ public class GameImpl implements Game {
     public void endGame() {
         LOG.info("GameImpl ended");
         for (Player player : players) {
-            for (ActionCard actionCard : playerData.get(player).getActionCards()) {
-                if (actionCard.getAction() == ActionCard.Action.CHANCE) {
-                    getBackChanceCard(actionCard);
-                }
-            }
+            getBackAllChanceCards(player);
         }
     }
 

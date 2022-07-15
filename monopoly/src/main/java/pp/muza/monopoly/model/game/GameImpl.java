@@ -1,39 +1,41 @@
 package pp.muza.monopoly.model.game;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Bank;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Strategy;
+import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.PayGift;
+import pp.muza.monopoly.model.pieces.actions.PlayCard;
+import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.turn.TurnImpl;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import lombok.Data;
-import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.Bank;
-import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.Board;
-import pp.muza.monopoly.model.pieces.actions.NewTurn;
-import pp.muza.monopoly.model.pieces.actions.PayGift;
-import pp.muza.monopoly.model.pieces.actions.PlayCard;
-import pp.muza.monopoly.model.pieces.lands.Jail;
-import pp.muza.monopoly.model.turn.TurnImpl;
 
 /**
  * The game.
@@ -41,24 +43,12 @@ import pp.muza.monopoly.model.turn.TurnImpl;
  * This class is responsible for managing the game.
  */
 
-public class GameImpl implements Game {
+public class GameImpl extends BaseGame implements Game {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
-    private static final int DEFAULT_MAX_TURNS = 150;
-    private final Bank bank;
-    private final LinkedList<Fortune> fortuneCards;
-    private final List<Player> players = new ArrayList<>();
-    private final Map<Player, PlayerData> playerData = new HashMap<>();
-    private final Map<Integer, Player> propertyOwners = new HashMap<>();
-    private final Board board;
-    int maxTurns = DEFAULT_MAX_TURNS;
-    private int currentPlayerIndex;
-    private int turnNumber;
-
+    static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
 
     public GameImpl(Board board, List<Player> players, List<Fortune> fortunes, List<Strategy> strategies, Bank bank) {
-        this.board = board;
-        this.bank = bank;
+        super(bank, fortunes, board);
         this.players.addAll(players);
         Iterator<Strategy> strategyIterator = strategies.iterator();
         Strategy strategy = null;
@@ -71,14 +61,12 @@ public class GameImpl implements Game {
             this.bank.set(player, BigDecimal.valueOf(18));
         }
         assert players.size() == playerData.keySet().size();
-        this.fortuneCards = new LinkedList<>(fortunes);
         Collections.shuffle(fortuneCards);
         currentPlayerIndex = 0;
     }
 
     public GameImpl(GameInfo gameInfo, List<Strategy> strategies, Bank bank) {
-        this.board = gameInfo.getBoard();
-        this.bank = bank;
+        super(bank, gameInfo.getFortunes(), gameInfo.getBoard());
         this.players.addAll(gameInfo.getPlayers());
         Iterator<Strategy> strategyIterator = strategies.iterator();
         Strategy strategy = null;
@@ -102,14 +90,14 @@ public class GameImpl implements Game {
 
         }
         this.playerData.putAll(playerData);
-        this.fortuneCards = new LinkedList<>(gameInfo.getFortunes());
         this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
         this.turnNumber = gameInfo.getTurnNumber();
         this.maxTurns = gameInfo.getMaxTurns();
     }
 
-    List<Fortune> getFortuneCards() {
-        return ImmutableList.copyOf(fortuneCards);
+    @Override
+    Turn turn(Player player) {
+        return new TurnImpl(this, player);
     }
 
     @Override
@@ -138,10 +126,6 @@ public class GameImpl implements Game {
         withdraw(player, price);
         deposit(salePlayer, price);
         setPropertyOwner(landId, player);
-    }
-
-    public void setPlayerPosition(Player player, int position) {
-        playerData.get(player).setPosition(position);
     }
 
     @Override
@@ -213,10 +197,6 @@ public class GameImpl implements Game {
         bank.deposit(player, amount);
     }
 
-    public List<ActionCard> getPlayerCards(Player player) {
-        return ImmutableList.copyOf(playerData.get(player).getActionCards());
-    }
-
     @Override
     public void sendCard(Player player, ActionCard actionCard) {
         playerData.get(player).getActionCards().add(actionCard);
@@ -247,48 +227,6 @@ public class GameImpl implements Game {
     }
 
 
-    public void playTurn(Turn turn) {
-        Player player = turn.getPlayer();
-        List<String> list = playerData.get(player).getActionCards().stream().map(ActionCard::getName)
-                .collect(Collectors.toList());
-        LOG.info("PlayerBehaviour's {} action cards: {}", player.getName(), list);
-        Strategy strategy = playerData.get(player).getStrategy();
-        strategy.playTurn(turn);
-        if (!turn.isFinished()) {
-            LOG.info("Player {} is not finished the turn", player);
-            try {
-                turn.endTurn();
-            } catch (TurnException e) {
-                LOG.error("Error in turn", e);
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public void gameLoop() {
-        do {
-            turnNumber++;
-            Player player = getCurrentPlayer();
-            LOG.info("PlayTurn {} - Player {}", turnNumber, player.getName());
-            Turn turn = new TurnImpl(this, player);
-            playerData.get(player).getActionCards().add(NewTurn.of());
-            playTurn(turn);
-
-            if (turnNumber >= maxTurns) {
-                LOG.info("Game loop ended after {} turns", turnNumber);
-                break;
-            }
-        } while (nextPlayer());
-        // get player with maximum money
-        Player winner = players.stream()
-                .filter(x -> !playerData.get(x).getStatus().isFinal())
-                .max(Comparator.comparing(bank::getBalance))
-                .orElseThrow(() -> new RuntimeException("No winner"));
-        LOG.info("Winner: " + winner.getName());
-        // print results
-        players.forEach(x -> LOG.info("{} - {}", x.getName(), getPlayerInfo(x)));
-    }
-
     @Override
     public GameInfo getGameInfo() {
 
@@ -304,37 +242,6 @@ public class GameImpl implements Game {
         int turnNumber1 = getTurnNumber();
         int maxTurns1 = getMaxTurns();
         return new GameInfo(players1, playerInfo1, board1, fortuneCards1, currentPlayerIndex1, turnNumber1, maxTurns1);
-    }
-
-    public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
-    }
-
-    int getCurrentPlayerIndex() {
-        return currentPlayerIndex;
-    }
-
-    private int getNextPlayerId() {
-        int temp = currentPlayerIndex;
-        do {
-            temp++;
-            if (temp >= players.size()) {
-                temp = 0;
-            }
-        } while (playerData.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
-        return temp;
-    }
-
-    boolean nextPlayer() {
-        int temp = getNextPlayerId();
-        boolean result = temp != currentPlayerIndex;
-        currentPlayerIndex = temp;
-        if (result) {
-            LOG.info("Next player: {}", players.get(currentPlayerIndex).getName());
-        } else {
-            LOG.info("No next player");
-        }
-        return result;
     }
 
     @Override
@@ -355,7 +262,7 @@ public class GameImpl implements Game {
 
         int currentPriority = priority.orElse(ActionCard.LOW_PRIORITY);
 
-        LOG.debug("PlayerBehaviour's {} current priority: {}", player.getName(), currentPriority);
+        LOG.debug("Player's {} current priority: {}", player.getName(), currentPriority);
         result = actionCards.stream()
                 .filter(actionCard -> actionCard.getPriority() <= currentPriority)
                 .sorted(Comparator.comparing(ActionCard::getPriority))
@@ -364,70 +271,9 @@ public class GameImpl implements Game {
         return result;
     }
 
-    PlayerInfo getPlayerInfo(Player player) {
-        PlayerData playerData = this.playerData.get(player);
-        List<Integer> playerProperties = propertyOwners.entrySet().stream()
-                .filter(entry -> entry.getValue() == player)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-        List<IndexedEntry<Property>> belongings = playerProperties.stream().map(x -> new IndexedEntry<>(x, (Property) board.getLand(x)))
-                .collect(Collectors.toList());
-        return new PlayerInfo(player, playerData.getPosition(), playerData.getStatus(), bank.getBalance(player),
-                ImmutableList.copyOf(playerData.getActionCards()), belongings);
-    }
-
-    List<Land> getLands() {
-        return board.getLands();
-    }
-
-    List<Land> getLands(List<Integer> path) {
-        return board.getLands(path);
-    }
-
-    public List<Integer> getPathTo(int startPos, int endPos) {
-        return board.getPathTo(startPos, endPos);
-    }
-
-    public void deposit(Player player, BigDecimal amount) throws BankException {
-        bank.deposit(player, amount);
-    }
-
     @Override
     public Player getPropertyOwner(int landId) {
         return propertyOwners.get(landId);
-    }
-
-    public void withdraw(Player player, BigDecimal amount) throws BankException {
-        bank.withdraw(player, amount);
-    }
-
-    public void setPropertyOwner(int landId, Player player) {
-        Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now owned by {}", landId, property.getName(), player.getName());
-        Player oldOwner = propertyOwners.put(landId, player);
-        if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
-        }
-    }
-
-    public void getBackChanceCard(ActionCard card) {
-        if (card.getAction() != ActionCard.Action.CHANCE) {
-            throw new IllegalArgumentException("Not a chance card");
-        }
-        assert card instanceof Fortune;
-        Fortune fortune = (Fortune) card;
-        LOG.info("Fortune card {} returned", card.getName());
-        assert !fortuneCards.contains(fortune);
-        fortuneCards.addLast(fortune);
-    }
-
-    public void propertyOwnerRemove(int landId) {
-        Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now free", landId, property.getName());
-        Player oldOwner = propertyOwners.remove(landId);
-        if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
-        }
     }
 
     @Override
@@ -481,57 +327,9 @@ public class GameImpl implements Game {
         playerData.get(player).setStatus(PlayerStatus.IN_JAIL);
     }
 
-    void bringFortuneCardToTop(Fortune.Chance card) {
-        Fortune fortune = removeFortuneCard(card);
-        fortuneCards.addFirst(fortune);
-    }
-
-    Fortune removeFortuneCard(Fortune.Chance chance) {
-        Fortune result;
-        // find fortune by given chance
-        OptionalInt index = IntStream.range(0, fortuneCards.size())
-                .filter(i -> fortuneCards.get(i).getChance() == chance)
-                .findFirst();
-        if (index.isPresent()) {
-            LOG.info("Fortune card {} removed from pile", chance.name());
-            result = fortuneCards.remove(index.getAsInt());
-        } else {
-            LOG.error("Fortune card {} not found", chance.name());
-            result = null;
-        }
-        return result;
-    }
-
     @Override
     public List<Player> getPlayers() {
         return players;
-    }
-
-    public void getBackAllChanceCards(Player player) {
-        playerData.get(player).actionCards.removeIf(x -> {
-                    boolean found = false;
-                    if (x.getAction() == ActionCard.Action.CHANCE) {
-                        // return chance card to pile
-                        getBackChanceCard(x);
-                        found = true;
-                    }
-                    return found;
-                }
-        );
-    }
-
-    public void getBackAllPlayerCards(Player player) {
-        playerData.get(player).actionCards.removeIf(x -> {
-                    boolean found = x.getType() != ActionCard.Type.KEEPABLE;
-                    if (found) {
-                        LOG.info("{} lost action card {}", player.getName(), x.getName());
-                        if (x.getAction() == ActionCard.Action.CHANCE) {
-                            getBackChanceCard(x);
-                        }
-                    }
-                    return found;
-                }
-        );
     }
 
     @Override
@@ -570,10 +368,6 @@ public class GameImpl implements Game {
         BigDecimal amount = property.getPrice();
         deposit(player, amount);
         propertyOwnerRemove(landId);
-    }
-
-    void setPlayerStatus(Player player, PlayerStatus status) {
-        playerData.get(player).setStatus(status);
     }
 
     @Override
@@ -638,7 +432,7 @@ public class GameImpl implements Game {
     @Override
     public void playerTurnStarted(Player player) {
         // there is no need to roll dice or move if the player did something in this turn
-        playerData.get(player).actionCards.removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+        playerData.get(player).getActionCards().removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
     }
 
     @Override
@@ -650,63 +444,4 @@ public class GameImpl implements Game {
                 .orElse(BigDecimal.ZERO);
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
-    public int getMaxTurns() {
-        return maxTurns;
-    }
-
-    public void endGame() {
-        LOG.info("Game ended");
-        for (Player player : players) {
-            getBackAllChanceCards(player);
-        }
-    }
-
-    @Data
-    private static final class PlayerData {
-        private final Player player;
-        private final List<ActionCard> actionCards;
-        private PlayerStatus status;
-        private int position;
-        private Strategy strategy;
-
-        public PlayerData(Player player, PlayerStatus status, int position, Strategy strategy) {
-            this.player = player;
-            this.status = status;
-            this.position = position;
-            this.actionCards = new ArrayList<>();
-            this.strategy = strategy;
-        }
-
-        public PlayerData(Player player, PlayerStatus status, int position, Strategy strategy, List<ActionCard> actionCards) {
-            this(player, status, position, strategy);
-            this.actionCards.addAll(actionCards);
-        }
-
-        public void setPosition(int position) {
-            if (this.position != position) {
-                LOG.info("{}: changing position from {} to {}", this.player.getName(), this.position, position);
-                this.position = position;
-            } else {
-                LOG.info("{} at position {}", this.player.getName(), this.position);
-            }
-        }
-
-        public void setStatus(PlayerStatus status) {
-            assert status != null;
-            if (this.status == null) {
-                LOG.debug("{} set status to {}", player.getName(), status);
-            } else {
-                LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
-            }
-            this.status = status;
-        }
-    }
 }

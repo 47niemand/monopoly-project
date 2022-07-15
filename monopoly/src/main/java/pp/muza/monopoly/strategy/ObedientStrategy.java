@@ -5,13 +5,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.game.Strategy;
-import pp.muza.monopoly.model.game.TurnException;
-import pp.muza.monopoly.model.game.TurnPlayer;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Strategy;
+import pp.muza.monopoly.model.TurnPlayer;
+import pp.muza.monopoly.errors.TurnException;
 
 /**
- * This strategy executes all action cards in the order they are in the player's hand.
+ * This strategy executes all action cards in the order they are in the player's
+ * hand.
  */
 public final class ObedientStrategy implements Strategy {
 
@@ -32,7 +33,6 @@ public final class ObedientStrategy implements Strategy {
             actionCardsExecuted = 0;
             actionCards = currentTurn.getActiveActionCards();
 
-
             for (ActionCard actionCard : actionCards) {
                 try {
                     if (currentTurn.playCard(actionCard)) {
@@ -46,4 +46,5 @@ public final class ObedientStrategy implements Strategy {
             loopCount++;
         } while (actionCardsExecuted > 0 && !currentTurn.isFinished());
     }
+
 }

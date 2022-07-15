@@ -3,14 +3,26 @@
  */
 package pp.muza.monopoly;
 
-import org.apache.commons.cli.*;
-import pp.muza.monopoly.model.game.Game;
-import pp.muza.monopoly.model.game.Player;
-import pp.muza.monopoly.strategy.DefaultStrategy;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import com.google.common.collect.ImmutableList;
+
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.model.game.GameImpl;
+import pp.muza.monopoly.strategy.DefaultStrategy;
+import pp.muza.monopoly.utils.ChancePile;
+import pp.muza.monopoly.utils.MonopolyBoard;
 
 /**
  * This is a simple Monopoly game simulator
@@ -20,6 +32,8 @@ public class App {
     public static final int DEFAULT_PLAYERS = 2;
 
     static final String OPT_PLAYERS = "players";
+    public static final int MAX_PLAYERS = 4;
+    public static final int MIN_PLAYERS = 2;
 
     private static int players = DEFAULT_PLAYERS;
 
@@ -36,8 +50,8 @@ public class App {
             CommandLine cmd = parser.parse(options, args);
             if (cmd.hasOption(OPT_PLAYERS)) {
                 players = Integer.parseInt(cmd.getOptionValue("players"));
-                if (players < 1 || players > 4) {
-                    throw new IllegalArgumentException("Number of players must be between 1 and 4");
+                if (players < MIN_PLAYERS || players > MAX_PLAYERS) {
+                    throw new IllegalArgumentException(String.format("Number of players must be between %s and %s", MIN_PLAYERS, MAX_PLAYERS));
                 }
                 System.out.println("Number of players: " + players);
             }
@@ -52,7 +66,8 @@ public class App {
     static void game() {
         List<Player> p = IntStream.range(0, players).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
-        Game game = new Game(p, DefaultStrategy.STRATEGY);
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), p, ChancePile.defaultPile(),
+                ImmutableList.of(DefaultStrategy.STRATEGY), new BankImpl());
         game.gameLoop();
     }
 

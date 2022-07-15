@@ -1,20 +1,21 @@
 package pp.muza.monopoly.strategy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.actions.ActionCard;
-import pp.muza.monopoly.model.actions.Chance;
-import pp.muza.monopoly.model.actions.ChanceCard;
-import pp.muza.monopoly.model.game.PlayerStatus;
-import pp.muza.monopoly.model.game.Strategy;
-import pp.muza.monopoly.model.game.TurnException;
-import pp.muza.monopoly.model.game.TurnPlayer;
-
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Strategy;
+import pp.muza.monopoly.model.TurnPlayer;
+import pp.muza.monopoly.errors.TurnException;
+
 /**
- * This strategy executes action cards in the order they are in the player's hand.
+ * This strategy executes action cards in the order they are in the player's
+ * hand.
  * It can skip optional cards with a probability of 1/2
  */
 public final class DefaultStrategy implements Strategy {
@@ -41,7 +42,9 @@ public final class DefaultStrategy implements Strategy {
                 try {
                     switch (actionCard.getType()) {
                         case KEEPABLE:
-                            if (currentTurn.getStatus() == PlayerStatus.IN_JAIL && actionCard.getAction() == ActionCard.Action.CHANCE && ((Chance) actionCard).getCard() == ChanceCard.GET_OUT_OF_JAIL_FREE) {
+                            if (currentTurn.getStatus() == PlayerStatus.IN_JAIL
+                                    && actionCard.getAction() == ActionCard.Action.CHANCE
+                                    && ((Fortune) actionCard).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE) {
                                 // if player in jail and has chance card to get out, play it
                                 if (currentTurn.playCard(actionCard)) {
                                     actionCardsExecuted++;
@@ -86,4 +89,5 @@ public final class DefaultStrategy implements Strategy {
             loopCount++;
         } while (actionCardsExecuted > 0 && !currentTurn.isFinished());
     }
+
 }

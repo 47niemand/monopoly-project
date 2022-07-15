@@ -1,20 +1,30 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import pp.muza.monopoly.model.actions.Chance;
-import pp.muza.monopoly.model.actions.ChanceCard;
-import pp.muza.monopoly.model.actions.EndTurn;
-import pp.muza.monopoly.strategy.DefaultStrategy;
-import pp.muza.monopoly.strategy.ObedientStrategy;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
+import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.model.pieces.actions.EndTurn;
+import pp.muza.monopoly.model.turn.TurnImpl;
+import pp.muza.monopoly.strategy.DefaultStrategy;
+import pp.muza.monopoly.strategy.ObedientStrategy;
+import pp.muza.monopoly.utils.ChancePile;
+import pp.muza.monopoly.utils.MonopolyBoard;
 
 class GameTest {
 
@@ -25,15 +35,15 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, DefaultStrategy.STRATEGY);
-        int a = game.getChanceCards().size();
-        String a1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(DefaultStrategy.STRATEGY), new BankImpl());
+        int a = game.getFortuneCards().size();
+        String a1 = game.getFortuneCards().stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
         game.gameLoop();
         game.endGame();
-        int b = game.getChanceCards().size();
-        String b1 = game.getChanceCards().stream().sorted(Comparator.comparing(Chance::getCard)).collect(Collectors.toList()).toString();
-        Assertions.assertEquals(a, b, "Chance cards should be the same size");
-        Assertions.assertEquals(a1, b1, "Chance cards should be the same");
+        int b = game.getFortuneCards().size();
+        String b1 = game.getFortuneCards().stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
+        Assertions.assertEquals(a, b, "FortuneCard cards should be the same size");
+        Assertions.assertEquals(a1, b1, "FortuneCard cards should be the same");
     }
 
 
@@ -41,20 +51,20 @@ class GameTest {
     void gameTurnTestCase1() {
         // game of 2 players
         // testing scenario:
-        // player 1 gets chance card "give this card to a player 3"
-        // because player 3 is not in the game, player 1 should get another chance card
-        // the next chance card lets player 1 move to BLUE or ORANGE property
-        // the player should complete the turn by moving to the property and buying it
+        // player 1 gets chance card "give this card to a player 3";
+        // because player 3 is not in the game, player 1 should get another chance card;
+        // the next chance card lets player 1 move to BLUE or ORANGE property;
+        // the player should complete the turn by moving to the property and buying it;
 
         List<Player> players = new ArrayList<>();
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         Player player = players.get(0);
         // test setup
-        game.sendCard(player, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_3));
-        game.bringChanceCardToTop(ChanceCard.ADVANCE_TO_BLUE_OR_ORANGE);
+        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_3));
+        game.bringFortuneCardToTop(Fortune.Chance.ADVANCE_TO_BLUE_OR_ORANGE);
         // test
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);
@@ -73,10 +83,10 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2", "@Player3")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         Player player = players.get(0);
         // test setup
-        game.sendCard(player, game.removeChanceCard(ChanceCard.BIRTHDAY));
+        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.BIRTHDAY));
         game.withdraw(players.get(1), BigDecimal.valueOf(18));
         // test
         Turn turn = new TurnImpl(game, player);
@@ -95,12 +105,12 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         Player player1 = players.get(0);
         Player player2 = players.get(1);
         // test setup
-        game.sendCard(player1, game.removeChanceCard(ChanceCard.GIVE_THIS_CARD_TO_A_PLAYER_2));
-        game.bringChanceCardToTop(ChanceCard.GET_OUT_OF_JAIL_FREE);
+        game.sendCard(player1, game.removeFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_2));
+        game.bringFortuneCardToTop(Fortune.Chance.GET_OUT_OF_JAIL_FREE);
         // test
         Turn turn = new TurnImpl(game, player1);
         game.sendCard(player1, EndTurn.of());
@@ -124,11 +134,11 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         Player player = players.get(0);
 
         // test setup
-        game.sendCard(player, game.removeChanceCard(ChanceCard.MOVE_FORWARD_ONE_SPACE));
+        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.MOVE_FORWARD_ONE_SPACE));
         game.sendCard(player, EndTurn.of());
         // test
         Turn turn = new TurnImpl(game, player);
@@ -144,7 +154,7 @@ class GameTest {
         for (String s : Arrays.asList("@Player1", "@Player2")) {
             players.add(new Player(s));
         }
-        Game game = new Game(players, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         game.maxTurns = 10;
         // play 10 turns
         game.gameLoop();
@@ -152,7 +162,7 @@ class GameTest {
         GameInfo gameInfo = game.getGameInfo();
 
         // create new game with same players and same game state
-        Game game2 = new Game(gameInfo, ImmutableList.of(ObedientStrategy.STRATEGY));
+        GameImpl game2 = new GameImpl(gameInfo, ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         GameInfo gameInfo2 = game2.getGameInfo();
 
         // test if game state is the same

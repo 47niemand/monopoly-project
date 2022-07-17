@@ -1,14 +1,7 @@
 package pp.muza.monopoly.model.game;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -63,38 +56,14 @@ public class GameImpl extends BaseGame implements Game {
             this.bank.set(player, BigDecimal.valueOf(18));
         }
         assert players.size() == playerData.keySet().size();
+        Collections.shuffle(this.fortuneCards);
         currentPlayerIndex = 0;
     }
 
     public GameImpl(GameInfo gameInfo, List<Strategy> strategies, Bank bank) {
-        super(bank, gameInfo.getFortunes(), gameInfo.getBoard());
-        this.players.addAll(gameInfo.getPlayers());
-        Iterator<Strategy> strategyIterator = strategies.iterator();
-        Strategy strategy = null;
-
-        Map<Player, PlayerData> playerData = new HashMap<>();
-        for (PlayerInfo x : gameInfo.getPlayerInfo()) {
-            if (strategyIterator.hasNext()) {
-                strategy = strategyIterator.next();
-            }
-            PlayerData data = new PlayerData(x.getPlayer(), x.getStatus(), x.getPosition(), strategy, x.getActionCards());
-            if (playerData.put(x.getPlayer(), data) != null) {
-                throw new IllegalStateException("Duplicate key");
-            }
-            this.bank.set(x.getPlayer(), x.getMoney());
-
-            for (IndexedEntry<Property> belonging : x.getBelongings()) {
-                if (this.propertyOwners.put(belonging.getIndex(), x.getPlayer()) != null) {
-                    throw new IllegalStateException("Duplicate key");
-                }
-            }
-
-        }
-        this.playerData.putAll(playerData);
-        this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
-        this.turnNumber = gameInfo.getTurnNumber();
-        this.maxTurns = gameInfo.getMaxTurns();
+        super(gameInfo, strategies, bank);
     }
+
 
     @Override
     Turn turn(Player player) {

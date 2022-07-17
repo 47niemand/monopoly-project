@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import lombok.Data;
+import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.TurnException;
@@ -43,7 +44,36 @@ abstract class BaseGame {
         this.bank = bank;
         this.fortuneCards = new LinkedList<>(fortuneCards);
         this.board = board;
-        Collections.shuffle(fortuneCards);
+    }
+
+    protected BaseGame(GameInfo gameInfo, List<Strategy> strategies, Bank bank) {
+        this(bank, gameInfo.getFortunes(), gameInfo.getBoard());
+        this.players.addAll(gameInfo.getPlayers());
+        Iterator<Strategy> strategyIterator = strategies.iterator();
+        Strategy strategy = null;
+
+        Map<Player, PlayerData> playerData = new HashMap<>();
+        for (PlayerInfo x : gameInfo.getPlayerInfo()) {
+            if (strategyIterator.hasNext()) {
+                strategy = strategyIterator.next();
+            }
+            PlayerData data = new PlayerData(x.getPlayer(), x.getStatus(), x.getPosition(), strategy, x.getActionCards());
+            if (playerData.put(x.getPlayer(), data) != null) {
+                throw new IllegalStateException("Duplicate key");
+            }
+            this.bank.set(x.getPlayer(), x.getMoney());
+
+            for (IndexedEntry<Property> belonging : x.getBelongings()) {
+                if (this.propertyOwners.put(belonging.getIndex(), x.getPlayer()) != null) {
+                    throw new IllegalStateException("Duplicate key");
+                }
+            }
+
+        }
+        this.playerData.putAll(playerData);
+        this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
+        this.turnNumber = gameInfo.getTurnNumber();
+        this.maxTurns = gameInfo.getMaxTurns();
     }
 
     List<Fortune> getFortuneCards() {

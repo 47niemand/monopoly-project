@@ -10,10 +10,10 @@ import pp.muza.monopoly.model.Land;
 @ToString(callSuper = true)
 public final class Start extends BaseLand {
 
-    private final BigDecimal startBonus;
+    private final BigDecimal incomeTax;
 
-    public Start(BigDecimal startBonus) {
+    public Start(BigDecimal incomeTax) {
         super("Start", Land.Type.START);
-        this.startBonus = startBonus;
+        this.incomeTax = incomeTax;
     }
 }

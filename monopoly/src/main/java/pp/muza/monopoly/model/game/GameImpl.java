@@ -198,7 +198,7 @@ public class GameImpl extends BaseGame implements Game {
         Land land = board.getLand(board.getStartPosition());
         assert land.getType() == Land.Type.START;
         Start start = (Start) land;
-        bank.deposit(player, start.getStartBonus());
+        bank.deposit(player, start.getIncomeTax());
     }
 
     @Override

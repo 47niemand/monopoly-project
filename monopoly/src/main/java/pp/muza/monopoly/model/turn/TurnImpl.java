@@ -114,8 +114,8 @@ public class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public void addMoney(BigDecimal amount) throws BankException {
-        game.addMoney(player, amount);
+    public void crossedStart() throws BankException {
+        game.crossedStart(player);
     }
 
     @Override

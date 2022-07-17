@@ -27,7 +27,7 @@ final class CardUtils {
         res.add(new Arrival(position));
         path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
             LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
-            res.add(new Income(((Start) land).getIncomeTax()));
+            res.add(new Income(((Start) land).getStartBonus()));
         });
         return res;
     }

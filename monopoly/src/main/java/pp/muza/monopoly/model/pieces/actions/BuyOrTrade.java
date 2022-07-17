@@ -46,7 +46,7 @@ public final class BuyOrTrade extends BaseActionCard {
             path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
                 LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
                 try {
-                    turn.addMoney(((Start) land).getIncomeTax());
+                    turn.crossedStart();
                 } catch (BankException e) {
                     throw new RuntimeException(e);
                 }

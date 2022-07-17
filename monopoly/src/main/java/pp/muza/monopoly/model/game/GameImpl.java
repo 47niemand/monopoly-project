@@ -1,9 +1,22 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
@@ -23,19 +36,8 @@ import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.PayGift;
 import pp.muza.monopoly.model.pieces.actions.PlayCard;
 import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.Start;
 import pp.muza.monopoly.model.turn.TurnImpl;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 /**
  * The game.
@@ -61,7 +63,6 @@ public class GameImpl extends BaseGame implements Game {
             this.bank.set(player, BigDecimal.valueOf(18));
         }
         assert players.size() == playerData.keySet().size();
-        Collections.shuffle(fortuneCards);
         currentPlayerIndex = 0;
     }
 
@@ -123,8 +124,8 @@ public class GameImpl extends BaseGame implements Game {
             throw new TurnException("Land is not owned by " + salePlayer.getName());
         }
         BigDecimal price = property.getPrice();
-        withdraw(player, price);
-        deposit(salePlayer, price);
+        bank.withdraw(player, price);
+        bank.deposit(salePlayer, price);
         setPropertyOwner(landId, player);
     }
 
@@ -186,15 +187,18 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public List<Land> moveTo(Player player, int position) {
-        List<Integer> path = getPathTo(getPosition(player), position);
-        List<Land> lands = getLands(path);
-        setPlayerPosition(player, position);
+        List<Integer> path = board.getPathTo(getPosition(player), position);
+        List<Land> lands = board.getLands(path);
+        playerData.get(player).setPosition(position);
         return lands;
     }
 
     @Override
-    public void addMoney(Player player, BigDecimal amount) throws BankException {
-        bank.deposit(player, amount);
+    public void crossedStart(Player player) throws BankException {
+        Land land = board.getLand(board.getStartPosition());
+        assert land.getType() == Land.Type.START;
+        Start start = (Start) land;
+        bank.deposit(player, start.getStartBonus());
     }
 
     @Override
@@ -204,7 +208,7 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public List<IndexedEntry<Property>> getAllProperties() {
-        List<Land> l = getLands();
+        List<Land> l = board.getLands();
         List<IndexedEntry<Property>> p = new ArrayList<>();
         for (int i = 0; i < l.size(); i++) {
             Land land = l.get(i);
@@ -229,19 +233,12 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public GameInfo getGameInfo() {
-
-        List<Player> players1 = ImmutableList.copyOf(getPlayers());
+        List<Player> players = ImmutableList.copyOf(getPlayers());
         ImmutableList.Builder<PlayerInfo> playerInfoBuilder = ImmutableList.builder();
-        for (Player player : players1) {
+        for (Player player : players) {
             playerInfoBuilder.add(getPlayerInfo(player));
         }
-        ImmutableList<PlayerInfo> playerInfo1 = playerInfoBuilder.build();
-        Board board1 = getBoard();
-        List<Fortune> fortuneCards1 = getFortuneCards();
-        int currentPlayerIndex1 = getCurrentPlayerIndex();
-        int turnNumber1 = getTurnNumber();
-        int maxTurns1 = getMaxTurns();
-        return new GameInfo(players1, playerInfo1, board1, fortuneCards1, currentPlayerIndex1, turnNumber1, maxTurns1);
+        return new GameInfo(players, playerInfoBuilder.build(), board, getFortuneCards(), currentPlayerIndex, turnNumber, maxTurns);
     }
 
     @Override
@@ -283,8 +280,8 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public int findProperty(Property.Asset asset) {
-        for (int i = 0; i < getLands().size(); i++) {
-            Land land = getLands().get(i);
+        for (int i = 0; i < board.getLands().size(); i++) {
+            Land land = board.getLands().get(i);
             if (land.getType() == Land.Type.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
@@ -299,8 +296,8 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public List<Integer> findLandsByColor(Property.Color color) {
         List<Integer> lands = new ArrayList<>();
-        for (int i = 0; i < getLands().size(); i++) {
-            Land land = getLands().get(i);
+        for (int i = 0; i < board.getLands().size(); i++) {
+            Land land = board.getLands().get(i);
             if (land.getType() == Land.Type.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
@@ -366,7 +363,7 @@ public class GameImpl extends BaseGame implements Game {
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
         BigDecimal amount = property.getPrice();
-        deposit(player, amount);
+        bank.deposit(player, amount);
         propertyOwnerRemove(landId);
     }
 
@@ -437,7 +434,7 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public BigDecimal getJailFine() {
-        return getLands().stream()
+        return board.getLands().stream()
                 .filter(land -> land.getType() == Land.Type.JAIL)
                 .map(x -> ((Jail) x).getFine())
                 .findFirst()

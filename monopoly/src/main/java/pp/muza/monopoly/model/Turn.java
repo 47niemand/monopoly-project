@@ -37,12 +37,11 @@ public interface Turn extends TurnPlayer {
     List<Land> moveTo(int position);
 
     /**
-     * Adds a given amount to the player's balance.
+     * The Player crossed the start field.
      *
-     * @param amount the amount to add.
      * @throws BankException if operation fails.
      */
-    void addMoney(BigDecimal amount) throws BankException;
+    void crossedStart() throws BankException;
 
     /**
      * Buys a property at the given position.
@@ -151,7 +150,7 @@ public interface Turn extends TurnPlayer {
     void pay(Player recipient, BigDecimal amount) throws BankException;
 
     /**
-     * reruns not owned properties on the board.
+     * reruns list for unowned properties on the board..
      *
      * @return the properties.
      */

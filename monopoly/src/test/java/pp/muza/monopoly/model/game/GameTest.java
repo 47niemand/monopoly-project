@@ -87,7 +87,7 @@ class GameTest {
         Player player = players.get(0);
         // test setup
         game.sendCard(player, game.removeFortuneCard(Fortune.Chance.BIRTHDAY));
-        game.withdraw(players.get(1), BigDecimal.valueOf(18));
+        game.bank.set(players.get(1), BigDecimal.valueOf(0));
         // test
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);

@@ -1,21 +1,28 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
-import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.pieces.actions.NewTurn;
-import pp.muza.monopoly.model.turn.TurnImpl;
-
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import lombok.Data;
+import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Bank;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Strategy;
+import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.NewTurn;
 
 abstract class BaseGame {
 
@@ -36,14 +43,11 @@ abstract class BaseGame {
         this.bank = bank;
         this.fortuneCards = new LinkedList<>(fortuneCards);
         this.board = board;
+        Collections.shuffle(fortuneCards);
     }
 
     List<Fortune> getFortuneCards() {
         return ImmutableList.copyOf(fortuneCards);
-    }
-
-    void setPlayerPosition(Player player, int position) {
-        playerData.get(player).setPosition(position);
     }
 
     List<ActionCard> getPlayerCards(Player player) {
@@ -68,15 +72,7 @@ abstract class BaseGame {
         }
     }
 
-    Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
-    }
-
-    int getCurrentPlayerIndex() {
-        return currentPlayerIndex;
-    }
-
-    int getNextPlayerId() {
+    boolean nextPlayer() {
         int temp = currentPlayerIndex;
         do {
             temp++;
@@ -84,13 +80,9 @@ abstract class BaseGame {
                 temp = 0;
             }
         } while (playerData.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
-        return temp;
-    }
-
-    boolean nextPlayer() {
-        int temp = getNextPlayerId();
-        boolean result = temp != currentPlayerIndex;
-        currentPlayerIndex = temp;
+        int nextPlayerId = temp;
+        boolean result = nextPlayerId != currentPlayerIndex;
+        currentPlayerIndex = nextPlayerId;
         if (result) {
             LOG.info("Next player: {}", players.get(currentPlayerIndex).getName());
         } else {
@@ -109,26 +101,6 @@ abstract class BaseGame {
                 .collect(Collectors.toList());
         return new PlayerInfo(player, playerData.getPosition(), playerData.getStatus(), bank.getBalance(player),
                 ImmutableList.copyOf(playerData.getActionCards()), belongings);
-    }
-
-    List<Land> getLands() {
-        return board.getLands();
-    }
-
-    List<Land> getLands(List<Integer> path) {
-        return board.getLands(path);
-    }
-
-    List<Integer> getPathTo(int startPos, int endPos) {
-        return board.getPathTo(startPos, endPos);
-    }
-
-    void deposit(Player player, BigDecimal amount) throws BankException {
-        bank.deposit(player, amount);
-    }
-
-    void withdraw(Player player, BigDecimal amount) throws BankException {
-        bank.withdraw(player, amount);
     }
 
     void setPropertyOwner(int landId, Player player) {
@@ -212,18 +184,6 @@ abstract class BaseGame {
         playerData.get(player).setStatus(status);
     }
 
-    Board getBoard() {
-        return board;
-    }
-
-    int getTurnNumber() {
-        return turnNumber;
-    }
-
-    int getMaxTurns() {
-        return maxTurns;
-    }
-
     void endGame() {
         LOG.info("Game ended");
         for (Player player : players) {
@@ -234,7 +194,7 @@ abstract class BaseGame {
     public void gameLoop() {
         do {
             turnNumber++;
-            Player player = getCurrentPlayer();
+            Player player = players.get(currentPlayerIndex);
             GameImpl.LOG.info("PlayTurn {} - Player {}", turnNumber, player.getName());
             Turn turn = turn(player);
             playerData.get(player).getActionCards().add(NewTurn.of());

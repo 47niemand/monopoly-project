@@ -36,7 +36,7 @@ public final class Income extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> res;
         try {
-            turn.addMoney(amount);
+            turn.crossedStart();
             res = ImmutableList.of(new EndTurn());
         } catch (BankException e) {
             LOG.info("Player cannot receive money: {}", e.getMessage());

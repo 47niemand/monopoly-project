@@ -144,13 +144,12 @@ public interface Game {
     List<Land> moveTo(Player player, int position);
 
     /**
-     * Adds the given amount to the player's balance.
+     * Add bonus to the player, when player crosses the start.
      *
      * @param player the player.
-     * @param amount the amount to add.
      * @throws BankException if operation fails (e.g. if the player wallet is full).
      */
-    void addMoney(Player player, BigDecimal amount) throws BankException;
+    void crossedStart(Player player) throws BankException;
 
     /**
      * returns the list of properties owned by the player.

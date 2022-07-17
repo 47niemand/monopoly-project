@@ -26,6 +26,7 @@ public interface Board {
      * @param start    the start position.
      * @param distance the distance to move.
      * @return the destination land id.
+     * @throws IllegalArgumentException if the distance is less than or equal to 0.
      */
     int getDestination(int start, int distance);
 

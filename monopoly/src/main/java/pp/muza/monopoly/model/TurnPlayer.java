@@ -9,7 +9,7 @@ import pp.muza.monopoly.errors.TurnException;
 
 /**
  * It is a turn API, which is used by players to play the game.
- * There are methods to get the active action cards, and to execute the action
+ * There are methods to get active action cards, and to execute the action
  * cards.
  * There are methods to get the current game information to make the turn
  * decision.
@@ -24,8 +24,7 @@ public interface TurnPlayer {
     List<ActionCard> getActiveActionCards();
 
     /**
-     * Executes an action card. the result of the execution is true if the action
-     * card was executed successfully.
+     * Executes an action card.
      *
      * @param actionCard the action card to execute.
      * @return true if the action card was executed successfully.

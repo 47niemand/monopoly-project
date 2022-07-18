@@ -64,7 +64,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             LOG.warn("Player {} is trying to give a chance card to himself, get another chance card",
                     playerId);
             result.add(turn.popFortuneCard());
-        } else if (turn.getPlayerStatus(player).isFinal()) {
+        } else if (turn.getPlayerStatus(player).isFinished()) {
             LOG.warn("Player {} is out of the game, get another chance card", playerId);
             result.add(turn.popFortuneCard());
         } else {

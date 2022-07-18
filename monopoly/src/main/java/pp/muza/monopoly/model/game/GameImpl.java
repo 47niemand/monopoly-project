@@ -26,8 +26,8 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Strategy;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.PayGift;
-import pp.muza.monopoly.model.pieces.actions.PlayCard;
 import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.Start;
 import pp.muza.monopoly.model.turn.TurnImpl;
@@ -78,7 +78,7 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public void birthdayParty(Player player) {
         players.stream()
-                .filter(x -> x != player && !getStatus(x).isFinal())
+                .filter(x -> x != player && !getStatus(x).isFinished())
                 .forEach(x -> {
                     Turn subTurn = new TurnImpl(this, x);
                     sendCard(x, PayGift.of(player, BigDecimal.valueOf(1)));
@@ -104,7 +104,7 @@ public class GameImpl extends BaseGame implements Game {
         boolean cardUsed;
         boolean newCardsSpawned;
         if (playerData.get(player).getActionCards().removeIf(x -> x.equals(actionCard))) {
-            List<ActionCard> result = PlayCard.play(turn, actionCard);
+            List<ActionCard> result = ((BaseActionCard) actionCard).play(turn);
             cardUsed = !result.contains(actionCard);
             // create a collection that does not contain cards that are already on player's hand
             List<ActionCard> newCards = result.stream().filter(x -> {

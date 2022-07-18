@@ -109,7 +109,7 @@ abstract class BaseGame {
             if (temp >= players.size()) {
                 temp = 0;
             }
-        } while (playerData.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
+        } while (playerData.get(players.get(temp)).getStatus().isFinished() && temp != currentPlayerIndex);
         int nextPlayerId = temp;
         boolean result = nextPlayerId != currentPlayerIndex;
         currentPlayerIndex = nextPlayerId;
@@ -237,7 +237,7 @@ abstract class BaseGame {
         } while (nextPlayer());
         // get player with maximum money
         Player winner = players.stream()
-                .filter(x -> !playerData.get(x).getStatus().isFinal())
+                .filter(x -> !playerData.get(x).getStatus().isFinished())
                 .max(Comparator.comparing(bank::getBalance))
                 .orElseThrow(() -> new RuntimeException("No winner"));
         GameImpl.LOG.info("Winner: " + winner.getName());

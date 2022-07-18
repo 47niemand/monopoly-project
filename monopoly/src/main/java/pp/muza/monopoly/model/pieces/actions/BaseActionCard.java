@@ -47,4 +47,11 @@ public abstract class BaseActionCard implements ActionCard {
      */
     protected abstract List<ActionCard> onExecute(Turn turn);
 
+    public List<ActionCard> play(Turn turn) {
+        LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
+        List<ActionCard> result = this.onExecute(turn);
+        LOG.debug("Resulting: {}", result);
+        return result;
+    }
+
 }

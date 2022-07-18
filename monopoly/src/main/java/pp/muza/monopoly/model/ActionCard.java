@@ -2,6 +2,8 @@ package pp.muza.monopoly.model;
 
 import lombok.Getter;
 
+import java.util.List;
+
 public interface ActionCard {
 
     int HIGH_PRIORITY = 0;

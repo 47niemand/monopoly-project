@@ -9,13 +9,13 @@ public enum PlayerStatus {
     /**
      * true if a player is out of game
      */
-    private final boolean isFinal;
+    private final boolean isFinished;
 
-    PlayerStatus(boolean isFinal) {
-        this.isFinal = isFinal;
+    PlayerStatus(boolean isFinished) {
+        this.isFinished = isFinished;
     }
 
-    public boolean isFinal() {
-        return isFinal;
+    public boolean isFinished() {
+        return isFinished;
     }
 }

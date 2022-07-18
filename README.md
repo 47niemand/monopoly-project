@@ -51,51 +51,58 @@ usage: monopoly
 
     This is a game of Monopoly!
     Number of players: 4
-    13:10:12.119 [main] INFO  p.m.m.m.g.Bank - Setting 18 money to @Player1
-    13:10:12.122 [main] INFO  p.m.m.m.g.Bank - Setting 18 money to @Player2
-    13:10:12.122 [main] INFO  p.m.m.m.g.Bank - Setting 18 money to @Player3
-    13:10:12.122 [main] INFO  p.m.m.m.g.Bank - Setting 18 money to @Player4
-    13:10:12.131 [main] INFO  p.m.m.m.g.Game - Turn 1 - Player @Player1
-    13:10:12.133 [main] INFO  p.m.m.m.g.Game - Player's @Player1 action cards: [New Turn]
-    13:10:12.133 [main] INFO  p.m.m.s.DefaultStrategy - Step 1
-    13:10:12.137 [main] INFO  p.m.m.m.g.Game - @Player1: active action cards: [New Turn]
-    13:10:12.138 [main] INFO  p.m.m.m.g.Game - @Player1: playing card New Turn
-    13:10:12.143 [main] INFO  p.m.m.m.g.Game - @Player1 used New Turn and spawned some new cards: [Roll Dice, End Turn]
-    13:10:12.143 [main] INFO  p.m.m.s.DefaultStrategy - Step 2
-    13:10:12.144 [main] INFO  p.m.m.m.g.Game - @Player1: active action cards: [Roll Dice]
-    13:10:12.144 [main] INFO  p.m.m.m.g.Game - @Player1: playing card Roll Dice
-    13:10:12.144 [main] INFO  p.m.m.m.a.RollDice - Player @Player1 rolled 3
-    13:10:12.146 [main] INFO  p.m.m.m.g.Game - @Player1 used Roll Dice and spawned some new cards: [Move]
-    13:10:12.146 [main] INFO  p.m.m.s.DefaultStrategy - Step 3
-    13:10:12.146 [main] INFO  p.m.m.m.g.Game - @Player1: active action cards: [Move]
-    13:10:12.146 [main] INFO  p.m.m.m.g.Game - @Player1: playing card Move
-    13:10:12.146 [main] INFO  p.m.m.m.a.Move - @Player1 moving by 3 steps to 3 (Chance)
-    13:10:12.150 [main] INFO  p.m.m.m.g.Game - @Player1 changing position from 0 to 3
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1 used Move and spawned some new cards: [Arrival]
-    13:10:12.153 [main] INFO  p.m.m.s.DefaultStrategy - Step 4
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1: active action cards: [Arrival]
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1: playing card Arrival
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1 used Arrival and spawned some new cards: [Chance(ADVANCE_TO_YELLOW_OR_RAINBOW)]
-    13:10:12.153 [main] INFO  p.m.m.s.DefaultStrategy - Step 5
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1: active action cards: [Chance(ADVANCE_TO_YELLOW_OR_RAINBOW)]
-    13:10:12.153 [main] INFO  p.m.m.m.g.Game - @Player1: playing card Chance(ADVANCE_TO_YELLOW_OR_RAINBOW)
-    13:10:12.155 [main] INFO  p.m.m.m.g.Game - @Player1 used Chance(ADVANCE_TO_YELLOW_OR_RAINBOW) and spawned some new cards: [Get or pay, Get or pay, Get or pay, Get or pay]
-    13:10:12.155 [main] INFO  p.m.m.m.g.Game - Chance card ADVANCE_TO_YELLOW_OR_RAINBOW returned
-    ...
-    13:10:12.253 [main] INFO  p.m.m.s.DefaultStrategy - Step 7
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - @Player4: active action cards: [End Turn]
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - @Player4: playing card End Turn
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - Finishing turn for player @Player4
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - Used cards: [New Turn, Roll Dice, Move, Income, Arrival, Pay Rent]
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - Not used cards: []
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - @Player4 used End Turn and spawned no new cards
-    13:10:12.253 [main] INFO  p.m.m.m.g.Game - Game loop ended after 100 turns
-    13:10:12.255 [main] INFO  p.m.m.m.g.Game - Winner: @Player4
-    13:10:12.257 [main] INFO  p.m.m.m.g.Game - @Player1 - PlayerInfo(player=@Player1, position=11, status=IN_GAME, money=2, actionCards=[Chance(GET_OUT_OF_JAIL_FREE)], belongings=[Pet Shop])
-    13:10:12.274 [main] INFO  p.m.m.m.g.Game - @Player2 - PlayerInfo(player=@Player2, position=6, status=IN_GAME, money=4, actionCards=[], belongings=[Donut Shop, Bakery, Burger Joint, Swimming pool, Mayfair])
-    13:10:12.274 [main] INFO  p.m.m.m.g.Game - @Player3 - PlayerInfo(player=@Player3, position=5, status=IN_GAME, money=14, actionCards=[], belongings=[Go-Karts, Aquarium, The ZOO])
-    13:10:12.274 [main] INFO  p.m.m.m.g.Game - @Player4 - PlayerInfo(player=@Player4, position=4, status=IN_GAME, money=40, actionCards=[], belongings=[Coffee Shop, Library, Museum, Cinema, Theatre, Toy Shop, Park lane])
-
-
-
-
+    13:22:40.753 Setting 18 money to @Player1
+    13:22:40.756 Setting 18 money to @Player2
+    13:22:40.756 Setting 18 money to @Player3
+    13:22:40.756 Setting 18 money to @Player4
+    13:22:40.756 PlayTurn 1 - Player @Player1
+    13:22:40.758 Player's @Player1 action cards: [New Turn]
+    13:22:40.758 Step 1
+    13:22:40.763 @Player1: active action cards: [New Turn]
+    13:22:40.763 @Player1: playing card New Turn
+    13:22:40.769 @Player1 used New Turn and spawned some new cards: [Roll Dice, End Turn]
+    13:22:40.769 Step 2
+    13:22:40.769 @Player1: active action cards: [Roll Dice]
+    13:22:40.769 @Player1: playing card Roll Dice
+    13:22:40.769 Player @Player1 rolled 4
+    13:22:40.770 @Player1 used Roll Dice and spawned some new cards: [Move]
+    13:22:40.770 Step 3
+    13:22:40.770 @Player1: active action cards: [Move]
+    13:22:40.770 @Player1: playing card Move
+    13:22:40.770 @Player1: moving by 4 steps to 4 (Bakery)
+    13:22:40.771 @Player1: changing position from 0 to 4
+    13:22:40.773 @Player1 used Move and spawned some new cards: [Arrival]
+    ....
+    13:22:40.920 Player's @Player3 action cards: [New Turn]
+    13:22:40.920 Step 1
+    13:22:40.920 @Player3: active action cards: [New Turn]
+    13:22:40.920 @Player3: playing card New Turn
+    13:22:40.920 @Player3 used New Turn and spawned some new cards: [Roll Dice, End Turn]
+    13:22:40.920 Step 2
+    13:22:40.920 @Player3: active action cards: [Roll Dice]
+    13:22:40.920 @Player3: playing card Roll Dice
+    13:22:40.920 Player @Player3 rolled 2
+    13:22:40.920 @Player3 used Roll Dice and spawned some new cards: [Move]
+    13:22:40.920 Step 3
+    13:22:40.920 @Player3: active action cards: [Move]
+    13:22:40.920 @Player3: playing card Move
+    13:22:40.920 @Player3: moving by 2 steps to 12 (Parking)
+    13:22:40.920 @Player3: changing position from 10 to 12
+    13:22:40.920 @Player3 used Move and spawned some new cards: [Arrival]
+    13:22:40.920 Step 4
+    13:22:40.920 @Player3: active action cards: [Arrival]
+    13:22:40.920 @Player3: playing card Arrival
+    13:22:40.920 @Player3 used Arrival and spawned no new cards
+    13:22:40.920 Step 5
+    13:22:40.920 @Player3: active action cards: [End Turn]
+    13:22:40.920 @Player3: playing card End Turn
+    13:22:40.920 Finishing turn for player @Player3
+    13:22:40.920 Used cards: [New Turn, Roll Dice, Move, Arrival]
+    13:22:40.920 Not used cards: []
+    13:22:40.920 @Player3 used End Turn and spawned no new cards
+    13:22:40.920 Game loop ended after 150 turns
+    13:22:40.922 Winner: @Player1
+    13:22:40.924 @Player1 - PlayerInfo(player=@Player1, position=5, status=IN_GAME, money=51, actionCards=[], belongings=[Donut Shop, Library, Park lane, Mayfair])
+    13:22:40.942 @Player2 - PlayerInfo(player=@Player2, position=10, status=IN_GAME, money=35, actionCards=[], belongings=[Coffee Shop, Burger Joint, Swimming pool, Pet Shop, Aquarium])
+    13:22:40.942 @Player3 - PlayerInfo(player=@Player3, position=12, status=IN_GAME, money=8, actionCards=[], belongings=[])
+    13:22:40.942 @Player4 - PlayerInfo(player=@Player4, position=19, status=OUT_OF_GAME, money=0, actionCards=[End Turn, Pay Rent], belongings=[])

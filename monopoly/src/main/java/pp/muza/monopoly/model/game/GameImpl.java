@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.game;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -364,10 +365,23 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public void payRent(Player player, int landId) throws TurnException, BankException {
         Property property = (Property) getLand(landId);
-        BigDecimal rent = property.getPrice();
         Player owner = getPropertyOwner(landId);
         if (owner == null) {
             throw new TurnException("Land is not owned");
+        }
+        BigDecimal rent;
+        // check if the same player owns all properties of the same color
+        List<Integer> sameColorLands = findLandsByColor(property.getColor());
+        boolean sameColor = sameColorLands.stream()
+                .map(this::getPropertyOwner)
+                .allMatch(x -> x == owner);
+        if (sameColor) {
+            // double rent if the player owns all properties of the same color
+            rent = property.getPrice().multiply(new BigDecimal(2));
+            LOG.info("Player {} has to pay double rent for property {} ({})", player.getName(), landId, property.getName());
+        } else {
+            rent = property.getPrice();
+            LOG.info("Player {} has to pay rent for property {} ({})", player.getName(), landId, property.getName());
         }
         LOG.info("{} pays {} to {} for {}", player.getName(), rent, owner.getName(), property.getName());
         bank.withdraw(player, rent);

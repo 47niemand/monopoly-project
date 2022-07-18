@@ -13,13 +13,10 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
-import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
+import pp.muza.monopoly.model.pieces.actions.MoveTo;
 import pp.muza.monopoly.model.turn.TurnImpl;
 import pp.muza.monopoly.strategy.DefaultStrategy;
 import pp.muza.monopoly.strategy.ObedientStrategy;
@@ -71,7 +68,7 @@ class GameTest {
     }
 
     @Test
-    void gameTurnTestCase2() throws BankException {
+    void gameTurnTestCase2() {
         // game of three players
         // testing scenario:
         // player 1 gets chance card BIRTHDAY
@@ -144,6 +141,28 @@ class GameTest {
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);
         System.out.println(game.getPlayerInfo(player));
+    }
+
+    @Test
+    void gameTurnTestCase5() {
+        // testing scenario:
+        // player 1 owns all pieces of the same color;
+        // player 2 should pay double rent.
+
+        List<Player> players = new ArrayList<>();
+        for (String s : Arrays.asList("@Player1", "@Player2")) {
+            players.add(new Player(s));
+        }
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
+        List<Integer> landsOfSameColor = game.findLandsByColor(Property.Color.BLUE);
+        landsOfSameColor.forEach(land -> game.setPropertyOwner(land, player1));
+        game.sendCard(player2, MoveTo.of(landsOfSameColor.get(0)));
+        // test
+        Turn turn = new TurnImpl(game, player2);
+        game.playTurn(turn);
+        System.out.println(game.getPlayerInfo(player2));
     }
 
     @Test

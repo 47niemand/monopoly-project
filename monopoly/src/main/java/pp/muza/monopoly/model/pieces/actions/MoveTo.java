@@ -31,6 +31,10 @@ public final class MoveTo extends BaseActionCard {
         this.position = position;
     }
 
+    public static ActionCard of(int position) {
+        return new MoveTo(position);
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> res;

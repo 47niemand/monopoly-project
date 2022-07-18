@@ -39,12 +39,20 @@ public abstract class BaseActionCard implements ActionCard {
 
     /**
      * Execute the action card.
+     * This method is called when the card is used.
+     * Should be overridden by the subclasses.
      *
      * @param turn the turn of the game.
      * @return list of action cards spawned by the action card.
      */
     protected abstract List<ActionCard> onExecute(Turn turn);
 
+    /**
+     * Execute the action card. This method is called by the game engine.
+     *
+     * @param turn the turn of the game.
+     * @return list of action cards spawned by the action card.
+     */
     public List<ActionCard> play(Turn turn) {
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = this.onExecute(turn);

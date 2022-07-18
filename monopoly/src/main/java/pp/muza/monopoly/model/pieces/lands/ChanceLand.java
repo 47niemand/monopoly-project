@@ -5,6 +5,6 @@ import pp.muza.monopoly.model.Land;
 public final class ChanceLand extends BaseLand {
 
     public ChanceLand() {
-        super("FortuneCard", Land.Type.CHANCE);
+        super("ChanceLand", Land.Type.CHANCE);
     }
 }

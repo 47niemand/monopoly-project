@@ -48,6 +48,7 @@ public class MonopolyBoard {
 
     public static Board defaultBoard() {
         List<Land> lands = new ArrayList<>();
+        // the Start field should be the first one in the list
         lands.add(new Start(BigDecimal.valueOf(2)));
         lands.add(propertyOf(COFFEE_SHOP));
         lands.add(propertyOf(DONUT_SHOP));

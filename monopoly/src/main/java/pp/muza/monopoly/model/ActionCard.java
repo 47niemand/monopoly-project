@@ -2,6 +2,12 @@ package pp.muza.monopoly.model;
 
 import lombok.Getter;
 
+/**
+ * ActionCard is a card that can be used by a player.
+ * The action card has a name, an action  {@link ActionCard.Action} (like buying a property, paying rent, etc.),
+ * a type of card {@link ActionCard.Type} (like optional, obligation, contract etc.),
+ * and a priority.
+ */
 public interface ActionCard {
 
     int HIGH_PRIORITY = 0;
@@ -38,8 +44,8 @@ public interface ActionCard {
     int getPriority();
 
     enum Type {
-        // The CHOOSE  is a special type of cards. Players must use it. This type of
-        // card can be used only once.
+        // The CHOOSE is a special type of cards.
+        // Players must use it. This type of card can be used only once.
         CHOOSE(true),
         // Using the contract card to sell a property is optional and up to the player.
         CONTRACT(false),

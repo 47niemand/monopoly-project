@@ -12,9 +12,7 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * ActionCard is a card that can be used by a player.
- * The action card has a name, a type of action (like buying a property, paying
- * rent, etc.), a type of card (like chance, obligation, etc.), and a priority.
+ * Base class for all action cards.
  * onExecute is a method that is executed when the card using.
  * It should be overridden by the subclasses.
  */

@@ -36,12 +36,12 @@ class GameTest {
             players.add(new Player(s));
         }
         GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(DefaultStrategy.STRATEGY), new BankImpl());
-        int a = game.getFortuneCards().size();
-        String a1 = game.getFortuneCards().stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
+        int a = game.fortuneCards.size();
+        String a1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
         game.gameLoop();
         game.endGame();
-        int b = game.getFortuneCards().size();
-        String b1 = game.getFortuneCards().stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
+        int b = game.fortuneCards.size();
+        String b1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
         Assertions.assertEquals(a, b, "FortuneCard cards should be the same size");
         Assertions.assertEquals(a1, b1, "FortuneCard cards should be the same");
     }

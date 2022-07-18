@@ -27,7 +27,9 @@ public final class Move extends BaseActionCard {
 
     Move(int distance) {
         super("Move", Action.MOVE, Type.OBLIGATION, DEFAULT_PRIORITY);
-        assert distance > 0;
+        if (distance <= 0) {
+            throw new IllegalArgumentException("Distance must be positive");
+        }
         this.distance = distance;
     }
 

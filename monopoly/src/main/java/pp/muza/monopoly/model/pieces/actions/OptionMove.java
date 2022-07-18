@@ -26,7 +26,7 @@ public final class OptionMove extends BaseActionCard {
     private final int distance;
 
     OptionMove(int distance) {
-        super("FortuneCard to move", Action.MOVE, Type.CHOOSE, DEFAULT_PRIORITY);
+        super("Choice to move", Action.MOVE, Type.CHOOSE, DEFAULT_PRIORITY);
         assert distance > 0;
         this.distance = distance;
     }

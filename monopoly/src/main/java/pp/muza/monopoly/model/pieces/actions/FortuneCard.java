@@ -117,7 +117,11 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                 result.add(new TakeFortuneCard());
                 break;
             case MOVE_FORWARD_UP_TO_5_SPACES:
-                result.add(new Move(5));
+                result.add(new OptionMove(5));
+                result.add(new OptionMove(4));
+                result.add(new OptionMove(3));
+                result.add(new OptionMove(2));
+                result.add(new OptionMove(1));
                 break;
             case GET_OUT_OF_JAIL_FREE:
                 if (turn.getStatus() == PlayerStatus.IN_JAIL) {

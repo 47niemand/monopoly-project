@@ -14,8 +14,6 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.pieces.lands.Start;
 
 /**
  * This is a special card that allows a player to buy property from the game.
@@ -37,7 +35,6 @@ public final class BuyOrTrade extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        Property property = (Property) turn.getLand(landId);
         LOG.info("{}: moving to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
         List<Land> path = turn.moveTo(landId);
         if (path.size() == 0) {
@@ -55,6 +52,6 @@ public final class BuyOrTrade extends BaseActionCard {
         }
         // there is no need to roll dice or move if a player did this action
         turn.playerTurnStarted();
-        return ImmutableList.of(new Trade(landId, property), new EndTurn());
+        return ImmutableList.of(new Trade(landId), new EndTurn());
     }
 }

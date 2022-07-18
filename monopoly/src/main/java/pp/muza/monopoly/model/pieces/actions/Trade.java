@@ -37,15 +37,10 @@ public final class Trade extends BaseActionCard {
      * the id of the land to be traded
      */
     private final int landId;
-    /**
-     * the property being sent
-     */
-    private final Property property;
 
-    Trade(int landId, Property property) {
+    Trade(int landId) {
         super("Tade", Action.CONTRACT, Type.OBLIGATION, DEFAULT_PRIORITY);
         this.landId = landId;
-        this.property = property;
     }
 
     @Override

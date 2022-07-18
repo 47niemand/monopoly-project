@@ -39,7 +39,7 @@ final class CardUtils {
         LOG.info("Creating contracts for player's possession");
         List<IndexedEntry<Property>> properties = turn.getProperties();
         return properties.stream()
-                .map(property -> new Contract(property.getIndex(), property.getValue()))
+                .map(property -> new Contract(property.getIndex()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.Property;
 
 /**
  * A contract for a property.
@@ -35,15 +33,10 @@ public final class Contract extends BaseActionCard {
      * the id of the land to be traded
      */
     private final int landId;
-    /**
-     * the property being sent
-     */
-    private final Property property;
 
-    Contract(int landId, Property property) {
+    Contract(int landId) {
         super("Contract", Action.CONTRACT, Type.CONTRACT, DEFAULT_PRIORITY);
         this.landId = landId;
-        this.property = property;
     }
 
     @Override

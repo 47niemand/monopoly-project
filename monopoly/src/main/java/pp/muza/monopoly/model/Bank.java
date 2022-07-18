@@ -2,7 +2,6 @@ package pp.muza.monopoly.model;
 
 import java.math.BigDecimal;
 
-import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.errors.BankException;
 
 public interface Bank {

@@ -76,14 +76,6 @@ abstract class BaseGame {
         this.maxTurns = gameInfo.getMaxTurns();
     }
 
-    List<Fortune> getFortuneCards() {
-        return ImmutableList.copyOf(fortuneCards);
-    }
-
-    List<ActionCard> getPlayerCards(Player player) {
-        return ImmutableList.copyOf(playerData.get(player).getActionCards());
-    }
-
     void playTurn(Turn turn) {
         Player player = turn.getPlayer();
         List<String> list = playerData.get(player).getActionCards().stream().map(ActionCard::getName)

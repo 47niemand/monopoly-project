@@ -207,7 +207,7 @@ public class GameImpl extends BaseGame implements Game {
         for (Player player : players) {
             playerInfoBuilder.add(getPlayerInfo(player));
         }
-        return new GameInfo(players, playerInfoBuilder.build(), board, getFortuneCards(), currentPlayerIndex, turnNumber, maxTurns);
+        return new GameInfo(players, playerInfoBuilder.build(), board, fortuneCards, currentPlayerIndex, turnNumber, maxTurns);
     }
 
     @Override
@@ -300,7 +300,7 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public void endTurn(Player player) {
-        List<ActionCard> playerCards = getPlayerCards(player);
+        List<ActionCard> playerCards = playerData.get(player).getActionCards();
         LOG.info("Not used cards: {}",
                 playerCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
 

@@ -135,4 +135,11 @@ public interface TurnPlayer {
      * @return the status.
      */
     PlayerStatus getPlayerStatus(Player player);
+
+    /**
+     * reruns list for unowned properties on the board..
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getFreeProperties();
 }

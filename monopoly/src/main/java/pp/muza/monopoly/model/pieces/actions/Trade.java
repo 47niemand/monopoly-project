@@ -15,7 +15,6 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.Property;
 
 /**
  * A Player can use this card to purchase a property from the board.

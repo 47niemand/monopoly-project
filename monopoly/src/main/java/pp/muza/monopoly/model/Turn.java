@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 
@@ -149,10 +148,4 @@ public interface Turn extends TurnPlayer {
      */
     void pay(Player recipient, BigDecimal amount) throws BankException;
 
-    /**
-     * reruns list for unowned properties on the board..
-     *
-     * @return the properties.
-     */
-    List<IndexedEntry<Property>> getFreeProperties();
 }

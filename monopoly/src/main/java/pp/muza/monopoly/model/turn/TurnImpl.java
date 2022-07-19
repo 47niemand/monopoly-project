@@ -129,8 +129,8 @@ public class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public void payRent(int landId) throws BankException, TurnException {
-        game.payRent(player, landId);
+    public BigDecimal getRent(int landId) {
+        return game.getRent(landId);
     }
 
     @Override

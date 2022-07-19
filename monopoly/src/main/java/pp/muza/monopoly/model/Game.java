@@ -139,7 +139,7 @@ public interface Game {
      * @param player   the player.
      * @param position the position.
      * @return the path from the current postion (excluded) to the new position
-     *         (included).
+     * (included).
      */
     List<Land> moveTo(Player player, int position);
 
@@ -170,16 +170,14 @@ public interface Game {
      */
     void buyProperty(Player player, int landId) throws TurnException, BankException;
 
+
     /**
-     * Pay the rent to the owner of the property at the given position.
+     * Get the amount of money needed to cover the rent.
      *
-     * @param player the player.
      * @param landId the property.
-     * @throws TurnException if there are some errors (e.g. anyone does not own the
-     *                       landId).
-     * @throws BankException if the player doesn't have enough money.
+     * @return the amount of money to pay for the rent, or 0 if anyone does not own the property.
      */
-    void payRent(Player player, int landId) throws TurnException, BankException;
+    BigDecimal getRent(int landId);
 
     /**
      * transfers the given amount of money from the player to the recipient.

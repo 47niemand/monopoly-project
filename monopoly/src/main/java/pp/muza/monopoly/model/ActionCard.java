@@ -5,13 +5,14 @@ import lombok.Getter;
 /**
  * ActionCard is a card that can be used by a player.
  * The action card has a name, an action  {@link ActionCard.Action} (like buying a property, paying rent, etc.),
- * a type of card {@link ActionCard.Type} (like optional, obligation, contract etc.),
+ * a type of card {@link ActionCard.Type} (like optional, obligation, keepable etc.),
  * and a priority.
  */
 public interface ActionCard {
 
-    int HIGH_PRIORITY = 0;
+    int HIGHEST_PRIORITY = 0;
     int NEW_TURN_PRIORITY = 100;
+    int HIGH_PRIORITY = 200;
     int DEFAULT_PRIORITY = 1000;
     int LOW_PRIORITY = 10000;
 
@@ -44,16 +45,21 @@ public interface ActionCard {
     int getPriority();
 
     enum Type {
-        // The CHOOSE is a special type of cards.
-        // Players must use it. This type of card can be used only once.
+        /**
+         * The CHOOSE is a special type of cards. Players must use it. This type of card can be used only once.
+         **/
         CHOOSE(true),
-        // Using the contract card to sell a property is optional and up to the player.
-        CONTRACT(false),
-        // Keepable card, player can keep it and use it later
+        /**
+         * Players can keep the card, and use it as they want.
+         */
         KEEPABLE(false),
-        // Obligation card, player must use it
+        /**
+         * The obligation is a card that must be used.
+         */
         OBLIGATION(true),
-        // Optional card, player can choose to use it
+        /**
+         * Optional card, player can choose to use it
+         */
         OPTIONAL(false);
 
         /**
@@ -68,33 +74,59 @@ public interface ActionCard {
     }
 
     enum Action {
-        // New turn
+        /**
+         * New turn, the player starts a new turn with this card.
+         */
         NEW_TURN,
-        // roll dice get random number
+        /**
+         * roll dice get random number.
+         */
         ROLL_DICE,
-        // move to next land
+        /**
+         * Move to next land.
+         */
         MOVE,
-        // player arrives to a land
+        /**
+         * Player arrives to a land, and should use this card.
+         */
         ARRIVAL,
-        // buy property
+        /**
+         * Buy property.
+         */
         BUY,
-        // pay to player (rent, gift, etc.)
+        /**
+         * Pay to other player (rent, gift, etc.).
+         */
         PAY,
-        // pay tax or fine to the bank
+        /**
+         * Pay tax or fine to the bank.
+         */
         TAX,
-        // contract
+        /**
+         * Contract, any property-related activity (sale to the bank or other player).
+         */
         CONTRACT,
-        // go to jail
+        /**
+         * Go to jail.
+         */
         GO_TO_JAIL,
-        // chance; this is a special card that stores the chance pile of the
-        // game. it should be returned to the game when the card is used.
-        // A Card with this type must be an instance of {@link FortuneCard} class.
+        /**
+         * chance; this is a special card that stores the chance pile of the
+         * game. It should be returned to the game when the card is used.
+         * A Card with this type must implement {@link Fortune} interface.
+         */
         CHANCE,
-        // get income
+        /**
+         * Get income.
+         */
         INCOME,
-        // end turn
+        /**
+         * End turn.
+         */
         END_TURN,
-        // get a gift
+        /**
+         * Get a gift.
+         */
         GIFT
     }
 }

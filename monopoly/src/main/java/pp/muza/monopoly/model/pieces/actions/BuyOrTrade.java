@@ -29,7 +29,7 @@ public final class BuyOrTrade extends BaseActionCard {
     private final int landId;
 
     BuyOrTrade(int landId) {
-        super("BuyOrTrade", Action.GIFT, Type.CHOOSE, HIGH_PRIORITY);
+        super("BuyOrTrade", Action.GIFT, Type.CHOOSE, HIGHEST_PRIORITY);
         this.landId = landId;
     }
 

@@ -227,6 +227,13 @@ abstract class BaseGame {
                 break;
             }
         } while (nextPlayer());
+        // get the list of free properties on the board
+        List<String> freeProperties = IntStream.range(0, board.getLands().size())
+                .filter(x -> board.getLand(x) instanceof Property)
+                .filter(x -> propertyOwners.get(x) == null)
+                .mapToObj(x -> board.getLand(x).getName())
+                .collect(Collectors.toList());
+        LOG.info("Free properties on the board: {}", freeProperties);
         // get player with maximum money
         Player winner = players.stream()
                 .filter(x -> !playerData.get(x).getStatus().isFinished())

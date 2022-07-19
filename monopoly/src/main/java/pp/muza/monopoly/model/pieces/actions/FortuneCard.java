@@ -40,7 +40,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     FortuneCard(Chance chance) {
         super("Chance(" + chance.name() + ")", Action.CHANCE
                 , chance.isGiftCard() ? Type.KEEPABLE : Type.OBLIGATION
-                , chance.isGiftCard() ? HIGH_PRIORITY : DEFAULT_PRIORITY);
+                , chance.isGiftCard() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
         this.chance = chance;
     }
 

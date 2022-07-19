@@ -26,14 +26,11 @@ class PlayerInfo {
 
     @Override
     public String toString() {
-        return "PlayerInfo(player=" + this.getPlayer().getName()
-                + ", position=" + this.getPosition()
-                + ", status=" + this.getStatus()
-                + ", money=" + this.getMoney()
-                + ", actionCards=" + this.getActionCards().stream().map(ActionCard::getName).collect(Collectors.toList())
-                + ", belongings=" + this.getBelongings().stream().map(x -> x.getValue().getName()).collect(Collectors.toList())
-                + ")";
+        return "Player: " + player.getName()
+                + " at position: " + position
+                + ", with status: " + status
+                + ", with money: " + money
+                + ", with action cards: " + actionCards.stream().map(ActionCard::getName).collect(Collectors.toList())
+                + " and belongings: " + belongings.stream().map(x -> x.getValue().getName()).collect(Collectors.toList());
     }
-
-
 }

@@ -362,33 +362,33 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public void payRent(Player player, int landId) throws TurnException, BankException {
+    public BigDecimal getRent(int landId) {
+        BigDecimal rent;
         Property property = (Property) getLand(landId);
         Player owner = getPropertyOwner(landId);
         if (owner == null) {
-            throw new TurnException("Land is not owned");
-        }
-        BigDecimal rent;
-        // check if the same player owns all properties of the same color
-        List<Integer> sameColorLands = findLandsByColor(property.getColor());
-        boolean sameColor = sameColorLands.stream()
-                .map(this::getPropertyOwner)
-                .allMatch(x -> x == owner);
-        if (sameColor) {
-            // double rent if the player owns all properties of the same color
-            rent = property.getPrice().multiply(new BigDecimal(2));
-            LOG.info("Player {} has to pay double rent for property {} ({})", player.getName(), landId, property.getName());
+            rent = BigDecimal.valueOf(0);
+            LOG.info("Land {} is not owned", landId);
         } else {
-            rent = property.getPrice();
-            LOG.info("Player {} has to pay rent for property {} ({})", player.getName(), landId, property.getName());
+            List<Integer> sameColorLands = findLandsByColor(property.getColor());
+            boolean sameColor = sameColorLands.stream()
+                    .map(this::getPropertyOwner)
+                    .allMatch(x -> x == owner);
+            if (sameColor) {
+                // double rent if the player owns all properties of the same color
+                rent = property.getPrice().multiply(new BigDecimal(2));
+                LOG.info("Player {} owns all properties of the same color {}, so he gets double rent: {}", owner.getName(), property.getColor(), rent);
+            } else {
+                rent = property.getPrice();
+                LOG.info("Player {} owns property {}, so he gets rent: {}", owner.getName(), property.getName(), rent);
+            }
         }
-        LOG.info("{} pays {} to {} for {}", player.getName(), rent, owner.getName(), property.getName());
-        bank.withdraw(player, rent);
-        bank.deposit(owner, rent);
+        return rent;
     }
 
     @Override
     public void pay(Player player, Player recipient, BigDecimal amount) throws BankException {
+        LOG.info("{} pays {} to {}", player.getName(), amount, recipient.getName());
         bank.withdraw(player, amount);
         bank.deposit(recipient, amount);
 

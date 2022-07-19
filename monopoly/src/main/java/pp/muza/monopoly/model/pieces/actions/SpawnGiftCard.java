@@ -20,7 +20,7 @@ public final class SpawnGiftCard extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Spawn \"BuyOrTrade\" cards", Action.GIFT, Type.OBLIGATION, HIGH_PRIORITY);
+        super("Spawn \"BuyOrTrade\" cards", Action.GIFT, Type.OBLIGATION, HIGHEST_PRIORITY);
     }
 
     @Override

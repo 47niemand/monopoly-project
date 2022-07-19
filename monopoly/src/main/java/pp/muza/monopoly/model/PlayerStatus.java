@@ -1,21 +1,29 @@
 package pp.muza.monopoly.model;
 
 public enum PlayerStatus {
-    // status of a player
+    /**
+     * The player is in the game.
+     */
     IN_GAME(false),
+    /**
+     * The player is in jail.
+     */
     IN_JAIL(false),
+    /**
+     * The player is out of the game.
+     */
     OUT_OF_GAME(true);
 
     /**
-     * true if a player is out of game
+     * No action can be taken if the status is final.
      */
-    private final boolean isFinished;
+    private final boolean isFinal;
 
-    PlayerStatus(boolean isFinished) {
-        this.isFinished = isFinished;
+    PlayerStatus(boolean isFinal) {
+        this.isFinal = isFinal;
     }
 
     public boolean isFinished() {
-        return isFinished;
+        return isFinal;
     }
 }

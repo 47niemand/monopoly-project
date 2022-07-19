@@ -45,11 +45,11 @@ public final class Arrival extends BaseActionCard {
             case PROPERTY:
                 Player owner = turn.getPropertyOwner(position);
                 if (owner == null) {
-                    LOG.info("Property {} is not owned by anyone, player can buy it", land.getName());
+                    LOG.info("No one owns the {}, {} can purchase it", land.getName(), turn.getPlayer().getName());
                     result = ImmutableList.of(new Buy(position));
                 } else if (owner != turn.getPlayer()) {
-                    LOG.info("Property {} is owned by {}, player should pay rent", land.getName(), owner.getName());
-                    result = ImmutableList.of(new PayRent(owner, position));
+                    LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer().getName(), owner.getName(), land.getName());
+                    result = ImmutableList.of(new PayRent(owner, position, turn.getRent(position)));
                 } else {
                     LOG.info("Property {} is owned player, nothing to do", land.getName());
                     result = ImmutableList.of();

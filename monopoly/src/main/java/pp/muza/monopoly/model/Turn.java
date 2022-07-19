@@ -31,7 +31,7 @@ public interface Turn extends TurnPlayer {
      *
      * @param position the position.
      * @return the path from the current postion (excluded) to the new position
-     *         (included).
+     * (included).
      */
     List<Land> moveTo(int position);
 
@@ -50,16 +50,6 @@ public interface Turn extends TurnPlayer {
      * @throws TurnException if operation fails.
      */
     void buyProperty(int landId) throws BankException, TurnException;
-
-    /**
-     * The player pays the rent of the property at the given position.
-     *
-     * @param landId the land id.
-     * @throws BankException if player doesn't have enough money.
-     * @throws TurnException if operation fails (e.g. if the player doesn't own the
-     *                       property).
-     */
-    void payRent(int landId) throws BankException, TurnException;
 
     /**
      * The player pays a tax to the bank.
@@ -106,7 +96,7 @@ public interface Turn extends TurnPlayer {
      *
      * @param color the color of the land.
      * @return the position of the lands, if there is no land with the given color,
-     *         returns an empty list.
+     * returns an empty list.
      */
     List<Integer> foundLandsByColor(Property.Color color);
 
@@ -148,4 +138,12 @@ public interface Turn extends TurnPlayer {
      */
     void pay(Player recipient, BigDecimal amount) throws BankException;
 
+
+    /**
+     * returns amount of money to pay for the rent.
+     *
+     * @param position the position of the land.
+     * @return the amount of money to pay.
+     */
+    BigDecimal getRent(int position);
 }

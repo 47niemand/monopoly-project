@@ -28,7 +28,7 @@ public final class Income extends BaseActionCard {
     private final BigDecimal amount;
 
     Income(BigDecimal amount) {
-        super("Income", Action.INCOME, Type.OBLIGATION, HIGH_PRIORITY);
+        super("Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
         this.amount = amount;
     }
 

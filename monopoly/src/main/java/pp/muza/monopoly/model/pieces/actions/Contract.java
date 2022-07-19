@@ -35,7 +35,7 @@ public final class Contract extends BaseActionCard {
     private final int landId;
 
     Contract(int landId) {
-        super("Contract", Action.CONTRACT, Type.CONTRACT, DEFAULT_PRIORITY);
+        super("Contract", Action.CONTRACT, Type.CHOOSE, HIGH_PRIORITY);
         this.landId = landId;
     }
 

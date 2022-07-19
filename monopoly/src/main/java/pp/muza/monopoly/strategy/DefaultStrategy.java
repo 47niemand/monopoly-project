@@ -45,7 +45,7 @@ public final class DefaultStrategy implements Strategy {
                             if (currentTurn.getStatus() == PlayerStatus.IN_JAIL
                                     && actionCard.getAction() == ActionCard.Action.CHANCE
                                     && ((Fortune) actionCard).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE) {
-                                // if player in jail and has chance card to get out, play it
+                                // if the player in jail and has a chance card to get out, play it
                                 if (currentTurn.playCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
@@ -53,22 +53,12 @@ public final class DefaultStrategy implements Strategy {
                             break;
                         case OPTIONAL:
                             if (Math.random() < 0.5) {
-                                // play optional card with probability 1/2
+                                // play an optional card with probability 1/2
                                 if (currentTurn.playCard(actionCard)) {
                                     actionCardsExecuted++;
                                 }
                             } else {
                                 LOG.info("Skipping optional card {}", actionCard.getName());
-                            }
-                            break;
-                        case CONTRACT:
-                            if (Math.random() < 0.5) {
-                                // play contract card with probability 1/2
-                                if (currentTurn.playCard(actionCard)) {
-                                    actionCardsExecuted++;
-                                }
-                            } else {
-                                LOG.info("Skipping contract card {}", actionCard.getName());
                             }
                             break;
                         case OBLIGATION:

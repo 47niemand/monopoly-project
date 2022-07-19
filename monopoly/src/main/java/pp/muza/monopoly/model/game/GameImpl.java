@@ -310,7 +310,7 @@ public class GameImpl extends BaseGame implements Game {
 
         if (mandatoryCards.size() > 0) {
             LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards);
-            // player has mandatory cards, so he has lost the game
+            // Player with obligation cards is out of the game.
             setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
             // return properties to game
             getProperties(player).forEach(
@@ -377,10 +377,10 @@ public class GameImpl extends BaseGame implements Game {
             if (sameColor) {
                 // double rent if the player owns all properties of the same color
                 rent = property.getPrice().multiply(new BigDecimal(2));
-                LOG.info("Player {} owns all properties of the same color {}, so he gets double rent: {}", owner.getName(), property.getColor(), rent);
+                LOG.info("Player {} owns all properties of the same color {}, so the owner gets double rent: {}", owner.getName(), property.getColor(), rent);
             } else {
                 rent = property.getPrice();
-                LOG.info("Player {} owns property {}, so he gets rent: {}", owner.getName(), property.getName(), rent);
+                LOG.info("Player {} owns property {}, so the owner gets rent: {}", owner.getName(), property.getName(), rent);
             }
         }
         return rent;

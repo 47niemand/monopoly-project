@@ -99,7 +99,7 @@ public interface ActionCard {
          */
         PAY,
         /**
-         * Pay tax or fine to the bank.
+         * Pay tax or fine to the bank, or gift to other players.
          */
         TAX,
         /**

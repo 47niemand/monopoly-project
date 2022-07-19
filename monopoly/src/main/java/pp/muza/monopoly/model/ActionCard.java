@@ -83,7 +83,7 @@ public interface ActionCard {
          */
         ROLL_DICE,
         /**
-         * Move to next land.
+         * Move to the next land.
          */
         MOVE,
         /**

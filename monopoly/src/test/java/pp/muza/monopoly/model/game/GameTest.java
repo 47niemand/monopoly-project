@@ -48,28 +48,6 @@ class GameTest {
     }
 
     @Test
-    void gameLoop2() {
-
-        for (int i = 0; i < 10; i++) {
-            // test game loop with four players
-            List<Player> players = new ArrayList<>();
-            for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
-                players.add(new Player(s));
-            }
-            GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(DefaultStrategy.STRATEGY), new BankImpl());
-            int a = game.fortuneCards.size();
-            String a1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
-            game.gameLoop();
-            game.endGame();
-            int b = game.fortuneCards.size();
-            String b1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
-            Assertions.assertEquals(a, b, "FortuneCard cards should be the same size");
-            Assertions.assertEquals(a1, b1, "FortuneCard cards should be the same");
-        }
-    }
-
-
-    @Test
     void gameTurnTestCase1() {
         // game of 2 players
         // testing scenario:

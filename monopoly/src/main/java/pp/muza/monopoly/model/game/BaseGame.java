@@ -103,16 +103,17 @@ abstract class BaseGame {
         return result;
     }
 
-    PlayerInfo getPlayerInfo(Player player) {
-        PlayerData playerData = this.playerData.get(player);
-        List<Integer> playerProperties = propertyOwners.entrySet().stream()
-                .filter(entry -> entry.getValue() == player)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-        List<IndexedEntry<Property>> belongings = playerProperties.stream().map(x -> new IndexedEntry<>(x, (Property) board.getLand(x)))
-                .collect(Collectors.toList());
-        return new PlayerInfo(player, playerData.getPosition(), playerData.getStatus(), bank.getBalance(player),
-                ImmutableList.copyOf(playerData.getActionCards()), belongings);
+    public PlayerInfo getPlayerInfo(Player player) {
+        PlayerData data = playerData.get(player);
+        return new PlayerInfo(player
+                , data.getPosition()
+                , data.getStatus()
+                , bank.getBalance(player)
+                , ImmutableList.copyOf(data.getActionCards())
+                , propertyOwners.entrySet().stream()
+                .filter(x -> x.getValue() == player)
+                .map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey())))
+                .collect(Collectors.toList()));
     }
 
     void setPropertyOwner(int landId, Player player) {
@@ -229,7 +230,7 @@ abstract class BaseGame {
                     .filter(x -> canExecute(turn, x))
                     .collect(Collectors.toList());
             // take a snapshot of the game's state at this moment
-            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, turn.getPlayerInfo(), turn.getBoard(), turn.getPlayers(), turn.getPropertyOwners());
+            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, getPlayerInfo(turn.getPlayer()), turn.getBoard(), turn.getPlayers(), turn.getPropertyOwners());
             // execute the strategy
             ActionCard result = strategy.playTurn(turnInfo);
             if (result != null) {

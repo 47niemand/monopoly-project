@@ -135,11 +135,6 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public PlayerInfo getPlayerInfo() {
-        return game.getPlayerInfo(player);
-    }
-
-    @Override
     public Board getBoard() {
         return game.getBoard();
     }

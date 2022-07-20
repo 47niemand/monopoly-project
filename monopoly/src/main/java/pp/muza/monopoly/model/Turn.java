@@ -153,13 +153,6 @@ public interface Turn {
     void income(BigDecimal amount) throws BankException;
 
     /**
-     * returns the player's info.
-     *
-     * @return the player's info.
-     */
-    PlayerInfo getPlayerInfo();
-
-    /**
      * Returns the game info.
      *
      * @return the game board.

@@ -210,24 +210,9 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public PlayerInfo getPlayerInfo(Player player) {
-        PlayerData data = playerData.get(player);
-        return new PlayerInfo(player
-                , data.getPosition()
-                , data.getStatus()
-                , bank.getBalance(player)
-                , ImmutableList.copyOf(data.getActionCards())
-                , propertyOwners.entrySet().stream()
-                .filter(x -> x.getValue() == player)
-                .map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey())))
-                .collect(Collectors.toList()));
-    }
-
-    @Override
     public Board getBoard() {
         return board;
     }
-
 
     @Override
     public GameInfo getGameInfo() {

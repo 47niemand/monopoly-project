@@ -1,8 +1,8 @@
 package pp.muza.monopoly.model;
 
-import lombok.Getter;
-
 import java.math.BigDecimal;
+
+import lombok.Getter;
 
 public interface Property extends Land {
 

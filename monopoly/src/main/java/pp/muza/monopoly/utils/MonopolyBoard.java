@@ -21,11 +21,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.board.BoardImpl;
-import pp.muza.monopoly.model.pieces.lands.*;
+import pp.muza.monopoly.model.pieces.lands.BaseProperty;
+import pp.muza.monopoly.model.pieces.lands.ChanceLand;
+import pp.muza.monopoly.model.pieces.lands.GotoJail;
+import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.Parking;
+import pp.muza.monopoly.model.pieces.lands.Start;
 
 public class MonopolyBoard {
 

@@ -13,7 +13,11 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
 import pp.muza.monopoly.model.pieces.actions.MoveTo;
@@ -41,6 +45,27 @@ class GameTest {
         String b1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
         Assertions.assertEquals(a, b, "FortuneCard cards should be the same size");
         Assertions.assertEquals(a1, b1, "FortuneCard cards should be the same");
+    }
+
+    @Test
+    void gameLoop2() {
+
+        for (int i = 0; i < 10; i++) {
+            // test game loop with four players
+            List<Player> players = new ArrayList<>();
+            for (String s : Arrays.asList("@Player1", "@Player2", "@Player3", "@Player4")) {
+                players.add(new Player(s));
+            }
+            GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(DefaultStrategy.STRATEGY), new BankImpl());
+            int a = game.fortuneCards.size();
+            String a1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
+            game.gameLoop();
+            game.endGame();
+            int b = game.fortuneCards.size();
+            String b1 = game.fortuneCards.stream().sorted(Comparator.comparing(Fortune::getChance)).collect(Collectors.toList()).toString();
+            Assertions.assertEquals(a, b, "FortuneCard cards should be the same size");
+            Assertions.assertEquals(a1, b1, "FortuneCard cards should be the same");
+        }
     }
 
 

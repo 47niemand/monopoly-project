@@ -10,10 +10,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * A contract for a property.

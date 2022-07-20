@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.lands.Start;
 
 final class CardUtils {
@@ -21,10 +21,9 @@ final class CardUtils {
     /**
      * creates a list of action cards when a player moves to a new land.
      */
-    static List<ActionCard> onArrival(Turn turn, List<Land> path, int position) {
+    static List<ActionCard> onPath(Turn turn, List<Land> path) {
         List<ActionCard> res;
         res = new ArrayList<>();
-        res.add(new Arrival(position));
         path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
             LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
             res.add(new Income(((Start) land).getIncomeTax()));

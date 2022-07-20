@@ -11,9 +11,9 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.BankException;
 
 /**
  * A player receives money from this card.
@@ -36,7 +36,7 @@ public final class Income extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> res;
         try {
-            turn.crossedStart();
+            turn.income(amount);
             res = ImmutableList.of(new EndTurn());
         } catch (BankException e) {
             LOG.info("Player cannot receive money: {}", e.getMessage());

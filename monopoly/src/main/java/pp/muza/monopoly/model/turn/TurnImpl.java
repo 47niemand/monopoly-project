@@ -3,22 +3,31 @@ package pp.muza.monopoly.model.turn;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * The turn of the game implementation. This class implements the PlayTurn and
  * TurnPlayer interfaces.
  */
-public class TurnImpl implements Turn, TurnPlayer {
+public class TurnImpl implements Turn {
 
     private static final Logger LOG = LoggerFactory.getLogger(TurnImpl.class);
 
@@ -49,7 +58,9 @@ public class TurnImpl implements Turn, TurnPlayer {
         boolean result = game.playCard(this, actionCard);
         LOG.debug("Card {} played: {}", actionCard, result);
         usedCards.remove(actionCard);
-        usedCards.add(actionCard);
+        if (result) {
+            usedCards.add(actionCard);
+        }
         return result;
     }
 
@@ -61,11 +72,6 @@ public class TurnImpl implements Turn, TurnPlayer {
     @Override
     public Player getPlayer() {
         return player;
-    }
-
-    @Override
-    public GameInfo getGameInfo() {
-        return game.getGameInfo();
     }
 
     @Override
@@ -99,11 +105,6 @@ public class TurnImpl implements Turn, TurnPlayer {
     }
 
     @Override
-    public int getPosition() {
-        return game.getPosition(player);
-    }
-
-    @Override
     public BigDecimal getJailFine() {
         return game.getJailFine();
     }
@@ -111,11 +112,6 @@ public class TurnImpl implements Turn, TurnPlayer {
     @Override
     public List<Land> moveTo(int position) {
         return game.moveTo(player, position);
-    }
-
-    @Override
-    public void crossedStart() throws BankException {
-        game.crossedStart(player);
     }
 
     @Override
@@ -131,6 +127,26 @@ public class TurnImpl implements Turn, TurnPlayer {
     @Override
     public BigDecimal getRent(int landId) {
         return game.getRent(landId);
+    }
+
+    @Override
+    public void income(BigDecimal amount) throws BankException {
+        game.income(player, amount);
+    }
+
+    @Override
+    public PlayerInfo getPlayerInfo() {
+        return game.getPlayerInfo(player);
+    }
+
+    @Override
+    public Board getBoard() {
+        return game.getBoard();
+    }
+
+    @Override
+    public Map<Integer, Player> getPropertyOwners() {
+        return game.getPropertyOwners();
     }
 
     @Override
@@ -183,7 +199,7 @@ public class TurnImpl implements Turn, TurnPlayer {
 
     @Override
     public List<Player> getPlayers() {
-        return game.getPlayers();
+        return game.getPlayers().stream().filter(p -> !getPlayerStatus(p).isFinished()).collect(Collectors.toList());
     }
 
     @Override

@@ -44,9 +44,11 @@ public interface ActionCard {
      */
     int getPriority();
 
+
+
     enum Type {
         /**
-         * The CHOOSE is a special type of cards. Players must use it. This type of card can be used only once.
+         * The CHOOSE is type of cards can be used only once.
          **/
         CHOOSE(true),
         /**
@@ -87,7 +89,7 @@ public interface ActionCard {
          */
         MOVE,
         /**
-         * Player arrives to a land, and should use this card.
+         * Player arrives to a land and should use this card.
          */
         ARRIVAL,
         /**

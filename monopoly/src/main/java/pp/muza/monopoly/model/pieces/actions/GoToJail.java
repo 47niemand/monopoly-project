@@ -15,6 +15,7 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public final class GoToJail extends BaseActionCard {
+
     GoToJail() {
         super("Go to Jail", Action.GO_TO_JAIL, Type.OBLIGATION, DEFAULT_PRIORITY);
     }

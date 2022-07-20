@@ -11,11 +11,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.TurnException;
 
 /**
  * A player has to pay money to the property owner on which player is standing.

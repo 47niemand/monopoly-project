@@ -12,16 +12,16 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 
 /**
- * This is a special card that stores the chance pile of the game. it should be
+ * This is a specific card that stores the chance pile of the game. it should be
  * returned to the game when the card is used.
  */
 @Getter
@@ -159,11 +159,11 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     }
 
     private List<ActionCard> spawnGetOrPayByColor(Turn turn, Property.Color color) {
-        List<ActionCard> result = new ArrayList<>();
+        ImmutableList.Builder<ActionCard> builder = ImmutableList.builder();
         List<Integer> list = turn.foundLandsByColor(color);
         for (Integer landId : list) {
-            result.add(new GetOrPay(landId));
+            builder.add(new GetOrPay(landId));
         }
-        return result;
+        return builder.build();
     }
 }

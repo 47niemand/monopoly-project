@@ -10,10 +10,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * This card can be used to purchase a property from the board at the player's current position.

@@ -3,9 +3,9 @@ package pp.muza.monopoly.data;
 import java.util.List;
 
 import lombok.Value;
+import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.Board;
 
 /**
  * This class represents the state of the game.

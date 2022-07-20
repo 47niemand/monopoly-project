@@ -1,7 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import static pp.muza.monopoly.model.pieces.actions.CardUtils.createContractsForPlayerPossession;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,10 +11,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.BankException;
 
 /**
  * A player has to pay money to other player.
@@ -49,7 +47,7 @@ public final class PayGift extends BaseActionCard {
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = ImmutableList.<ActionCard>builder().add(this).addAll(createContractsForPlayerPossession(turn)).build();
+            result = ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
         }
         return result;
     }

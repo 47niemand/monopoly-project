@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -38,10 +40,11 @@ public final class Move extends BaseActionCard {
         int position = turn.nextPosition(distance);
         LOG.info("{}: moving by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
                 turn.getLand(position).getName());
-        List<ActionCard> res;
         List<Land> path = turn.moveTo(position);
         assert path.size() == distance;
-        res = CardUtils.onArrival(turn, path, position);
-        return res;
+        return ImmutableList.<ActionCard>builder()
+                .addAll(CardUtils.onPath(turn, path))
+                .add(new Arrival(position))
+                .build();
     }
 }

@@ -1,6 +1,13 @@
 package pp.muza.monopoly.model.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Data;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
@@ -29,7 +37,7 @@ abstract class BaseGame {
 
     static final Logger LOG = LoggerFactory.getLogger(BaseGame.class);
 
-    static final int DEFAULT_MAX_TURNS = 150;
+    static final int DEFAULT_MAX_TURNS = 1500;
     final Bank bank;
     final LinkedList<Fortune> fortuneCards;
     final List<Player> players = new ArrayList<>();
@@ -74,24 +82,6 @@ abstract class BaseGame {
         this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
         this.turnNumber = gameInfo.getTurnNumber();
         this.maxTurns = gameInfo.getMaxTurns();
-    }
-
-    void playTurn(Turn turn) {
-        Player player = turn.getPlayer();
-        List<String> list = playerData.get(player).getActionCards().stream().map(ActionCard::getName)
-                .collect(Collectors.toList());
-        LOG.info("Player's {} action cards: {}", player.getName(), list);
-        Strategy strategy = playerData.get(player).getStrategy();
-        strategy.playTurn(turn);
-        if (!turn.isFinished()) {
-            LOG.info("Player {} is not finished the turn", player);
-            try {
-                turn.endTurn();
-            } catch (TurnException e) {
-                LOG.error("Error in turn", e);
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     boolean nextPlayer() {
@@ -213,21 +203,84 @@ abstract class BaseGame {
         }
     }
 
+    private boolean canExecute(Turn turn, ActionCard card) {
+        if (card.getAction() == ActionCard.Action.CHANCE && ((Fortune) card).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE) {
+            return turn.getStatus() == PlayerStatus.IN_JAIL;
+        }
+        return true;
+    }
+
+    void playTurn(Turn turn) {
+        Strategy strategy = playerData.get(turn.getPlayer()).getStrategy();
+        LOG.debug("Player's strategy: {}", strategy);
+        int step = 0;
+        boolean playTurn;
+        while (!turn.isFinished()) {
+            step++;
+            LOG.debug("Step {}", step);
+            List<ActionCard> activeCards = turn.getActiveActionCards();
+            //TODO: some cards cannot be used at the moment, however they can be used in the future.
+            // If they are chosen at the wrong moment, this can lead to the end of the game.
+            // This should be fixed with one of the following:
+            //  # they do not need to be returned from the getActiveActionCards() if they cannot be used at the moment;
+            //  # check at the level of the strategy;
+            //  # if a player tries to use such a card, move them it into hold until the next turn;
+            List<ActionCard> activeCardsExecutable = activeCards.stream()
+                    .filter(x -> canExecute(turn, x))
+                    .collect(Collectors.toList());
+            // take a snapshot of the game's state at this moment
+            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, turn.getPlayerInfo(), turn.getBoard(), turn.getPlayers(), turn.getPropertyOwners());
+            // execute the strategy
+            ActionCard result = strategy.playTurn(turnInfo);
+            if (result != null) {
+                try {
+                    // execute the card
+                    playTurn = turn.playCard(result);
+                } catch (TurnException e) {
+                    // there should be no exception while playing a card
+                    throw new RuntimeException(e);
+                }
+            } else if (turnInfo.getActiveCards().size() == 0) {
+                LOG.info("{} has no action cards to play", turn.getPlayer().getName());
+                playTurn = false;
+            } else {
+                LOG.info("{} skipped turn", turn.getPlayer().getName());
+                playTurn = false;
+            }
+
+            if (!playTurn) {
+                try {
+                    turn.endTurn();
+                } catch (TurnException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (step > 20) {
+                throw new IllegalStateException("To many steps");
+            }
+
+        }
+    }
+
     public void gameLoop() {
+        turnNumber = 0;
         do {
             turnNumber++;
             Player player = players.get(currentPlayerIndex);
-            GameImpl.LOG.info("PlayTurn {} - Player {}", turnNumber, player.getName());
+            LOG.info("PlayTurn {} - Player {}", turnNumber, player.getName());
             Turn turn = turn(player);
             playerData.get(player).getActionCards().add(NewTurn.of());
             playTurn(turn);
-
             if (turnNumber >= maxTurns) {
-                GameImpl.LOG.info("Game loop ended after {} turns", turnNumber);
+                GameImpl.LOG.info("Game reached max turns");
                 break;
             }
         } while (nextPlayer());
-        // get the list of free properties on the board
+        endGame();
+        printResults();
+    }
+
+    private void printResults() {
         List<String> freeProperties = IntStream.range(0, board.getLands().size())
                 .filter(x -> board.getLand(x) instanceof Property)
                 .filter(x -> propertyOwners.get(x) == null)
@@ -245,7 +298,27 @@ abstract class BaseGame {
     }
 
 
+    /**
+     * Create a new turn for a player.
+     *
+     * @param player the player
+     * @return the turn
+     */
     abstract Turn turn(Player player);
+
+    protected int getCurrentPriority(Player player) {
+        OptionalInt priority = playerData.get(player).getActionCards().stream()
+                .filter(actionCard1 -> actionCard1.getType().isMandatory())
+                .mapToInt(ActionCard::getPriority)
+                .min();
+
+        if (priority.isEmpty()) {
+            priority = playerData.get(player).getActionCards().stream()
+                    .mapToInt(ActionCard::getPriority)
+                    .min();
+        }
+        return priority.orElse(ActionCard.LOW_PRIORITY);
+    }
 
     @Data
     protected static final class PlayerData {

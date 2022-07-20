@@ -9,9 +9,9 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.TurnException;
 
 
 /**

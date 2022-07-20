@@ -26,7 +26,7 @@ public final class GetOrPay extends BaseActionCard {
     private final int landId;
 
     GetOrPay(int landId) {
-        super("Get or pay", Action.MOVE, Type.CHOOSE, DEFAULT_PRIORITY);
+        super("Get or Pay", Action.MOVE, Type.CHOOSE, DEFAULT_PRIORITY);
         this.landId = landId;
     }
 

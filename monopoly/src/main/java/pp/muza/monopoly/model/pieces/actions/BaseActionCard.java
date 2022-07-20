@@ -39,7 +39,7 @@ public abstract class BaseActionCard implements ActionCard {
 
     /**
      * Execute the action card.
-     * This method is called when the card is used.
+     * This method is called when the card is playing.
      * Should be overridden by the subclasses.
      *
      * @param turn the turn of the game.

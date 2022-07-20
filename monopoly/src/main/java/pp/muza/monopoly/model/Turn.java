@@ -2,8 +2,11 @@ package pp.muza.monopoly.model;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
+import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 
@@ -12,7 +15,7 @@ import pp.muza.monopoly.errors.TurnException;
  * There are methods to change the player status, move to position, to get the
  * land, to get the owner of a property etc.
  */
-public interface Turn extends TurnPlayer {
+public interface Turn {
 
     /**
      * Gets a chance card from the top of the deck.
@@ -35,12 +38,6 @@ public interface Turn extends TurnPlayer {
      */
     List<Land> moveTo(int position);
 
-    /**
-     * The Player crossed the start field.
-     *
-     * @throws BankException if operation fails.
-     */
-    void crossedStart() throws BankException;
 
     /**
      * Buys a property at the given position.
@@ -62,7 +59,7 @@ public interface Turn extends TurnPlayer {
     /**
      * The player leaves jail.
      *
-     * @throws TurnException if player is not in jail.
+     * @throws TurnException if the player is not in jail.
      */
     void leaveJail() throws TurnException;
 
@@ -146,4 +143,145 @@ public interface Turn extends TurnPlayer {
      * @return the amount of money to pay.
      */
     BigDecimal getRent(int position);
+
+    /**
+     * adds amount to the player's balance.
+     *
+     * @param amount the amount to add.
+     * @throws BankException if operation fails.
+     */
+    void income(BigDecimal amount) throws BankException;
+
+    /**
+     * returns the player's info.
+     *
+     * @return the player's info.
+     */
+    PlayerInfo getPlayerInfo();
+
+    /**
+     * Returns the game info.
+     *
+     * @return the game board.
+     */
+    Board getBoard();
+
+    /**
+     * Returns the property owners map.
+     *
+     * @return the property owners map.
+     */
+    Map<Integer, Player> getPropertyOwners();
+
+    /**
+     * Returns the active action cards for the player at the moment.
+     *
+     * @return the list of active action cards.
+     */
+    List<ActionCard> getActiveActionCards();
+
+    /**
+     * Executes an action card.
+     *
+     * @param actionCard the action card to execute.
+     * @return true if the action card was executed successfully.
+     * @throws TurnException if it is impossible to execute the action card.
+     */
+    boolean playCard(ActionCard actionCard) throws TurnException;
+
+    /**
+     * get turn's status (finished or not).
+     *
+     * @return true if the turn is finished.
+     */
+    boolean isFinished();
+
+    /**
+     * get current player.
+     *
+     * @return returns current player.
+     */
+    Player getPlayer();
+
+    /**
+     * get player's status.
+     *
+     * @return return status.
+     */
+    PlayerStatus getStatus();
+
+
+    /**
+     * Calculates the next position of the player.
+     *
+     * @param distance the distance to move.
+     * @return the new position.
+     */
+    int nextPosition(int distance);
+
+    /**
+     * Returns the land at the given position.
+     *
+     * @param position the position.
+     * @return the land.
+     */
+    Land getLand(int position);
+
+    /**
+     * Returns the owner of the property at the given position.
+     *
+     * @param position the position.
+     * @return the owner.
+     */
+    Player getPropertyOwner(int position);
+
+    /**
+     * returns a fine to pay in order to get out of jail.
+     *
+     * @return amount to pay.
+     */
+    BigDecimal getJailFine();
+
+    /**
+     * Returns the properties of the player.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getProperties();
+
+    /**
+     * return the game's start postion
+     *
+     * @return the start position.
+     */
+    int getStartPos();
+
+    /**
+     * returns all players in the game.
+     *
+     * @return the players.
+     */
+    List<Player> getPlayers();
+
+    /**
+     * returns all properties on the board.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getAllProperties();
+
+    /**
+     * returns the status of the player.
+     *
+     * @param player the player.
+     * @return the status.
+     */
+    PlayerStatus getPlayerStatus(Player player);
+
+    /**
+     * reruns list for unowned properties on the board.
+     *
+     * @return the properties.
+     */
+    List<IndexedEntry<Property>> getFreeProperties();
 }

@@ -13,10 +13,9 @@ import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.errors.BankException;
 
 /**
- * This is a special card that allows a player to buy property from the game.
+ * This card allows a player to buy property from the game.
  * On next turn, go forward to any free space and buy it, if all are owned, buy one from any player.
  */
 @ToString(callSuper = true)
@@ -29,7 +28,7 @@ public final class BuyOrTrade extends BaseActionCard {
     private final int landId;
 
     BuyOrTrade(int landId) {
-        super("BuyOrTrade", Action.GIFT, Type.CHOOSE, HIGHEST_PRIORITY);
+        super("Buy or Trade", Action.GIFT, Type.CHOOSE, HIGHEST_PRIORITY);
         this.landId = landId;
     }
 
@@ -39,19 +38,13 @@ public final class BuyOrTrade extends BaseActionCard {
         List<Land> path = turn.moveTo(landId);
         if (path.size() == 0) {
             LOG.warn("{}: Staying on the same land", turn.getPlayer().getName());
-        } else {
-            path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
-                LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
-                try {
-                    turn.crossedStart();
-                } catch (BankException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
         }
         // there is no need to roll dice or move if a player did this action
         turn.playerTurnStarted();
-        return ImmutableList.of(new Trade(landId), new EndTurn());
+        return ImmutableList.<ActionCard>builder()
+                .addAll(CardUtils.onPath(turn, path))
+                .add(new Trade(landId))
+                .add(new EndTurn())
+                .build();
     }
 }

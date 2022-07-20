@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
@@ -133,8 +134,7 @@ public interface Game {
     int getPosition(Player player);
 
     /**
-     * Moves the player to the given position,
-     * and returns the path player was moved on.
+     * Moves the player to the given position and returns the path player was moved on.
      *
      * @param player   the player.
      * @param position the position.
@@ -142,14 +142,6 @@ public interface Game {
      * (included).
      */
     List<Land> moveTo(Player player, int position);
-
-    /**
-     * Add bonus to the player, when player crosses the start.
-     *
-     * @param player the player.
-     * @throws BankException if operation fails (e.g. if the player wallet is full).
-     */
-    void crossedStart(Player player) throws BankException;
 
     /**
      * returns the list of properties owned by the player.
@@ -207,8 +199,8 @@ public interface Game {
     void leaveJail(Player player) throws TurnException;
 
     /**
-     * Ends the turn. If a player has an obligation at the end of the turn, he/she
-     * will lose the game.
+     * Ends the turn.
+     * If a player has an obligation at the end of the turn, the player will lose the game.
      *
      * @param player the player.
      */
@@ -273,17 +265,33 @@ public interface Game {
     List<IndexedEntry<Property>> getAllProperties();
 
     /**
-     * Returns a player's balance.
-     *
-     * @param player the player.
-     * @return the balance.
-     */
-    BigDecimal getBalance(Player player);
-
-    /**
      * Returns the list of all owned properties.
      *
      * @return the list of all owned properties.
      */
     Map<Integer, Player> getPropertyOwners();
+
+    /**
+     * Adds money to the player's wallet.
+     *
+     * @param player the player.
+     * @param amount the amount of money to add.
+     * @throws BankException if operation fails (e.g. if the player wallet is full).
+     */
+    void income(Player player, BigDecimal amount) throws BankException;
+
+    /**
+     * Returns a player's info.
+     *
+     * @param player the player.
+     * @return the player's info.
+     */
+    PlayerInfo getPlayerInfo(Player player);
+
+    /**
+     * Returns the game board.
+     *
+     * @return the game board.
+     */
+    Board getBoard();
 }

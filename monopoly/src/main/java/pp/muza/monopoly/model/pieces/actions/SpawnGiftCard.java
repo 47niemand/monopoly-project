@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)

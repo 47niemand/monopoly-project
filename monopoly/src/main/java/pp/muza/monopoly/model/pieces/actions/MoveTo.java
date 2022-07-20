@@ -37,16 +37,15 @@ public final class MoveTo extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        List<ActionCard> res;
         LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), position, turn.getLand(position).getName());
         List<Land> path = turn.moveTo(position);
         if (path.size() == 0) {
             LOG.warn("Staying on the same land");
-            res = ImmutableList.of();
-        } else {
-            res = CardUtils.onArrival(turn, path, position);
         }
-        return res;
+        return ImmutableList.<ActionCard>builder()
+                .addAll(CardUtils.onPath(turn, path))
+                .add(new Arrival(position))
+                .build();
     }
 
 }

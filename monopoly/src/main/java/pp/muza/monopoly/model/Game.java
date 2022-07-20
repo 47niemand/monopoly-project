@@ -280,13 +280,6 @@ public interface Game {
      */
     void income(Player player, BigDecimal amount) throws BankException;
 
-    /**
-     * Returns a player's info.
-     *
-     * @param player the player.
-     * @return the player's info.
-     */
-    PlayerInfo getPlayerInfo(Player player);
 
     /**
      * Returns the game board.

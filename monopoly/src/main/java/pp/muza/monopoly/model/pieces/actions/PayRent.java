@@ -41,7 +41,8 @@ public final class PayRent extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.pay(recipient, amount);
+            turn.withdraw(amount);
+            turn.sendCard(recipient, new RentIncome(amount, landId));
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());

@@ -26,7 +26,7 @@ final class CardUtils {
         res = new ArrayList<>();
         path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
             LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
-            res.add(new Income(((Start) land).getIncomeTax()));
+            res.add(new StartBonus(((Start) land).getIncomeTax()));
         });
         return res;
     }
@@ -35,8 +35,12 @@ final class CardUtils {
      * creates contracts for player's possession
      */
     public static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
-        LOG.info("Creating contracts for player's possession");
         List<IndexedEntry<Property>> properties = turn.getProperties();
+        if (properties.isEmpty()) {
+            LOG.info("Player {} has no properties", turn.getPlayer().getName());
+        } else {
+            LOG.info("Creating contracts for player's possession");
+        }
         return properties.stream()
                 .map(property -> new Contract(property.getIndex()))
                 .collect(Collectors.toList());

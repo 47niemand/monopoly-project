@@ -280,11 +280,12 @@ public interface Game {
      */
     void income(Player player, BigDecimal amount) throws BankException;
 
-
     /**
-     * Returns the game board.
+     * Withdraws the given amount of money from a player.
      *
-     * @return the game board.
+     * @param player the player.
+     * @param amount the amount of money to withdraw.
+     * @throws BankException if the player doesn't have enough money.
      */
-    Board getBoard();
+    void withdraw(Player player, BigDecimal amount) throws BankException;
 }

@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -21,15 +22,17 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Income extends BaseActionCard {
+public final class Gift extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Income.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Gift.class);
 
     private final BigDecimal amount;
+    private final Player sender;
 
-    Income(BigDecimal amount) {
-        super("Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
+    Gift(BigDecimal amount, Player sender) {
+        super("Gift", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
         this.amount = amount;
+        this.sender = sender;
     }
 
     @Override

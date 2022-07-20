@@ -35,15 +35,16 @@ public final class PayGift extends BaseActionCard {
         this.amount = amount;
     }
 
-    public static ActionCard of(Player recipient, BigDecimal amount) {
-        return new PayGift(recipient, amount);
+    public static ActionCard of(Player player, BigDecimal valueOf) {
+        return new PayGift(player, valueOf);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.pay(recipient, amount);
+            turn.withdraw(amount);
+            turn.sendCard(recipient, new Gift(amount, turn.getPlayer()));
             result = ImmutableList.of();
         } catch (BankException e) {
             LOG.info("Player cannot pay money: {}", e.getMessage());

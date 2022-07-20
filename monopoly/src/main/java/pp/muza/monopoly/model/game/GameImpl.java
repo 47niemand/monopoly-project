@@ -181,7 +181,7 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public void sendCard(Player player, ActionCard actionCard) {
-        LOG.info("Player {} get {}", player.getName(), actionCard.getName());
+        LOG.info("Player {} get {} card", player.getName(), actionCard.getName());
         playerData.get(player).getActionCards().add(actionCard);
     }
 
@@ -210,8 +210,8 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public Board getBoard() {
-        return board;
+    public void withdraw(Player player, BigDecimal amount) throws BankException {
+        bank.withdraw(player, amount);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class GameImpl extends BaseGame implements Game {
                 .collect(Collectors.toList());
 
         if (mandatoryCards.size() > 0) {
-            LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards);
+            LOG.info("Player {} has mandatory cards: {}", player.getName(), mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
             // Player with obligation cards is out of the game.
             setPlayerStatus(player, PlayerStatus.OUT_OF_GAME);
             // return properties to game

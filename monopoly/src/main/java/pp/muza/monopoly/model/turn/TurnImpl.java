@@ -13,7 +13,6 @@ import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
 import pp.muza.monopoly.model.Land;
@@ -56,7 +55,10 @@ public class TurnImpl implements Turn {
         LOG.info("{}: playing card {}", player.getName(), actionCard.getName());
         boolean result = game.playCard(this, actionCard);
         LOG.debug("Card {} played: {}", actionCard, result);
-        usedCards.remove(actionCard);
+        if (usedCards.remove(actionCard)) {
+            LOG.debug("{}: card {} was already used", player.getName(), actionCard);
+            // it is not an error if the card was already used.
+        }
         if (result) {
             usedCards.add(actionCard);
         }
@@ -134,19 +136,10 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public Board getBoard() {
-        return game.getBoard();
-    }
-
-    @Override
     public Map<Integer, Player> getPropertyOwners() {
         return game.getPropertyOwners();
     }
 
-    @Override
-    public void pay(Player recipient, BigDecimal amount) throws BankException {
-        game.pay(player, recipient, amount);
-    }
 
     @Override
     public void payTax(BigDecimal amount) throws BankException {
@@ -206,6 +199,11 @@ public class TurnImpl implements Turn {
         return getAllProperties().stream()
                 .filter(x -> game.getPropertyOwner(x.getIndex()) == null)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void withdraw(BigDecimal amount) throws BankException {
+        game.withdraw(player, amount);
     }
 
     @Override

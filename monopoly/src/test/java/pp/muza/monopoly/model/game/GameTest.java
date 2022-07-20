@@ -13,11 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
 import pp.muza.monopoly.model.pieces.actions.MoveTo;
@@ -63,11 +59,16 @@ class GameTest {
         GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         Player player = players.get(0);
         // test setup
-        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_3));
+        game.sendCard(player, game.pickFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_3));
         game.bringFortuneCardToTop(Fortune.Chance.ADVANCE_TO_BLUE_OR_ORANGE);
         // test
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);
+        Assertions.assertTrue(game.propertyOwners.entrySet().stream()
+                        .anyMatch(x -> x.getValue().equals(player) &&
+                                (((Property) game.board.getLand(x.getKey())).getColor() == Property.Color.BLUE
+                                        || ((Property) x).getColor() == Property.Color.ORANGE)),
+                "Player should own the property");
     }
 
     @Test
@@ -84,13 +85,20 @@ class GameTest {
             players.add(new Player(s));
         }
         GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
-        Player player = players.get(0);
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+        Player player3 = players.get(2);
         // test setup
-        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.BIRTHDAY));
-        game.bank.set(players.get(1), BigDecimal.valueOf(0));
+        game.sendCard(player1, game.pickFortuneCard(Fortune.Chance.BIRTHDAY));
+        game.bank.set(player1, BigDecimal.valueOf(10));
+        game.bank.set(player2, BigDecimal.valueOf(0)); // player2 has no money and should be bankrupted
+        game.bank.set(player3, BigDecimal.valueOf(10));
         // test
-        Turn turn = new TurnImpl(game, player);
+        Turn turn = new TurnImpl(game, player1);
         game.playTurn(turn);
+        Assertions.assertEquals(PlayerStatus.OUT_OF_GAME, game.playerData.get(player2).getStatus(), "Player should be bankrupt");
+        Assertions.assertEquals(BigDecimal.valueOf(11), game.bank.getBalance(player1), "Player should have 11 money");
+        Assertions.assertEquals(BigDecimal.valueOf(9), game.bank.getBalance(player3), "Player should have 9 money");
     }
 
     @Test
@@ -109,7 +117,7 @@ class GameTest {
         Player player1 = players.get(0);
         Player player2 = players.get(1);
         // test setup
-        game.sendCard(player1, game.removeFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_2));
+        game.sendCard(player1, game.pickFortuneCard(Fortune.Chance.GIVE_THIS_CARD_TO_A_PLAYER_2));
         game.bringFortuneCardToTop(Fortune.Chance.GET_OUT_OF_JAIL_FREE);
         // test
         Turn turn = new TurnImpl(game, player1);
@@ -122,6 +130,7 @@ class GameTest {
         turn = new TurnImpl(game, player1);
         game.playTurn(turn);
         System.out.println(game.getPlayerInfo(player2));
+        Assertions.assertEquals(PlayerStatus.IN_GAME, game.playerData.get(player1).getStatus());
     }
 
     @Test
@@ -138,7 +147,7 @@ class GameTest {
         Player player = players.get(0);
 
         // test setup
-        game.sendCard(player, game.removeFortuneCard(Fortune.Chance.MOVE_FORWARD_ONE_SPACE));
+        game.sendCard(player, game.pickFortuneCard(Fortune.Chance.MOVE_FORWARD_ONE_SPACE));
         game.sendCard(player, EndTurn.of());
         // test
         Turn turn = new TurnImpl(game, player);
@@ -160,12 +169,16 @@ class GameTest {
         Player player2 = players.get(1);
         GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
         List<Integer> landsOfSameColor = game.findLandsByColor(Property.Color.BLUE);
+        int destination = landsOfSameColor.get(0);
         landsOfSameColor.forEach(land -> game.setPropertyOwner(land, player1));
-        game.sendCard(player2, MoveTo.of(landsOfSameColor.get(0)));
+        // test setup, player1 owns all pieces of the same color
+        // player2 have 10 + rent of the property
+        game.bank.set(player2, BigDecimal.valueOf(10).add(((Property) game.board.getLand(destination)).getPrice().multiply(BigDecimal.valueOf(2))));
+        game.sendCard(player2, MoveTo.of(destination));
         // test
         Turn turn = new TurnImpl(game, player2);
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo(player2));
+        Assertions.assertEquals(BigDecimal.valueOf(10), game.bank.getBalance(player2), "Player should have 10 money");
     }
 
     @Test

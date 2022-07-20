@@ -21,15 +21,17 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Income extends BaseActionCard {
+public final class RentIncome extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Income.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RentIncome.class);
 
     private final BigDecimal amount;
+    private final int landId;
 
-    Income(BigDecimal amount) {
-        super("Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
+    RentIncome(BigDecimal amount, int landId) {
+        super("Rent Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
         this.amount = amount;
+        this.landId = landId;
     }
 
     @Override

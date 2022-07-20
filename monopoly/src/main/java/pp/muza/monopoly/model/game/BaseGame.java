@@ -11,6 +11,7 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,12 +146,14 @@ abstract class BaseGame {
         }
     }
 
+    // for testing
     void bringFortuneCardToTop(Fortune.Chance card) {
-        Fortune fortune = removeFortuneCard(card);
+        Fortune fortune = pickFortuneCard(card);
         fortuneCards.addFirst(fortune);
     }
 
-    Fortune removeFortuneCard(Fortune.Chance chance) {
+    // for testing
+    Fortune pickFortuneCard(Fortune.Chance chance) {
         Fortune result;
         // find fortune by given chance
         OptionalInt index = IntStream.range(0, fortuneCards.size())
@@ -230,7 +233,7 @@ abstract class BaseGame {
                     .filter(x -> canExecute(turn, x))
                     .collect(Collectors.toList());
             // take a snapshot of the game's state at this moment
-            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, getPlayerInfo(turn.getPlayer()), turn.getBoard(), turn.getPlayers(), turn.getPropertyOwners());
+            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, getPlayerInfo(turn.getPlayer()), board, turn.getPlayers(), turn.getPropertyOwners());
             // execute the strategy
             ActionCard result = strategy.playTurn(turnInfo);
             if (result != null) {
@@ -241,7 +244,7 @@ abstract class BaseGame {
                     // there should be no exception while playing a card
                     throw new RuntimeException(e);
                 }
-            } else if (turnInfo.getActiveCards().size() == 0) {
+            } else if (turnInfo.getActiveCards().isEmpty()) {
                 LOG.info("{} has no action cards to play", turn.getPlayer().getName());
                 playTurn = false;
             } else {

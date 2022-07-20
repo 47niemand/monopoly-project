@@ -21,14 +21,14 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Income extends BaseActionCard {
+public final class StartBonus extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Income.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StartBonus.class);
 
     private final BigDecimal amount;
 
-    Income(BigDecimal amount) {
-        super("Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
+    StartBonus(BigDecimal amount) {
+        super("Start Bonus", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
         this.amount = amount;
     }
 

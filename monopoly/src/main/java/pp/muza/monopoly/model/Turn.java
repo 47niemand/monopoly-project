@@ -126,16 +126,6 @@ public interface Turn {
     void playerTurnStarted();
 
     /**
-     * pay the amount of money to the recipient.
-     *
-     * @param recipient the recipient.
-     * @param amount    the amount to pay.
-     * @throws BankException if operation fails (player doesn't have enough money).
-     */
-    void pay(Player recipient, BigDecimal amount) throws BankException;
-
-
-    /**
      * returns amount of money to pay for the rent.
      *
      * @param position the position of the land.
@@ -151,12 +141,6 @@ public interface Turn {
      */
     void income(BigDecimal amount) throws BankException;
 
-    /**
-     * Returns the game info.
-     *
-     * @return the game board.
-     */
-    Board getBoard();
 
     /**
      * Returns the property owners map.
@@ -276,4 +260,12 @@ public interface Turn {
      * @return the properties.
      */
     List<IndexedEntry<Property>> getFreeProperties();
+
+    /**
+     * withdraws the amount of money from the player.
+     *
+     * @param amount to withdraw
+     * @throws BankException if player doesn't have enough money.
+     */
+    void withdraw(BigDecimal amount) throws BankException;
 }

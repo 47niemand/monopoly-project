@@ -2,9 +2,6 @@ package pp.muza.monopoly.strategy;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Strategy;

@@ -1,15 +1,12 @@
 package pp.muza.monopoly.strategy;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Strategy;
 
 public class DefaultStrategy implements Strategy {

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
+import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
@@ -35,8 +36,8 @@ class FortuneCardTest {
         Turn a = new TurnImpl(game, player);
 
         for (Fortune fortune : fortunes) {
-            ((BaseActionCard) fortune).onExecute(a);
-            Assertions.assertTrue(true, "FortuneCard should be executed");
+            List<ActionCard> result = ((BaseActionCard) fortune).onExecute(a);
+            Assertions.assertNotNull(result, String.format("FortuneCard (%s) should be executed", fortune));
         }
     }
 }

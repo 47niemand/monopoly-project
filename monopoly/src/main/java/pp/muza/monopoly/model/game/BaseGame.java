@@ -207,6 +207,7 @@ abstract class BaseGame {
     }
 
     private boolean canExecute(Turn turn, ActionCard card) {
+        // there is some logic for checking if the card can be executed
         if (card.getAction() == ActionCard.Action.CHANCE && ((Fortune) card).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE) {
             return turn.getStatus() == PlayerStatus.IN_JAIL;
         }
@@ -228,6 +229,8 @@ abstract class BaseGame {
             //  # they do not need to be returned from the getActiveActionCards() if they cannot be used at the moment;
             //  # check at the level of the strategy;
             //  # if a player tries to use such a card, move them it into hold until the next turn;
+
+            // hack: remove cards that cannot be used at the moment
             List<ActionCard> activeCardsExecutable = activeCards.stream()
                     .filter(x -> canExecute(turn, x))
                     .collect(Collectors.toList());

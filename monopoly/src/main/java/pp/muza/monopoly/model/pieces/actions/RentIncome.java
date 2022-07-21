@@ -39,7 +39,7 @@ public final class RentIncome extends BaseActionCard {
         try {
             turn.income(amount);
         } catch (BankException e) {
-            LOG.info("Player cannot receive money: {}", e.getMessage());
+            LOG.warn("Player cannot receive money: {}", e.getMessage());
         }
         return ImmutableList.of();
     }

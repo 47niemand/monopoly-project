@@ -44,7 +44,7 @@ public final class Contract extends BaseActionCard {
         try {
             turn.doContract(landId);
         } catch (BankException | TurnException e) {
-            LOG.info("Player cannot receive money: {}", e.getMessage());
+            LOG.warn("Player cannot receive money: {}", e.getMessage());
         }
         return ImmutableList.of();
     }

@@ -46,6 +46,7 @@ import pp.muza.monopoly.model.turn.TurnImpl;
 public class GameImpl extends BaseGame implements Game {
 
     static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
+    static final int BIRTHDAY_GIFT_AMOUNT = 1;
 
     public GameImpl(Board board, List<Player> players, List<Fortune> fortunes, List<Strategy> strategies, Bank bank) {
         super(bank, fortunes, board);
@@ -141,7 +142,7 @@ public class GameImpl extends BaseGame implements Game {
                 .filter(x -> x != player && !getStatus(x).isFinished())
                 .forEach(x -> {
                     Turn subTurn = turn(x);
-                    sendCard(x, PayGift.of(player, BigDecimal.valueOf(1)));
+                    sendCard(x, PayGift.of(player, BigDecimal.valueOf(BIRTHDAY_GIFT_AMOUNT)));
                     playTurn(subTurn);
                 });
     }

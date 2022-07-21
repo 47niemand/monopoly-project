@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -93,6 +94,7 @@ class GameTest {
         Player player2 = players.get(1);
         Player player3 = players.get(2);
         // test setup
+        Assertions.assertEquals(1, GameImpl.BIRTHDAY_GIFT_AMOUNT, "BIRTHDAY_GIFT_AMOUNT should be 1");
         game.sendCard(player1, game.pickFortuneCard(Fortune.Chance.BIRTHDAY));
         game.bank.set(player1, BigDecimal.valueOf(10));
         game.bank.set(player2, BigDecimal.valueOf(0)); // player2 has no money and should be bankrupted
@@ -101,8 +103,8 @@ class GameTest {
         Turn turn = new TurnImpl(game, player1);
         game.playTurn(turn);
         Assertions.assertEquals(PlayerStatus.OUT_OF_GAME, game.playerData.get(player2).getStatus(), "Player should be bankrupt");
-        Assertions.assertEquals(BigDecimal.valueOf(11), game.bank.getBalance(player1), "Player should have 11 money");
-        Assertions.assertEquals(BigDecimal.valueOf(9), game.bank.getBalance(player3), "Player should have 9 money");
+        Assertions.assertEquals(BigDecimal.valueOf(10).add(BigDecimal.valueOf(GameImpl.BIRTHDAY_GIFT_AMOUNT)), game.bank.getBalance(player1), "Player should have 11 money");
+        Assertions.assertEquals(BigDecimal.valueOf(10).subtract(BigDecimal.valueOf(GameImpl.BIRTHDAY_GIFT_AMOUNT)), game.bank.getBalance(player3), "Player should have 9 money");
     }
 
     @Test
@@ -127,14 +129,16 @@ class GameTest {
         Turn turn = new TurnImpl(game, player1);
         game.sendCard(player1, EndTurn.of());
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo(player1));
+        Assertions.assertTrue(game.playerData.get(player1).getActionCards().stream().anyMatch(x -> x.getAction() == ActionCard.Action.CHANCE && ((Fortune) x).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE), "Player1 should have the GET_OUT_OF_JAIL_FREE card");
+        Assertions.assertTrue(game.playerData.get(player2).getActionCards().stream().anyMatch(x -> x.getAction() == ActionCard.Action.GIFT), "Player2 should have the GIFT card");
+        Assertions.assertEquals(0, game.getProperties(player2).size(), "Player2 should have no property at this moment");
         turn = new TurnImpl(game, player2);
         game.playTurn(turn);
+        Assertions.assertEquals(1, game.getProperties(player2).size(), "Player2 should have 1 property at this moment");
         game.setPlayerStatus(player1, PlayerStatus.IN_JAIL);
         turn = new TurnImpl(game, player1);
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo(player2));
-        Assertions.assertEquals(PlayerStatus.IN_GAME, game.playerData.get(player1).getStatus());
+        Assertions.assertEquals(PlayerStatus.IN_GAME, game.playerData.get(player1).getStatus(), "Player1 should leave jail, and be in game");
     }
 
     @Test
@@ -151,12 +155,15 @@ class GameTest {
         Player player = players.get(0);
 
         // test setup
+        game.playerData.get(player).setPosition(0);
         game.sendCard(player, game.pickFortuneCard(Fortune.Chance.MOVE_FORWARD_ONE_SPACE));
         game.sendCard(player, EndTurn.of());
         // test
         Turn turn = new TurnImpl(game, player);
         game.playTurn(turn);
-        System.out.println(game.getPlayerInfo(player));
+        // because obedient strategy, player will choose to move forward
+        Assertions.assertEquals(1, game.playerData.get(player).getPosition(), "Player should have moved forward one space");
+
     }
 
     @Test

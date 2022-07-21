@@ -40,4 +40,19 @@ class FortuneCardTest {
             Assertions.assertNotNull(result, String.format("FortuneCard (%s) should be executed", fortune));
         }
     }
+
+    @Test
+    void fortuneMoveForwardOneSpace() {
+        // test setup
+        Player player = new Player("@Player1");
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
+        Turn a = new TurnImpl(game, player);
+        Fortune fortune = FortuneCard.of(Fortune.Chance.MOVE_FORWARD_ONE_SPACE);
+
+        // test
+        List<ActionCard> result = ((BaseActionCard) fortune).onExecute(a);
+        Assertions.assertEquals(2, result.size(), "Two options should be returned");
+        Assertions.assertTrue(result.contains(new OptionMove(1)), "OptionMove(1) should be returned");
+        Assertions.assertTrue(result.contains(new TakeFortuneCard()), "TakeFortuneCard should be returned");
+    }
 }

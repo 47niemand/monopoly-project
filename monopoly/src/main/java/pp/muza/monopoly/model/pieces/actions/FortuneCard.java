@@ -76,6 +76,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
+        LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = new ArrayList<>();
         switch (chance) {
             case ADVANCE_TO_MAYFAIR:
@@ -150,6 +151,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             default:
                 throw new IllegalStateException("Unknown chance card: " + chance);
         }
+        LOG.debug("resulting cards: {}", result);
         return result;
     }
 

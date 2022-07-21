@@ -16,6 +16,7 @@ import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
+import pp.muza.monopoly.model.pieces.actions.FortuneCard;
 import pp.muza.monopoly.model.pieces.actions.MoveTo;
 import pp.muza.monopoly.model.turn.TurnImpl;
 import pp.muza.monopoly.strategy.DefaultStrategy;

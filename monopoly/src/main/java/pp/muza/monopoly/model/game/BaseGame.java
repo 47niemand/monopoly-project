@@ -38,7 +38,7 @@ abstract class BaseGame {
 
     static final Logger LOG = LoggerFactory.getLogger(BaseGame.class);
 
-    static final int DEFAULT_MAX_TURNS = 1500;
+    static final int DEFAULT_MAX_TURNS = 150;
     final Bank bank;
     final LinkedList<Fortune> fortuneCards;
     final List<Player> players = new ArrayList<>();
@@ -271,7 +271,7 @@ abstract class BaseGame {
         do {
             turnNumber++;
             Player player = players.get(currentPlayerIndex);
-            LOG.info("PlayTurn {} - Player {}", turnNumber, player.getName());
+            LOG.info("Playing turn {} - Player {}", turnNumber, player.getName());
             Turn turn = turn(player);
             playerData.get(player).getActionCards().add(NewTurn.of());
             playTurn(turn);

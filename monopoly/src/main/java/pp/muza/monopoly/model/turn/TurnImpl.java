@@ -22,8 +22,7 @@ import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * The turn of the game implementation. This class implements the PlayTurn and
- * TurnPlayer interfaces.
+ * The turn of the game implementation. This class implements the Turn interface.
  */
 public class TurnImpl implements Turn {
 

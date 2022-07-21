@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
-import pp.muza.monopoly.model.pieces.actions.FortuneCard;
 import pp.muza.monopoly.model.pieces.actions.MoveTo;
 import pp.muza.monopoly.model.turn.TurnImpl;
 import pp.muza.monopoly.strategy.DefaultStrategy;

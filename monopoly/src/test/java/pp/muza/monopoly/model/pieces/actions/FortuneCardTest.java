@@ -1,9 +1,14 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pp.muza.monopoly.model.ActionCard;
+
+import com.google.common.collect.ImmutableList;
+
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
@@ -13,13 +18,6 @@ import pp.muza.monopoly.model.turn.TurnImpl;
 import pp.muza.monopoly.strategy.ObedientStrategy;
 import pp.muza.monopoly.utils.ChancePile;
 import pp.muza.monopoly.utils.MonopolyBoard;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class FortuneCardTest {
 

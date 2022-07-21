@@ -21,7 +21,7 @@ public interface Board {
     List<Land> getLands(List<Integer> path);
 
     /**
-     * Returns the destination from the start postion for given distance.
+     * Returns the destination from the start position for given distance.
      *
      * @param start    the start position.
      * @param distance the distance to move.

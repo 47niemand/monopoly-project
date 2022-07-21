@@ -38,7 +38,7 @@ public final class Trade extends BaseActionCard {
     private final int landId;
 
     Trade(int landId) {
-        super("Tade", Action.CONTRACT, Type.OBLIGATION, DEFAULT_PRIORITY);
+        super("Trade", Action.CONTRACT, Type.OBLIGATION, DEFAULT_PRIORITY);
         this.landId = landId;
     }
 

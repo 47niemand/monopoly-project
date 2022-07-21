@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group 'pp.muza'
+group 'pp.muza.monopoly'
 version '0.1'
 
 sourceCompatibility = JavaVersion.VERSION_11

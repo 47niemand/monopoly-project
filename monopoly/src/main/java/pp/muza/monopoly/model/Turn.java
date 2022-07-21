@@ -32,7 +32,7 @@ public interface Turn {
      * Moves the player to the given position.
      *
      * @param position the position.
-     * @return the path from the current postion (excluded) to the new position
+     * @return the path from the current position (excluded) to the new position
      * (included).
      */
     List<Land> moveTo(int position);
@@ -79,7 +79,7 @@ public interface Turn {
     void doContract(int landId) throws BankException, TurnException;
 
     /**
-     * returns the postion of land by the given name.
+     * returns the position of land by the given name.
      *
      * @param asset the name of the land.
      * @return the position of the land.
@@ -226,7 +226,7 @@ public interface Turn {
     List<IndexedEntry<Property>> getProperties();
 
     /**
-     * return the game's start postion
+     * return the game's start position
      *
      * @return the start position.
      */

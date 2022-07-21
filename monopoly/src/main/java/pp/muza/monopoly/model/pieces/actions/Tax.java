@@ -14,10 +14,6 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A player has to pay money to the bank.
- * <p>
- * if the player is in jail, successfully pay the bill will allow to end the
- * turn.
- * </p>
  */
 @Getter
 @ToString(callSuper = true)

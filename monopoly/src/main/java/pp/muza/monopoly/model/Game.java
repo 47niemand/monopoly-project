@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
@@ -43,7 +42,7 @@ public interface Game {
     List<ActionCard> getActiveActionCards(Player player);
 
     /**
-     * retrun the postion with the given distance from the current player's
+     * return the position with the given distance from the current player's
      * position.
      *
      * @param player   the player.
@@ -138,7 +137,7 @@ public interface Game {
      *
      * @param player   the player.
      * @param position the position.
-     * @return the path from the current postion (excluded) to the new position
+     * @return the path from the current position (excluded) to the new position
      * (included).
      */
     List<Land> moveTo(Player player, int position);

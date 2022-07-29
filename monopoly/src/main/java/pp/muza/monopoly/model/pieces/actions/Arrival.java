@@ -37,6 +37,10 @@ public final class Arrival extends BaseActionCard {
         this.position = position;
     }
 
+    public static ActionCard of(int position) {
+        return new Arrival(position);
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         Land land = turn.getLand(position);

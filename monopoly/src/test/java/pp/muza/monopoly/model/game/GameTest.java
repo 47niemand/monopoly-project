@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,13 +14,9 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.model.pieces.actions.Arrival;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
 import pp.muza.monopoly.model.pieces.actions.MoveTo;
 import pp.muza.monopoly.model.turn.TurnImpl;
@@ -139,6 +136,29 @@ class GameTest {
         turn = new TurnImpl(game, player1);
         game.playTurn(turn);
         Assertions.assertEquals(PlayerStatus.IN_GAME, game.playerData.get(player1).getStatus(), "Player1 should leave jail, and be in game");
+    }
+
+    @Test
+    void gameGotoJailTest() {
+        // testing scenario:
+        // player 1 arrives at goto jail and should be sent to jail.
+        List<Player> players = new ArrayList<>();
+        for (String s : Arrays.asList("@Player1", "@Player2")) {
+            players.add(new Player(s));
+        }
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), players, ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
+        Player player1 = players.get(0);
+        int gotoJailPos = IntStream.range(0, game.board.getLands().size())
+                .filter(i -> game.board.getLands().get(i).getType() == Land.Type.GOTO_JAIL)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No GOTO_JAIL land found"));
+        game.playerData.get(player1).actionCards.add(Arrival.of(gotoJailPos));
+        // test
+        Turn turn = new TurnImpl(game, player1);
+        game.playTurn(turn);
+        int jailPos = game.getJailPosition();
+        Assertions.assertEquals(PlayerStatus.IN_JAIL, game.playerData.get(player1).getStatus(), "Player should be in jail");
+        Assertions.assertEquals(jailPos, game.playerData.get(player1).getPosition(), "Player should be in jail");
     }
 
     @Test

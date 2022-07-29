@@ -328,8 +328,8 @@ abstract class BaseGame {
 
     @Data
     protected static final class PlayerData {
+        final List<ActionCard> actionCards;
         private final Player player;
-        private final List<ActionCard> actionCards;
         private PlayerStatus status;
         private int position;
         private Strategy strategy;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,9 +294,17 @@ public class GameImpl extends BaseGame implements Game {
         return fortuneCards.pop();
     }
 
+    int getJailPosition() {
+        return IntStream.range(0, board.getLands().size())
+                .filter(i -> board.getLands().get(i).getType() == Land.Type.JAIL)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No jail found"));
+    }
+
     @Override
     public void setPlayerInJail(Player player) {
         playerData.get(player).setStatus(PlayerStatus.IN_JAIL);
+        playerData.get(player).setPosition(getJailPosition());
     }
 
     @Override

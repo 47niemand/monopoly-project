@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model.game;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,6 +24,7 @@ import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
@@ -33,9 +35,10 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Strategy;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
-import pp.muza.monopoly.model.pieces.actions.PayGift;
+import pp.muza.monopoly.model.pieces.actions.*;
 import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.LandType;
+import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 import pp.muza.monopoly.model.turn.TurnImpl;
 
 /**
@@ -48,6 +51,7 @@ public class GameImpl extends BaseGame implements Game {
 
     static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
     static final int BIRTHDAY_GIFT_AMOUNT = 1;
+    public static final int STARTING_AMOUNT = 18;
 
     public GameImpl(Board board, List<Player> players, List<Fortune> fortunes, List<Strategy> strategies, Bank bank) {
         super(bank, fortunes, board);
@@ -60,7 +64,7 @@ public class GameImpl extends BaseGame implements Game {
             }
             playerData.put(player,
                     new PlayerData(player, PlayerStatus.IN_GAME, getStartPosition(), strategy));
-            this.bank.set(player, BigDecimal.valueOf(18));
+            this.bank.set(player, STARTING_AMOUNT);
         }
         assert players.size() == playerData.keySet().size();
         Collections.shuffle(this.fortuneCards);
@@ -77,7 +81,20 @@ public class GameImpl extends BaseGame implements Game {
         boolean cardUsed;
         boolean newCardsSpawned;
         int priority = getCurrentPriority(player);
-        if (playerData.get(player).getActionCards().removeIf(x -> x.getPriority() <= priority && x.equals(actionCard))) {
+        AtomicInteger removed = new AtomicInteger();
+        if (playerData.get(player).getActionCards().removeIf(x -> {
+            boolean b = x.getPriority() <= priority && x.equals(actionCard);
+            if (b) {
+                removed.getAndIncrement();
+                LOG.debug("Player {} used {}", player.getName(), actionCard);
+            }
+            return b;
+        })) {
+            if (removed.get() > 1) {
+                LOG.warn("Player {} used {} {} times", player.getName(), actionCard, removed.get());
+                // player may only have a single copy of each card.
+                assert false;
+            }
             List<ActionCard> result = ((BaseActionCard) actionCard).play(turn);
             cardUsed = !result.contains(actionCard);
             // create a collection that does not contain cards that are already on player's hand
@@ -89,38 +106,38 @@ public class GameImpl extends BaseGame implements Game {
                 return !found;
             }).collect(Collectors.toList());
 
-            if (!cardUsed && actionCard.getType() == ActionCard.Type.KEEPABLE) {
+            if (!cardUsed && actionCard.getType() == ActionType.KEEPABLE) {
                 LOG.warn("Card {} is not used, but it is keepable", actionCard);
             }
 
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
-            LOG.info("{} used {} and spawned {} new cards{}", player.getName(),
-                    actionCard.getName(),
-                    newCardsSpawned ? "some" : "no",
-                    (newCardsSpawned ? ": " + newCards.stream().map(ActionCard::getName).collect(Collectors.toList()) : ""));
+            LOG.info("Used [{}]; {} received the following cards: {}", actionCard.getName(),
+                    player.getName(),
+                    newCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
             playerData.get(player).getActionCards().addAll(newCards);
 
             // Choose cards (ActionCard.Type.CHOOSE) can only be used once, thus we must take them out of the player's hand.
-            if (actionCard.getType() == ActionCard.Type.CHOOSE) {
+            if (actionCard.getType() == ActionType.CHOOSE) {
                 List<ActionCard> chooses = playerData.get(player)
                         .getActionCards()
                         .stream()
-                        .filter(x -> x.getType() == ActionCard.Type.CHOOSE
+                        .filter(x -> x.getType() == ActionType.CHOOSE
                                 && x.getPriority() <= actionCard.getPriority())
                         .collect(Collectors.toList());
                 playerData.get(player).getActionCards().removeAll(chooses);
-                LOG.info("Removing choose cards from player's hand: {}", chooses.stream().map(ActionCard::getName).collect(Collectors.toList()));
+                LOG.debug("Removing choose cards from player's hand: {}", chooses.stream().map(ActionCard::getName).collect(Collectors.toList()));
             }
 
             // return chance card (ActionCard.Action.CHANCE) to the game
-            if (cardUsed && (actionCard.getAction() == ActionCard.Action.CHANCE)) {
+            if (cardUsed && (actionCard.getAction() == Action.CHANCE)) {
                 LOG.debug("Returning chance card {} to the game", actionCard);
                 getBackChanceCard(actionCard);
             }
         } else if (playerData.get(player).getActionCards().contains(actionCard)) {
             throw new TurnException(String.format("Player can't use %s at this time", actionCard.getName()));
         } else {
-            throw new IllegalStateException("Action card not found");
+            // Player does not have this card, but it is still in the game
+            throw new TurnException(String.format("Player does not have %s", actionCard.getName()));
         }
 
         return cardUsed || newCardsSpawned;
@@ -143,7 +160,7 @@ public class GameImpl extends BaseGame implements Game {
                 .filter(x -> x != player && !getStatus(x).isFinished())
                 .forEach(x -> {
                     Turn subTurn = turn(x);
-                    sendCard(x, PayGift.of(player, BigDecimal.valueOf(BIRTHDAY_GIFT_AMOUNT)));
+                    sendCard(x, Payment.of(BIRTHDAY_GIFT_AMOUNT, player));
                     playTurn(subTurn);
                 });
     }
@@ -157,7 +174,7 @@ public class GameImpl extends BaseGame implements Game {
         if (player == salePlayer) {
             throw new TurnException("You can't trade with yourself");
         }
-        BigDecimal price = property.getPrice();
+        Integer price = property.getPrice();
         bank.withdraw(player, price);
         bank.deposit(salePlayer, price);
         setPropertyOwner(landId, player);
@@ -182,6 +199,11 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
+    public void setPosition(Player player, int position) {
+        playerData.get(player).setPosition(position);
+    }
+
+    @Override
     public void sendCard(Player player, ActionCard actionCard) {
         LOG.info("Player {} get {} card", player.getName(), actionCard.getName());
         playerData.get(player).getActionCards().add(actionCard);
@@ -193,7 +215,7 @@ public class GameImpl extends BaseGame implements Game {
         List<IndexedEntry<Property>> p = new ArrayList<>();
         for (int i = 0; i < l.size(); i++) {
             Land land = l.get(i);
-            if (land.getType() == Land.Type.PROPERTY) {
+            if (land.getType() == LandType.PROPERTY) {
                 Property property = (Property) land;
                 p.add(new IndexedEntry<>(i, property));
             }
@@ -207,13 +229,13 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public void income(Player player, BigDecimal amount) throws BankException {
-        bank.deposit(player, amount);
+    public void income(Player player, Integer number) throws BankException {
+        bank.deposit(player, number);
     }
 
     @Override
-    public void withdraw(Player player, BigDecimal amount) throws BankException {
-        bank.withdraw(player, amount);
+    public void withdraw(Player player, Integer number) throws BankException {
+        bank.withdraw(player, number);
     }
 
     @Override
@@ -233,13 +255,12 @@ public class GameImpl extends BaseGame implements Game {
 
         int currentPriority = getCurrentPriority(player);
 
-        LOG.debug("Player's {} current priority: {}", player.getName(), currentPriority);
+        LOG.debug("{}'s current priority: {}", player.getName(), currentPriority);
         result = actionCards.stream()
                 .filter(actionCard -> actionCard.getPriority() <= currentPriority)
                 .sorted(Comparator.comparing(ActionCard::getPriority))
                 .collect(Collectors.toList());
-        LOG.debug("Player's {} active action cards: {}", player.getName(), result);
-
+        LOG.debug("Cards in play: {} for {}", result, player.getName());
         return result;
     }
 
@@ -254,10 +275,10 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public int findProperty(Property.Asset asset) {
+    public int findProperty(Asset asset) {
         for (int i = 0; i < board.getLands().size(); i++) {
             Land land = board.getLands().get(i);
-            if (land.getType() == Land.Type.PROPERTY) {
+            if (land.getType() == LandType.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
                 if (property.getAsset() == asset) {
@@ -269,11 +290,11 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public List<Integer> findLandsByColor(Property.Color color) {
+    public List<Integer> findLandsByColor(PropertyColor color) {
         List<Integer> lands = new ArrayList<>();
         for (int i = 0; i < board.getLands().size(); i++) {
             Land land = board.getLands().get(i);
-            if (land.getType() == Land.Type.PROPERTY) {
+            if (land.getType() == LandType.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
                 if (property.getColor() == color) {
@@ -296,7 +317,7 @@ public class GameImpl extends BaseGame implements Game {
 
     int getJailPosition() {
         return IntStream.range(0, board.getLands().size())
-                .filter(i -> board.getLands().get(i).getType() == Land.Type.JAIL)
+                .filter(i -> board.getLands().get(i).getType() == LandType.JAIL)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No jail found"));
     }
@@ -345,8 +366,8 @@ public class GameImpl extends BaseGame implements Game {
             throw new TurnException("Land is not owned by you");
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
-        BigDecimal amount = property.getPrice();
-        bank.deposit(player, amount);
+        Integer number = property.getPrice();
+        bank.deposit(player, number);
         propertyOwnerRemove(landId);
     }
 
@@ -356,7 +377,7 @@ public class GameImpl extends BaseGame implements Game {
         List<IndexedEntry<Property>> result = new ArrayList<>();
         for (int i = 0; i < lands.size(); i++) {
             Land land = lands.get(i);
-            if (land.getType() == Land.Type.PROPERTY && getPropertyOwner(i) == player) {
+            if (land.getType() == LandType.PROPERTY && getPropertyOwner(i) == player) {
                 Property property = (Property) land;
                 result.add(new IndexedEntry<>(i, property));
             }
@@ -367,7 +388,7 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public void buyProperty(Player player, int landId) throws TurnException, BankException {
         Property property = (Property) getLand(landId);
-        BigDecimal price = property.getPrice();
+        Integer price = property.getPrice();
         if (getPropertyOwner(landId) != null) {
             throw new TurnException("Land is already owned");
         }
@@ -376,12 +397,12 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public BigDecimal getRent(int landId) {
-        BigDecimal rent;
+    public Integer getRent(int landId) {
+        Integer rent;
         Property property = (Property) getLand(landId);
         Player owner = getPropertyOwner(landId);
         if (owner == null) {
-            rent = BigDecimal.valueOf(0);
+            rent = 0;
             LOG.info("Land {} is not owned", landId);
         } else {
             List<Integer> sameColorLands = findLandsByColor(property.getColor());
@@ -390,7 +411,7 @@ public class GameImpl extends BaseGame implements Game {
                     .allMatch(x -> x == owner);
             if (sameColor) {
                 // double rent if the player owns all properties of the same color
-                rent = property.getPrice().multiply(new BigDecimal(2));
+                rent = property.getPrice() * 2;
                 LOG.info("Player {} owns all properties of the same color {}, so the owner gets double rent: {}", owner.getName(), property.getColor(), rent);
             } else {
                 rent = property.getPrice();
@@ -401,17 +422,12 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public void pay(Player player, Player recipient, BigDecimal amount) throws BankException {
-        LOG.info("{} is paying {} to {}", player.getName(), amount, recipient.getName());
-        bank.withdraw(player, amount);
-        bank.deposit(recipient, amount);
+    public void pay(Player player, Player recipient, Integer number) throws BankException {
+        LOG.info("{} is paying {} to {}", player.getName(), number, recipient.getName());
+        bank.withdraw(player, number);
+        bank.deposit(recipient, number);
     }
 
-    @Override
-    public void payTax(Player player, BigDecimal amount) throws BankException {
-        bank.withdraw(player, amount);
-
-    }
 
     @Override
     public void leaveJail(Player player) throws TurnException {
@@ -424,16 +440,16 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public void playerTurnStarted(Player player) {
         // there is no need to roll dice or move if the player did something in this turn
-        playerData.get(player).getActionCards().removeIf(x -> x.getAction() == ActionCard.Action.NEW_TURN || x.getAction() == ActionCard.Action.ROLL_DICE);
+        playerData.get(player).getActionCards().removeIf(x -> x.getAction() == Action.NEW_TURN || x.getAction() == Action.ROLL_DICE);
     }
 
     @Override
-    public BigDecimal getJailFine() {
+    public Integer getJailFine() {
         return board.getLands().stream()
-                .filter(land -> land.getType() == Land.Type.JAIL)
+                .filter(land -> land.getType() == LandType.JAIL)
                 .map(x -> ((Jail) x).getFine())
                 .findFirst()
-                .orElse(BigDecimal.ZERO);
+                .orElseThrow(() -> new IllegalStateException("No jail found"));
     }
 
 }

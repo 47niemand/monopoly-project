@@ -1,6 +1,10 @@
 package pp.muza.monopoly.errors;
 
-public class BankException extends Exception {
+/**
+ * This exception is thrown when a player tries to withdraw more coins than they have
+ * or when unhallowed bank action is performed.
+ */
+public class BankException extends BaseGameException {
 
     public BankException(String message) {
         super(message);

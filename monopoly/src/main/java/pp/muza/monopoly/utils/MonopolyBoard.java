@@ -1,26 +1,27 @@
 package pp.muza.monopoly.utils;
 
-import static pp.muza.monopoly.model.Property.Asset.AQUARIUM;
-import static pp.muza.monopoly.model.Property.Asset.BAKERY;
-import static pp.muza.monopoly.model.Property.Asset.BURGER_JOINT;
-import static pp.muza.monopoly.model.Property.Asset.CINEMA;
-import static pp.muza.monopoly.model.Property.Asset.COFFEE_SHOP;
-import static pp.muza.monopoly.model.Property.Asset.DONUT_SHOP;
-import static pp.muza.monopoly.model.Property.Asset.GO_KARTS;
-import static pp.muza.monopoly.model.Property.Asset.LIBRARY;
-import static pp.muza.monopoly.model.Property.Asset.MAYFAIR;
-import static pp.muza.monopoly.model.Property.Asset.MUSEUM;
-import static pp.muza.monopoly.model.Property.Asset.PARK_LANE;
-import static pp.muza.monopoly.model.Property.Asset.PET_SHOP;
-import static pp.muza.monopoly.model.Property.Asset.SWIMMING_POOL;
-import static pp.muza.monopoly.model.Property.Asset.THEATRE;
-import static pp.muza.monopoly.model.Property.Asset.THE_ZOO;
-import static pp.muza.monopoly.model.Property.Asset.TOY_SHOP;
+import static pp.muza.monopoly.model.Asset.AQUARIUM;
+import static pp.muza.monopoly.model.Asset.BAKERY;
+import static pp.muza.monopoly.model.Asset.BURGER_JOINT;
+import static pp.muza.monopoly.model.Asset.CINEMA;
+import static pp.muza.monopoly.model.Asset.COFFEE_SHOP;
+import static pp.muza.monopoly.model.Asset.DONUT_SHOP;
+import static pp.muza.monopoly.model.Asset.GO_KARTS;
+import static pp.muza.monopoly.model.Asset.LIBRARY;
+import static pp.muza.monopoly.model.Asset.MAYFAIR;
+import static pp.muza.monopoly.model.Asset.MUSEUM;
+import static pp.muza.monopoly.model.Asset.PARK_LANE;
+import static pp.muza.monopoly.model.Asset.PET_SHOP;
+import static pp.muza.monopoly.model.Asset.SWIMMING_POOL;
+import static pp.muza.monopoly.model.Asset.THEATRE;
+import static pp.muza.monopoly.model.Asset.THE_ZOO;
+import static pp.muza.monopoly.model.Asset.TOY_SHOP;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;
@@ -47,20 +48,20 @@ public class MonopolyBoard {
      *                                                                      <<--- Direction |
      @formatter:on*/
 
-    private static Property propertyOf(Property.Asset asset) {
+    private static Property propertyOf(Asset asset) {
         return new BaseProperty(asset);
     }
 
     public static Board defaultBoard() {
         List<Land> lands = new ArrayList<>();
         // the Start field should be the first one in the list
-        lands.add(new Start(BigDecimal.valueOf(2)));
+        lands.add(new Start(2));
         lands.add(propertyOf(COFFEE_SHOP));
         lands.add(propertyOf(DONUT_SHOP));
         lands.add(new ChanceLand());
         lands.add(propertyOf(BAKERY));
         lands.add(propertyOf(BURGER_JOINT));
-        lands.add(new Jail(BigDecimal.valueOf(1)));
+        lands.add(new Jail(1));
         lands.add(propertyOf(LIBRARY));
         lands.add(propertyOf(MUSEUM));
         lands.add(new ChanceLand());

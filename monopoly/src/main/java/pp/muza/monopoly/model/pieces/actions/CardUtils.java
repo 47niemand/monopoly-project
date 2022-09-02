@@ -12,6 +12,7 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.lands.LandType;
 import pp.muza.monopoly.model.pieces.lands.Start;
 
 final class CardUtils {
@@ -24,9 +25,9 @@ final class CardUtils {
     static List<ActionCard> onPath(Turn turn, List<Land> path) {
         List<ActionCard> res;
         res = new ArrayList<>();
-        path.stream().filter(land -> land.getType() == Land.Type.START).findFirst().ifPresent(land -> {
+        path.stream().filter(land -> land.getType() == LandType.START).findFirst().ifPresent(land -> {
             LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
-            res.add(new StartBonus(((Start) land).getIncomeTax()));
+            res.add(new GoReward(((Start) land).getIncomeTax()));
         });
         return res;
     }
@@ -34,7 +35,7 @@ final class CardUtils {
     /**
      * creates contracts for player's possession
      */
-    public static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
+    static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
         List<IndexedEntry<Property>> properties = turn.getProperties();
         if (properties.isEmpty()) {
             LOG.info("Player {} has no properties", turn.getPlayer().getName());

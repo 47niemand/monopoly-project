@@ -25,19 +25,19 @@ Winning the game is determined by the amount of money the player has at the end 
 
 # Build
 
-This application uses Gradle to build. Use the following command: 
+This application uses Gradle to build. From the root repository directory, run the following command: 
     
-    gradlew monopoly:simJar
+    gradlew monopoly_app:simJar
     
-The resulting monopoly-0.1-sim.jar file will be placed to the ./monopoly/build/libs folder
+The resulting monopoly_app-sim.jar file will be placed to the ./monopoly_app/build/libs folder
 
 # Run
 
 use java to execute the application:
 
-    java -jar monopoly/build/libs/monopoly-0.1-sim.jar
+    java -jar monopoly_app/build/libs/monopoly_app-sim.jar [-p PLAYERS] 
 
-usage: monopoly
+usage: monopoly_app-sim.jar
     
     -p,--players            number of players to simulate (2-4) 
                             two players by default
@@ -48,59 +48,86 @@ usage: monopoly
     java -jar build/libs/monopoly-0.1-sim.jar -p 4
 
     This is a game of Monopoly!
-    Number of players: 4
-    13:22:40.753 Setting 18 money to @Player1
-    13:22:40.756 Setting 18 money to @Player2
-    13:22:40.756 Setting 18 money to @Player3
-    13:22:40.756 Setting 18 money to @Player4
-    13:22:40.756 PlayTurn 1 - Player @Player1
-    13:22:40.758 Player's @Player1 action cards: [New Turn]
-    13:22:40.758 Step 1
-    13:22:40.763 @Player1: active action cards: [New Turn]
-    13:22:40.763 @Player1: playing card New Turn
-    13:22:40.769 @Player1 used New Turn and spawned some new cards: [Roll Dice, End Turn]
-    13:22:40.769 Step 2
-    13:22:40.769 @Player1: active action cards: [Roll Dice]
-    13:22:40.769 @Player1: playing card Roll Dice
-    13:22:40.769 Player @Player1 rolled 4
-    13:22:40.770 @Player1 used Roll Dice and spawned some new cards: [Move]
-    13:22:40.770 Step 3
-    13:22:40.770 @Player1: active action cards: [Move]
-    13:22:40.770 @Player1: playing card Move
-    13:22:40.770 @Player1: moving by 4 steps to 4 (Bakery)
-    13:22:40.771 @Player1: changing position from 0 to 4
-    13:22:40.773 @Player1 used Move and spawned some new cards: [Arrival]
-    ....
-    13:22:40.920 Player's @Player3 action cards: [New Turn]
-    13:22:40.920 Step 1
-    13:22:40.920 @Player3: active action cards: [New Turn]
-    13:22:40.920 @Player3: playing card New Turn
-    13:22:40.920 @Player3 used New Turn and spawned some new cards: [Roll Dice, End Turn]
-    13:22:40.920 Step 2
-    13:22:40.920 @Player3: active action cards: [Roll Dice]
-    13:22:40.920 @Player3: playing card Roll Dice
-    13:22:40.920 Player @Player3 rolled 2
-    13:22:40.920 @Player3 used Roll Dice and spawned some new cards: [Move]
-    13:22:40.920 Step 3
-    13:22:40.920 @Player3: active action cards: [Move]
-    13:22:40.920 @Player3: playing card Move
-    13:22:40.920 @Player3: moving by 2 steps to 12 (Parking)
-    13:22:40.920 @Player3: changing position from 10 to 12
-    13:22:40.920 @Player3 used Move and spawned some new cards: [Arrival]
-    13:22:40.920 Step 4
-    13:22:40.920 @Player3: active action cards: [Arrival]
-    13:22:40.920 @Player3: playing card Arrival
-    13:22:40.920 @Player3 used Arrival and spawned no new cards
-    13:22:40.920 Step 5
-    13:22:40.920 @Player3: active action cards: [End Turn]
-    13:22:40.920 @Player3: playing card End Turn
-    13:22:40.920 Finishing turn for player @Player3
-    13:22:40.920 Used cards: [New Turn, Roll Dice, Move, Arrival]
-    13:22:40.920 Not used cards: []
-    13:22:40.920 @Player3 used End Turn and spawned no new cards
-    13:22:40.920 Game loop ended after 150 turns
-    13:22:40.922 Winner: @Player1
-    13:22:40.924 @Player1 - PlayerInfo(player=@Player1, position=5, status=IN_GAME, money=51, actionCards=[], belongings=[Donut Shop, Library, Park lane, Mayfair])
-    13:22:40.942 @Player2 - PlayerInfo(player=@Player2, position=10, status=IN_GAME, money=35, actionCards=[], belongings=[Coffee Shop, Burger Joint, Swimming pool, Pet Shop, Aquarium])
-    13:22:40.942 @Player3 - PlayerInfo(player=@Player3, position=12, status=IN_GAME, money=8, actionCards=[], belongings=[])
-    13:22:40.942 @Player4 - PlayerInfo(player=@Player4, position=19, status=OUT_OF_GAME, money=0, actionCards=[End Turn, Pay Rent], belongings=[])
+    14:18:12.830 Putting 18 coins in @Player1's account
+    14:18:12.834 Putting 18 coins in @Player2's account
+    14:18:12.835 Game turn 1 for player @Player1
+    14:18:12.842 @Player1 can now play the following action cards: [New Turn]
+    14:18:12.855 [New Turn] is being played by @Player1
+    14:18:12.859 Used [New Turn]; @Player1 received the following cards: [Roll Dice, End Turn]
+    14:18:12.859 @Player1 can now play the following action cards: [Roll Dice]
+    14:18:12.859 [Roll Dice] is being played by @Player1
+    14:18:12.859 @Player1 rolled 2
+    14:18:12.860 Used [Roll Dice]; @Player1 received the following cards: [Move]
+    14:18:12.860 @Player1 can now play the following action cards: [Move]
+    14:18:12.860 [Move] is being played by @Player1
+    14:18:12.860 @Player1: advancing by 2 steps to 2 (Donut Shop)
+    14:18:12.861 @Player1 is moving from position 0 to position 2
+    14:18:12.865 Used [Move]; @Player1 received the following cards: [Arrival]
+    14:18:12.865 @Player1 can now play the following action cards: [Arrival]
+    14:18:12.865 [Arrival] is being played by @Player1
+    14:18:12.865 No one owns the Donut Shop, @Player1 can purchase it
+    14:18:12.866 Used [Arrival]; @Player1 received the following cards: [Buy]
+    14:18:12.866 @Player1 can now play the following action cards: [Buy]
+    14:18:12.866 [Buy] is being played by @Player1
+    14:18:12.866 Withdrawing 1 coin(s) from player @Player1
+    14:18:12.866 @Player1 has 17 coin(s)
+    14:18:12.866 Property 2 (Donut Shop) is now owned by @Player1
+    14:18:12.866 Used [Buy]; @Player1 received the following cards: []
+    14:18:12.866 @Player1 can now play the following action cards: [End Turn]
+    14:18:12.868 [End Turn] is being played by @Player1
+    14:18:12.869 Finishing turn for player @Player1
+    14:18:12.869 Used cards: [New Turn, Roll Dice, Move, Arrival, Buy]
+    ...
+    14:20:10.172 Game turn 111 for player @Player1
+    14:20:10.172 @Player1 can now play the following action cards: [New Turn]
+    14:20:10.172 [New Turn] is being played by @Player1
+    14:20:10.172 Used [New Turn]; @Player1 received the following cards: [Roll Dice, End Turn]
+    14:20:10.172 @Player1 can now play the following action cards: [Roll Dice]
+    14:20:10.172 [Roll Dice] is being played by @Player1
+    14:20:10.172 @Player1 rolled 4
+    14:20:10.172 Used [Roll Dice]; @Player1 received the following cards: [Move]
+    14:20:10.172 @Player1 can now play the following action cards: [Move]
+    14:20:10.172 [Move] is being played by @Player1
+    14:20:10.172 @Player1: advancing by 4 steps to 8 (Museum)
+    14:20:10.172 @Player1 is moving from position 4 to position 8
+    14:20:10.172 Used [Move]; @Player1 received the following cards: [Arrival]
+    14:20:10.172 @Player1 can now play the following action cards: [Arrival]
+    14:20:10.172 [Arrival] is being played by @Player1
+    14:20:10.172 Player @Player1 is obligated to pay rent to @Player2 for Museum
+    14:20:10.172 Player @Player2 owns all properties of the same color YELLOW, so the owner gets double rent: 4
+    14:20:10.172 Used [Arrival]; @Player1 received the following cards: [Pay Rent]
+    14:20:10.172 @Player1 can now play the following action cards: [Pay Rent]
+    14:20:10.173 [Pay Rent] is being played by @Player1
+    14:20:10.173 Withdrawing 4 coin(s) from player @Player1
+    14:20:10.173 @Player1 has not enough coins 4, current balance: 2
+    14:20:10.173 Player cannot play card: Not enough coins
+    14:20:10.173 Creating contracts for player's possession
+    14:20:10.173 Used [Pay Rent]; @Player1 received the following cards: [Pay Rent, Contract]
+    14:20:10.173 @Player1 can now play the following action cards: [Contract]
+    14:20:10.173 [Contract] is being played by @Player1
+    14:20:10.173 Player @Player1 is contracting property 4 (Bakery)
+    14:20:10.173 Adding 1 coins to @Player1
+    14:20:10.173 @Player1 has 3
+    14:20:10.173 Property 4 (Bakery) is now free
+    14:20:10.173 @Player1 lost property 4 (Bakery)
+    14:20:10.173 Used [Contract]; @Player1 received the following cards: []
+    14:20:10.173 @Player1 can now play the following action cards: [Pay Rent]
+    14:20:10.173 [Pay Rent] is being played by @Player1
+    14:20:10.173 Withdrawing 4 coin(s) from player @Player1
+    14:20:10.173 @Player1 has not enough coins 4, current balance: 3
+    14:20:10.173 Player cannot play card: Not enough coins
+    14:20:10.173 Player @Player1 has no properties
+    14:20:10.173 Used [Pay Rent]; @Player1 received the following cards: [Pay Rent]
+    14:20:10.173 Finishing turn for player @Player1
+    14:20:10.173 Used cards: [New Turn, Roll Dice, Move, Arrival, Contract]
+    14:20:10.173 Not used cards: [End Turn, Pay Rent]
+    14:20:10.173 Player @Player1 has mandatory cards: [End Turn, Pay Rent]
+    14:20:10.173 @Player1: changing status from IN_GAME to OUT_OF_GAME
+    ...
+    14:20:10.175 No next player
+    14:20:10.175 Game ended
+    14:20:10.176 Free properties on the board: [Bakery, Burger Joint, Swimming Pool, Toy Shop]
+    14:20:10.182 Winner: @Player2
+    14:20:10.183 @Player1 - Player: @Player1 at position: 8, with status: OUT_OF_GAME, with coins: 3, with action cards: [End Turn, Pay Rent] and belongings: []
+    14:20:10.238 @Player2 - Player: @Player2 at position: 14, with status: IN_GAME, with coins: 19, with action cards: [] and belongings: [Coffee Shop, Donut Shop, Library, Museum, Go-Karts, Cinema, Theatre, Pet Shop, Aquarium, The ZOO, Park Lane, Mayfair]
+

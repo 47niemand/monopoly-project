@@ -1,6 +1,5 @@
 package pp.muza.monopoly.data;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,7 @@ class PlayerInfo {
     Player player;
     int position;
     PlayerStatus status;
-    BigDecimal money;
+    Integer coins;
     List<ActionCard> actionCards;
     List<IndexedEntry<Property>> belongings;
 
@@ -29,7 +28,7 @@ class PlayerInfo {
         return "Player: " + player.getName()
                 + " at position: " + position
                 + ", with status: " + status
-                + ", with money: " + money
+                + ", with coins: " + coins
                 + ", with action cards: " + actionCards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + " and belongings: " + belongings.stream().map(x -> x.getValue().getName()).collect(Collectors.toList());
     }

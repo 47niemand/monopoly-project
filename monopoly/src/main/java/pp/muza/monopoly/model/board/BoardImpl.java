@@ -54,9 +54,14 @@ public class BoardImpl implements Board {
     public List<Integer> getPathTo(int startPos, int endPos) {
         ImmutableList.Builder<Integer> path = ImmutableList.builder();
         int current = startPos;
+        int distance = 0;
         while (current != endPos) {
             current = nextPosition(current);
+            distance++;
             path.add(current);
+            if (distance > lands.size()) {
+                throw new IllegalStateException("Path is too long");
+            }
         }
         return path.build();
     }

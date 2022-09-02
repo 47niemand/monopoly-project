@@ -17,7 +17,7 @@ import pp.muza.monopoly.model.Turn;
 public final class GoToJail extends BaseActionCard {
 
     GoToJail() {
-        super("Go to Jail", Action.GO_TO_JAIL, Type.OBLIGATION, DEFAULT_PRIORITY);
+        super("Go to Jail", Action.GO_TO_JAIL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     @Override

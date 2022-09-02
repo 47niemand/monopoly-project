@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
  * This interface represents a turn in the game.
@@ -42,18 +43,10 @@ public interface Turn {
      * Buys a property at the given position.
      *
      * @param landId the land id.
-     * @throws BankException if player doesn't have enough money.
+     * @throws BankException if a player doesn't have enough coins.
      * @throws TurnException if operation fails.
      */
     void buyProperty(int landId) throws BankException, TurnException;
-
-    /**
-     * The player pays a tax to the bank.
-     *
-     * @param amount the amount to pay.
-     * @throws BankException if operation fails.
-     */
-    void payTax(BigDecimal amount) throws BankException;
 
     /**
      * The player leaves jail.
@@ -85,7 +78,7 @@ public interface Turn {
      * @return the position of the land.
      * @throws NoSuchElementException if a land name does not exist.
      */
-    int foundProperty(Property.Asset asset);
+    int foundProperty(Asset asset);
 
     /**
      * returns positions of lands by the given color
@@ -94,13 +87,13 @@ public interface Turn {
      * @return the position of the lands, if there is no land with the given color,
      * returns an empty list.
      */
-    List<Integer> foundLandsByColor(Property.Color color);
+    List<Integer> foundLandsByColor(PropertyColor color);
 
     /**
-     * send a card to the player.
+     * Sends a card to the player.
      *
      * @param player     the player.
-     * @param actionCard action card.
+     * @param actionCard the action card.
      */
     void sendCard(Player player, ActionCard actionCard);
 
@@ -114,7 +107,7 @@ public interface Turn {
      *
      * @param salePlayer the player who is selling.
      * @param landId     the land id to sell.
-     * @throws BankException if player doesn't have enough money.
+     * @throws BankException if a player doesn't have enough coins.
      * @throws TurnException operation fails if the salePlayer does not own the
      *                       property.
      */
@@ -126,20 +119,20 @@ public interface Turn {
     void playerTurnStarted();
 
     /**
-     * returns amount of money to pay for the rent.
+     * returns number of coins to pay for the rent.
      *
      * @param position the position of the land.
-     * @return the amount of money to pay.
+     * @return the number of coins to pay.
      */
-    BigDecimal getRent(int position);
+    Integer getRent(int position);
 
     /**
-     * adds amount to the player's balance.
+     * adds number to the player's balance.
      *
-     * @param amount the amount to add.
+     * @param number the number to add.
      * @throws BankException if operation fails.
      */
-    void income(BigDecimal amount) throws BankException;
+    void income(Integer number) throws BankException;
 
 
     /**
@@ -214,9 +207,9 @@ public interface Turn {
     /**
      * returns a fine to pay in order to get out of jail.
      *
-     * @return amount to pay.
+     * @return number to pay.
      */
-    BigDecimal getJailFine();
+    Integer getJailFine();
 
     /**
      * Returns the properties of the player.
@@ -262,10 +255,10 @@ public interface Turn {
     List<IndexedEntry<Property>> getFreeProperties();
 
     /**
-     * withdraws the amount of money from the player.
+     * withdraws the number of coins from the player.
      *
-     * @param amount to withdraw
-     * @throws BankException if player doesn't have enough money.
+     * @param number to withdraw
+     * @throws BankException if a player doesn't have enough coins.
      */
-    void withdraw(BigDecimal amount) throws BankException;
+    void withdraw(Integer number) throws BankException;
 }

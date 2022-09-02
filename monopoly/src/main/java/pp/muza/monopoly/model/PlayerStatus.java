@@ -1,5 +1,8 @@
 package pp.muza.monopoly.model;
 
+/**
+ * Players can be in one of these states.
+ */
 public enum PlayerStatus {
     /**
      * The player is in the game.

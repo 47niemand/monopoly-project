@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model.turn;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,7 @@ import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
 import pp.muza.monopoly.model.Land;
@@ -20,6 +21,7 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
  * The turn of the game implementation. This class implements the Turn interface.
@@ -41,7 +43,7 @@ public class TurnImpl implements Turn {
     @Override
     public List<ActionCard> getActiveActionCards() {
         List<ActionCard> result = game.getActiveActionCards(player);
-        LOG.info("{}: active action cards: {}", player.getName(),
+        LOG.info("{} can now play the following action cards: {}", player.getName(),
                 result.stream().map(ActionCard::getName).collect(Collectors.toList()));
         return result;
     }
@@ -51,11 +53,12 @@ public class TurnImpl implements Turn {
         if (isFinished()) {
             throw new TurnException("The turn is finished.");
         }
-        LOG.info("{}: playing card {}", player.getName(), actionCard.getName());
+
+        LOG.info("[{}] is being played by {}", actionCard.getName(), player.getName());
         boolean result = game.playCard(this, actionCard);
-        LOG.debug("Card {} played: {}", actionCard, result);
+        LOG.debug("Card [{}] played: {}", actionCard, result);
         if (usedCards.remove(actionCard)) {
-            LOG.debug("{}: card {} was already used", player.getName(), actionCard);
+            LOG.debug("{}: card '{}' was already used", player.getName(), actionCard);
             // it is not an error if the card was already used.
         }
         if (result) {
@@ -105,7 +108,7 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public BigDecimal getJailFine() {
+    public Integer getJailFine() {
         return game.getJailFine();
     }
 
@@ -125,13 +128,13 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public BigDecimal getRent(int landId) {
+    public Integer getRent(int landId) {
         return game.getRent(landId);
     }
 
     @Override
-    public void income(BigDecimal amount) throws BankException {
-        game.income(player, amount);
+    public void income(Integer number) throws BankException {
+        game.income(player, number);
     }
 
     @Override
@@ -139,11 +142,6 @@ public class TurnImpl implements Turn {
         return game.getPropertyOwners();
     }
 
-
-    @Override
-    public void payTax(BigDecimal amount) throws BankException {
-        game.payTax(player, amount);
-    }
 
     @Override
     public void leaveJail() throws TurnException {
@@ -174,12 +172,12 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public int foundProperty(Property.Asset asset) {
+    public int foundProperty(Asset asset) {
         return game.findProperty(asset);
     }
 
     @Override
-    public List<Integer> foundLandsByColor(Property.Color color) {
+    public List<Integer> foundLandsByColor(PropertyColor color) {
         return game.findLandsByColor(color);
     }
 
@@ -201,8 +199,8 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public void withdraw(BigDecimal amount) throws BankException {
-        game.withdraw(player, amount);
+    public void withdraw(Integer number) throws BankException {
+        game.withdraw(player, number);
     }
 
     @Override

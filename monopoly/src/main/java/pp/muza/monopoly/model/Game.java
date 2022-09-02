@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -9,6 +9,7 @@ import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
  * This is game API, which is used to play a turn.
@@ -97,7 +98,7 @@ public interface Game {
     void birthdayParty(Player player);
 
     /**
-     * Trade a property between two players.
+     * Buy a property between two players.
      *
      * @param player     the player who is buying the property.
      * @param salePlayer the player who is selling the property.
@@ -105,7 +106,7 @@ public interface Game {
      * @throws TurnException if there are some errors (e.g. the landId is not owned
      *                       by the sale player).
      * @throws BankException if operation fails (e.g. if the player doesn't have
-     *                       enough money).
+     *                       enough coins).
      */
     void tradeProperty(Player player, Player salePlayer, int landId) throws TurnException, BankException;
 
@@ -120,9 +121,9 @@ public interface Game {
     /**
      * Returns a fine to pay in order to get out of jail.
      *
-     * @return amount to pay.
+     * @return number to pay.
      */
-    BigDecimal getJailFine();
+    Integer getJailFine();
 
     /**
      * Returns the position of the player.
@@ -157,37 +158,29 @@ public interface Game {
      * @param landId the property to buy.
      * @throws TurnException if there are some errors (e.g. someone already owns the
      *                       landId).
-     * @throws BankException if the player doesn't have enough money.
+     * @throws BankException if the player doesn't have enough coins.
      */
     void buyProperty(Player player, int landId) throws TurnException, BankException;
 
 
     /**
-     * Get the amount of money needed to cover the rent.
+     * Get the number of coins needed to cover the rent.
      *
      * @param landId the property.
-     * @return the amount of money to pay for the rent, or 0 if anyone does not own the property.
+     * @return the number of coins to pay for the rent, or 0 if anyone does not own the property.
      */
-    BigDecimal getRent(int landId);
+    Integer getRent(int landId);
 
     /**
-     * transfers the given amount of money from the player to the recipient.
+     * transfers the given number of coins from the player to the recipient.
      *
-     * @param player    the player who is sending the money.
-     * @param recipient the player who is receiving the money.
-     * @param amount    the amount of money to transfer.
-     * @throws BankException if the player doesn't have enough money.
+     * @param player    the player who is sending the coins.
+     * @param recipient the player who is receiving the coins.
+     * @param number    the number of coins to transfer.
+     * @throws BankException if the player doesn't have enough coins.
      */
-    void pay(Player player, Player recipient, BigDecimal amount) throws BankException;
+    void pay(Player player, Player recipient, Integer number) throws BankException;
 
-    /**
-     * Pays a given amount of money to the bank.
-     *
-     * @param player the player.
-     * @param amount the amount of money to pay.
-     * @throws BankException if the player doesn't have enough money.
-     */
-    void payTax(Player player, BigDecimal amount) throws BankException;
 
     /**
      * Leaves the jail.
@@ -212,7 +205,7 @@ public interface Game {
      * @param landId the property.
      * @throws TurnException if there are some errors (e.g. the landId is not owned
      *                       by the player).
-     * @throws BankException if a player cannot receive the money.
+     * @throws BankException if a player cannot receive the coins.
      */
     void doContract(Player player, int landId) throws TurnException, BankException;
 
@@ -231,7 +224,7 @@ public interface Game {
      * @return the land id.
      * @throws NoSuchElementException if there is no land with the given name.
      */
-    int findProperty(Property.Asset asset);
+    int findProperty(Asset asset);
 
     /**
      * Returns the list of land's ids with the given color.
@@ -239,7 +232,7 @@ public interface Game {
      * @param color the color.
      * @return the list of lands.
      */
-    List<Integer> findLandsByColor(Property.Color color);
+    List<Integer> findLandsByColor(PropertyColor color);
 
     /**
      * Returns the list of all players.
@@ -247,6 +240,14 @@ public interface Game {
      * @return the list of players.
      */
     List<Player> getPlayers();
+
+    /**
+     * Set a player position
+     *
+     * @param player   the player
+     * @param position the position
+     */
+    void setPosition(Player player, int position);
 
     /**
      * Sends the action card to the player.
@@ -271,20 +272,20 @@ public interface Game {
     Map<Integer, Player> getPropertyOwners();
 
     /**
-     * Adds money to the player's wallet.
+     * Adds coins to the player's wallet.
      *
      * @param player the player.
-     * @param amount the amount of money to add.
+     * @param number the number of coins to add.
      * @throws BankException if operation fails (e.g. if the player wallet is full).
      */
-    void income(Player player, BigDecimal amount) throws BankException;
+    void income(Player player, Integer number) throws BankException;
 
     /**
-     * Withdraws the given amount of money from a player.
+     * Withdraws the given number of coins from a player.
      *
      * @param player the player.
-     * @param amount the amount of money to withdraw.
-     * @throws BankException if the player doesn't have enough money.
+     * @param number the number of coins to withdraw.
+     * @throws BankException if the player doesn't have enough coins.
      */
-    void withdraw(Player player, BigDecimal amount) throws BankException;
+    void withdraw(Player player, Integer number) throws BankException;
 }

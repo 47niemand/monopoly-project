@@ -1,5 +1,7 @@
 package pp.muza.monopoly.model;
 
+import pp.muza.monopoly.model.pieces.lands.LandType;
+
 public interface Land {
 
     /**
@@ -14,15 +16,6 @@ public interface Land {
      *
      * @return the type of the land
      */
-    Type getType();
+    LandType getType();
 
-    enum Type {
-        // type of land
-        START,
-        PROPERTY,
-        JAIL,
-        PARKING,
-        GOTO_JAIL,
-        CHANCE
-    }
 }

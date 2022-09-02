@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -23,34 +22,28 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class JailFine extends BaseActionCard {
+public final class JailFine extends Tax {
 
     private static final Logger LOG = LoggerFactory.getLogger(JailFine.class);
 
-    private final BigDecimal amount;
-
-    JailFine(BigDecimal amount) {
-        super("Jail Fine", Action.TAX, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.amount = amount;
+    JailFine(Integer number) {
+        super("Jail Fine", ActionType.OBLIGATION, DEFAULT_PRIORITY, number);
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
-        List<ActionCard> result;
+    protected void check(Turn turn) throws TurnException {
+        if (turn.getStatus() != PlayerStatus.IN_JAIL) {
+            throw new TurnException("Player is not in jail, cannot pay tax");
+        }
+    }
+
+    @Override
+    protected List<ActionCard> onSuccess(Turn turn) {
         try {
-            if (turn.getStatus() == PlayerStatus.IN_JAIL) {
-                turn.payTax(amount);
-                turn.leaveJail();
-            } else {
-                LOG.warn("Player is not in jail, cancel jail fine");
-            }
-            result = ImmutableList.of(EndTurn.of());
-        } catch (BankException e) {
-            LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
+            turn.leaveJail();
         } catch (TurnException e) {
             throw new IllegalStateException(e);
         }
-        return result;
+        return ImmutableList.of();
     }
 }

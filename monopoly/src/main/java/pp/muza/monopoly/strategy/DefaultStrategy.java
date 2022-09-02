@@ -11,9 +11,12 @@ import pp.muza.monopoly.model.Strategy;
 
 public class DefaultStrategy implements Strategy {
 
-    public static final Strategy STRATEGY = new DefaultStrategy();
-
     private static final Logger LOG = LoggerFactory.getLogger(DefaultStrategy.class);
+    private static final DefaultStrategy STRATEGY = new DefaultStrategy();
+
+    public static Strategy getInstance() {
+        return STRATEGY;
+    }
 
     @Override
     public ActionCard playTurn(TurnInfo turnInfo) {
@@ -21,7 +24,7 @@ public class DefaultStrategy implements Strategy {
         // TODO: implement a better strategy
         //  if there are CONTRACT cards, chose which a better to sale (to cover the obligation, or get more profit);
         //  If there is a BUY card, decide whether to buy it or not if a better option could be available;
-        //  if there are BuyOrTrade cards, chose card which fits player balance;
+        //  if there are MoveAndTrade cards, chose card which fits player balance;
         //  if there are GetOrPay cards, It is preferable to select an unowned land, but consider the player's balance;
         //  if there are OptionMove cards, chose the one which is better to the player's current situation;
 

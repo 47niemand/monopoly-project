@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,28 +16,39 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * A player receives money from this card.
+ * A player receives coins from this card.
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Income extends BaseActionCard {
+public class Income extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Income.class);
 
-    private final BigDecimal amount;
+    /**
+     * The number of coins that is received.
+     */
+    protected final Integer number;
 
-    Income(BigDecimal amount) {
-        super("Income", Action.INCOME, Type.OBLIGATION, HIGHEST_PRIORITY);
-        this.amount = amount;
+    protected Income(String name, ActionType actionType, int priority, Integer number) {
+        super(name, Action.INCOME, actionType, priority);
+        this.number = number;
+    }
+
+    Income(Integer number) {
+        this("Income", ActionType.OBLIGATION, HIGHEST_PRIORITY, number);
+    }
+
+    public static ActionCard of(Integer number) {
+        return new Income(number);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.income(amount);
+            turn.income(number);
         } catch (BankException e) {
-            LOG.warn("Player cannot receive money: {}", e.getMessage());
+            LOG.warn("Player cannot receive coins: {}", e.getMessage());
         }
         return ImmutableList.of();
     }

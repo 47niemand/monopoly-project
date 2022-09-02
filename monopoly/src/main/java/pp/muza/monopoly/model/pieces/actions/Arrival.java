@@ -30,30 +30,30 @@ public final class Arrival extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 
-    private final int position;
+    private final int landId;
 
-    Arrival(int position) {
-        super("Arrival", Action.ARRIVAL, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.position = position;
+    Arrival(int landId) {
+        super("Arrival", Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        this.landId = landId;
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard of(Integer position) {
         return new Arrival(position);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        Land land = turn.getLand(position);
+        Land land = turn.getLand(landId);
         List<ActionCard> result;
         switch (land.getType()) {
             case PROPERTY:
-                Player owner = turn.getPropertyOwner(position);
+                Player owner = turn.getPropertyOwner(landId);
                 if (owner == null) {
                     LOG.info("No one owns the {}, {} can purchase it", land.getName(), turn.getPlayer().getName());
-                    result = ImmutableList.of(new Buy(position));
+                    result = ImmutableList.of(new Buy(landId));
                 } else if (owner != turn.getPlayer()) {
                     LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer().getName(), owner.getName(), land.getName());
-                    result = ImmutableList.of(new PayRent(owner, position, turn.getRent(position)));
+                    result = ImmutableList.of(new PayRent(owner, turn.getRent(landId), landId));
                 } else {
                     LOG.info("Property {} is owned by player, nothing to do", land.getName());
                     result = ImmutableList.of();

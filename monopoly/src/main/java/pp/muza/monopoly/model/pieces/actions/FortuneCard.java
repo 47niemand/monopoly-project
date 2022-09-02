@@ -1,8 +1,9 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,34 +15,38 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
- * This is a specific card that stores the chance pile of the game. it should be
- * returned to the game when the card is used.
+ * This is a specific card that stores the chance pile of the game.
+ * It should be returned to the game when the card is used.
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class FortuneCard extends BaseActionCard implements Fortune {
 
+    public static final int PRIZE_AMOUNT = 2;
+    public static final int LUXURY_TAX_AMOUNT = 2;
     private static final Logger LOG = LoggerFactory.getLogger(FortuneCard.class);
     private static final int PLAYER_1 = 0;
     private static final int PLAYER_2 = 1;
     private static final int PLAYER_3 = 2;
     private static final int PLAYER_4 = 3;
-
     private final Chance chance;
+    private final String description;
 
     FortuneCard(Chance chance) {
-        super("Chance(" + chance.name() + ")", Action.CHANCE
-                , chance.isGiftCard() ? Type.KEEPABLE : Type.OBLIGATION
+        super(chance.getName(), Action.CHANCE
+                , chance.isGiftCard() ? ActionType.KEEPABLE : ActionType.OBLIGATION
                 , chance.isGiftCard() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
         this.chance = chance;
+        this.description = chance.getDescription();
     }
 
     public static Fortune of(Chance chance) {
@@ -80,49 +85,45 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         List<ActionCard> result = new ArrayList<>();
         switch (chance) {
             case ADVANCE_TO_MAYFAIR:
-                result.addAll(spawnGetOrPayByName(turn, Property.Asset.MAYFAIR));
+                result.addAll(spawnGetOrPayByName(turn, Asset.MAYFAIR));
                 break;
             case ADVANCE_TO_YELLOW_OR_RAINBOW:
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.YELLOW));
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.RAINBOW));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.YELLOW));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RAINBOW));
                 break;
             case ADVANCE_TO_GREEN_OR_VIOLET:
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.GREEN));
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.VIOLET));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.GREEN));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.VIOLET));
                 break;
             case ADVANCE_TO_BLUE_OR_ORANGE:
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.BLUE));
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.ORANGE));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.BLUE));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.ORANGE));
                 break;
             case ADVANCE_TO_INDIGO_OR_RED:
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.RED));
-                result.addAll(spawnGetOrPayByColor(turn, Property.Color.INDIGO));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RED));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.INDIGO));
                 break;
             case ADVANCE_TO_GO_KARTS:
-                result.addAll(spawnGetOrPayByName(turn, Property.Asset.GO_KARTS));
+                result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
                 break;
-            case INCOME:
-                result.add(new Income(BigDecimal.valueOf(2)));
+            case PRIZE:
+                result.add(Income.of(PRIZE_AMOUNT));
                 break;
             case BIRTHDAY:
                 turn.birthdayParty();
                 break;
             case LUXURY_TAX:
-                result.add(new Tax(BigDecimal.valueOf(2)));
+                result.add(new Tax(LUXURY_TAX_AMOUNT));
                 break;
             case ADVANCE_TO_GO:
-                result.add(new MoveTo(turn.getStartPos()));
+                result.add(MoveTo.of(turn.getStartPos()));
                 break;
             case MOVE_FORWARD_ONE_SPACE:
                 result.add(new OptionMove(1));
                 result.add(new TakeFortuneCard());
                 break;
             case MOVE_FORWARD_UP_TO_5_SPACES:
-                result.add(new OptionMove(5));
-                result.add(new OptionMove(4));
-                result.add(new OptionMove(3));
-                result.add(new OptionMove(2));
-                result.add(new OptionMove(1));
+                IntStream.rangeClosed(1, 5).forEach(i -> result.add(new OptionMove(i)));
                 break;
             case GET_OUT_OF_JAIL_FREE:
                 if (turn.getStatus() == PlayerStatus.IN_JAIL) {
@@ -155,16 +156,16 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         return result;
     }
 
-    private List<ActionCard> spawnGetOrPayByName(Turn turn, Property.Asset asset) {
+    private List<ActionCard> spawnGetOrPayByName(Turn turn, Asset asset) {
         int landId = turn.foundProperty(asset);
-        return ImmutableList.of(new GetOrPay(landId));
+        return ImmutableList.of(new OptionMoveTo(landId));
     }
 
-    private List<ActionCard> spawnGetOrPayByColor(Turn turn, Property.Color color) {
+    private List<ActionCard> spawnGetOrPayByColor(Turn turn, PropertyColor color) {
         ImmutableList.Builder<ActionCard> builder = ImmutableList.builder();
         List<Integer> list = turn.foundLandsByColor(color);
         for (Integer landId : list) {
-            builder.add(new GetOrPay(landId));
+            builder.add(new OptionMoveTo(landId));
         }
         return builder.build();
     }

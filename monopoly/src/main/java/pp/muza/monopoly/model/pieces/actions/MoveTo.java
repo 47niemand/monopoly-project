@@ -20,31 +20,46 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class MoveTo extends BaseActionCard {
+public class MoveTo extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveTo.class);
 
-    private final int position;
+    protected final int landId;
 
-    MoveTo(int position) {
-        super("MoveTo", Action.MOVE, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.position = position;
+    protected MoveTo(String name, ActionType type, int priority, int landId) {
+        super(name, Action.MOVE_TO, type, priority);
+        this.landId = landId;
     }
 
-    public static ActionCard of(int position) {
-        return new MoveTo(position);
+    MoveTo(int landId) {
+        this("Move To", ActionType.OBLIGATION, DEFAULT_PRIORITY, landId);
+    }
+
+    public static ActionCard of(int landId) {
+        return new MoveTo(landId);
+    }
+
+    /**
+     * A method called when the player arrives at a new location on the board.
+     * <p>can be overridden by subclasses to perform additional actions.</p>
+     *
+     * @param turn     the current turn
+     * @return the action cards to execute after the player arrives at the new location.
+     */
+    protected List<ActionCard> onArrival(Turn turn) {
+        return ImmutableList.of(new Arrival(landId));
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), position, turn.getLand(position).getName());
-        List<Land> path = turn.moveTo(position);
+        LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
+        List<Land> path = turn.moveTo(landId);
         if (path.size() == 0) {
             LOG.warn("Staying on the same land");
         }
         return ImmutableList.<ActionCard>builder()
                 .addAll(CardUtils.onPath(turn, path))
-                .add(new Arrival(position))
+                .addAll(onArrival(turn))
                 .build();
     }
 

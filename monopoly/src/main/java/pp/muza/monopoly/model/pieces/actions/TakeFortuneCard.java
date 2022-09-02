@@ -10,7 +10,7 @@ import pp.muza.monopoly.model.Turn;
 public final class TakeFortuneCard extends BaseActionCard {
 
     TakeFortuneCard() {
-        super("Take Fortune Card", Action.GIFT, Type.CHOOSE, DEFAULT_PRIORITY);
+        super("Take Fortune Card", Action.GIFT, ActionType.CHOOSE, DEFAULT_PRIORITY);
     }
 
     @Override

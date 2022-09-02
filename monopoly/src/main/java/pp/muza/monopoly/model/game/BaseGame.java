@@ -31,6 +31,10 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Strategy;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.Action;
+import pp.muza.monopoly.model.pieces.actions.ActionType;
+import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
+import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 
 abstract class BaseGame {
@@ -69,7 +73,7 @@ abstract class BaseGame {
             if (playerData.put(x.getPlayer(), data) != null) {
                 throw new IllegalStateException("Duplicate key");
             }
-            this.bank.set(x.getPlayer(), x.getMoney());
+            this.bank.set(x.getPlayer(), x.getCoins());
 
             for (IndexedEntry<Property> belonging : x.getBelongings()) {
                 if (this.propertyOwners.put(belonging.getIndex(), x.getPlayer()) != null) {
@@ -126,12 +130,12 @@ abstract class BaseGame {
     }
 
     void getBackChanceCard(ActionCard card) {
-        if (card.getAction() != ActionCard.Action.CHANCE) {
+        if (card.getAction() != Action.CHANCE) {
             throw new IllegalArgumentException("Not a chance card");
         }
         assert card instanceof Fortune;
         Fortune fortune = (Fortune) card;
-        LOG.info("Fortune card {} returned", card.getName());
+        LOG.info("Fortune card [{}] returned", card.getName());
         assert !fortuneCards.contains(fortune);
         fortuneCards.addLast(fortune);
     }
@@ -145,24 +149,28 @@ abstract class BaseGame {
         }
     }
 
-    // for testing
-    void bringFortuneCardToTop(Fortune.Chance card) {
+    /**
+     * for testing
+     */
+    void bringFortuneCardToTop(Chance card) {
         Fortune fortune = pickFortuneCard(card);
         fortuneCards.addFirst(fortune);
     }
 
-    // for testing
-    Fortune pickFortuneCard(Fortune.Chance chance) {
+    /**
+     * for testing
+     */
+    Fortune pickFortuneCard(Chance chance) {
         Fortune result;
         // find fortune by given chance
         OptionalInt index = IntStream.range(0, fortuneCards.size())
                 .filter(i -> fortuneCards.get(i).getChance() == chance)
                 .findFirst();
         if (index.isPresent()) {
-            LOG.info("Fortune card {} removed from pile", chance.name());
+            LOG.info("Fortune card [{}] removed from pile", chance.name());
             result = fortuneCards.remove(index.getAsInt());
         } else {
-            LOG.error("Fortune card {} not found", chance.name());
+            LOG.error("Fortune card [{}] not found", chance.name());
             result = null;
         }
         return result;
@@ -171,7 +179,7 @@ abstract class BaseGame {
     void getBackAllChanceCards(Player player) {
         playerData.get(player).actionCards.removeIf(x -> {
                     boolean found = false;
-                    if (x.getAction() == ActionCard.Action.CHANCE) {
+                    if (x.getAction() == Action.CHANCE) {
                         // return chance card to pile
                         getBackChanceCard(x);
                         found = true;
@@ -183,10 +191,10 @@ abstract class BaseGame {
 
     void getBackAllPlayerCards(Player player) {
         playerData.get(player).actionCards.removeIf(x -> {
-                    boolean found = x.getType() != ActionCard.Type.KEEPABLE;
+                    boolean found = x.getType() != ActionType.KEEPABLE;
                     if (found) {
                         LOG.info("{} lost action card {}", player.getName(), x.getName());
-                        if (x.getAction() == ActionCard.Action.CHANCE) {
+                        if (x.getAction() == Action.CHANCE) {
                             getBackChanceCard(x);
                         }
                     }
@@ -208,7 +216,7 @@ abstract class BaseGame {
 
     private boolean canExecute(Turn turn, ActionCard card) {
         // there is some logic for checking if the card can be executed
-        if (card.getAction() == ActionCard.Action.CHANCE && ((Fortune) card).getChance() == Fortune.Chance.GET_OUT_OF_JAIL_FREE) {
+        if (card.getAction() == Action.CHANCE && ((Fortune) card).getChance() == Chance.GET_OUT_OF_JAIL_FREE) {
             return turn.getStatus() == PlayerStatus.IN_JAIL;
         }
         return true;
@@ -273,7 +281,7 @@ abstract class BaseGame {
         do {
             turnNumber++;
             Player player = players.get(currentPlayerIndex);
-            LOG.info("Playing turn {} - Player {}", turnNumber, player.getName());
+            LOG.info("Game turn {} for player {}", turnNumber, player.getName());
             Turn turn = turn(player);
             playerData.get(player).getActionCards().add(NewTurn.of());
             playTurn(turn);
@@ -293,7 +301,7 @@ abstract class BaseGame {
                 .mapToObj(x -> board.getLand(x).getName())
                 .collect(Collectors.toList());
         LOG.info("Free properties on the board: {}", freeProperties);
-        // get player with maximum money
+        // get player with maximum coins
         Player winner = players.stream()
                 .filter(x -> !playerData.get(x).getStatus().isFinished())
                 .max(Comparator.comparing(bank::getBalance))
@@ -323,7 +331,7 @@ abstract class BaseGame {
                     .mapToInt(ActionCard::getPriority)
                     .min();
         }
-        return priority.orElse(ActionCard.LOW_PRIORITY);
+        return priority.orElse(BaseActionCard.LOW_PRIORITY);
     }
 
     @Data
@@ -338,7 +346,16 @@ abstract class BaseGame {
             this.player = player;
             this.status = status;
             this.position = position;
-            this.actionCards = new ArrayList<>();
+            this.actionCards = new ArrayList<>() {
+                @Override
+                public boolean add(ActionCard actionCard) {
+                    if (actionCard.getType().isMandatory()) {
+                        return super.add(actionCard);
+                    } else {
+                        return false;
+                    }
+                }
+            };
             this.strategy = strategy;
         }
 
@@ -349,7 +366,7 @@ abstract class BaseGame {
 
         void setPosition(int position) {
             if (this.position != position) {
-                LOG.info("{}: changing position from {} to {}", this.player.getName(), this.position, position);
+                LOG.info("{} is moving from position {} to position {}", this.player.getName(), this.position, position);
                 this.position = position;
             } else {
                 LOG.info("{} at position {}", this.player.getName(), this.position);

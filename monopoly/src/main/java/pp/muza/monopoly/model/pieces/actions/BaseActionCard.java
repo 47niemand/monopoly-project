@@ -21,16 +21,22 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode
 public abstract class BaseActionCard implements ActionCard {
 
+    public static final int HIGHEST_PRIORITY = 0;
+    public static final int NEW_TURN_PRIORITY = 100;
+    public static final int HIGH_PRIORITY = 200;
+    public static final int DEFAULT_PRIORITY = 1000;
+    public static final int LOW_PRIORITY = 10000;
     private static final Logger LOG = LoggerFactory.getLogger(BaseActionCard.class);
 
     private final String name;
     private final Action action;
-    private final Type type;
+    private final ActionType type;
 
     @EqualsAndHashCode.Exclude
     private final int priority;
 
-    protected BaseActionCard(String name, Action action, Type type, int priority) {
+    protected BaseActionCard(String name, Action action, ActionType type, int priority) {
+        assert action.getClassList().contains(this.getClass());
         this.name = name;
         this.action = action;
         this.priority = priority;
@@ -53,7 +59,7 @@ public abstract class BaseActionCard implements ActionCard {
      * @param turn the turn of the game.
      * @return list of action cards spawned by the action card.
      */
-    public List<ActionCard> play(Turn turn) {
+    public final List<ActionCard> play(Turn turn) {
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = this.onExecute(turn);
         LOG.debug("Resulting: {}", result);

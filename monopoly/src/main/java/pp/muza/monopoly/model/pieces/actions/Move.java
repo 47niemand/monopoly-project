@@ -21,30 +21,46 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Move extends BaseActionCard {
+public class Move extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Move.class);
 
-    private final int distance;
+    protected final int distance;
 
-    Move(int distance) {
-        super("Move", Action.MOVE, Type.OBLIGATION, DEFAULT_PRIORITY);
+    protected Move(String name, ActionType type, int priority, int distance) {
+        super(name, Action.MOVE, type, priority);
         if (distance <= 0) {
             throw new IllegalArgumentException("Distance must be positive");
         }
         this.distance = distance;
     }
 
+    Move(int distance) {
+        this("Move", ActionType.OBLIGATION, DEFAULT_PRIORITY, distance);
+    }
+
+    /**
+     * A method called when the player arrives at a new location on the board.
+     * <p>can be overridden by subclasses to perform additional actions.</p>
+     *
+     * @param turn     the current turn
+     * @param position the new location on the board.
+     * @return the action cards to execute after the player arrives at the new location.
+     */
+    protected List<ActionCard> onArrival(Turn turn, int position) {
+        return ImmutableList.of(new Arrival(position));
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int position = turn.nextPosition(distance);
-        LOG.info("{}: moving by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
+        LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
                 turn.getLand(position).getName());
         List<Land> path = turn.moveTo(position);
         assert path.size() == distance;
         return ImmutableList.<ActionCard>builder()
                 .addAll(CardUtils.onPath(turn, path))
-                .add(new Arrival(position))
+                .addAll(onArrival(turn, position))
                 .build();
     }
 }

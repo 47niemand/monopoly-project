@@ -1,55 +1,32 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * A player has to pay money to the property owner on which player is standing.
+ * A player has to pay coins to the property owner on which player is standing.
  */
-@Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class PayRent extends BaseActionCard {
+public final class PayRent extends Payment {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
-
-    private final Player recipient;
     private final int landId;
-    private final BigDecimal amount;
 
-    PayRent(Player recipient, int landId, BigDecimal amount) {
-        super("Pay Rent", Action.PAY, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.recipient = recipient;
+    PayRent(Player recipient, Integer number, int landId) {
+        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, number);
         this.landId = landId;
-        this.amount = amount;
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
-        List<ActionCard> result;
-        try {
-            turn.withdraw(amount);
-            turn.sendCard(recipient, new RentIncome(amount, landId));
-            result = ImmutableList.of();
-        } catch (BankException e) {
-            LOG.info("Player cannot pay money: {}", e.getMessage());
-            result = ImmutableList.<ActionCard>builder().add(this)
-                    .addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
-        }
-        return result;
+    protected List<ActionCard> onSuccess(Turn turn) {
+        // sent coins to the recipient
+        turn.sendCard(recipient, new RentRevenue(number, turn.getPlayer(), landId));
+        return ImmutableList.of();
     }
-
 }

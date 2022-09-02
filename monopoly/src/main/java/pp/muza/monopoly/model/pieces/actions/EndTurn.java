@@ -24,7 +24,7 @@ public final class EndTurn extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(EndTurn.class);
 
     EndTurn() {
-        super("End Turn", Action.END_TURN, Type.OBLIGATION, LOW_PRIORITY);
+        super("End Turn", Action.END_TURN, ActionType.OBLIGATION, LOW_PRIORITY);
     }
 
     public static ActionCard of() {

@@ -26,10 +26,10 @@ class FortuneCardTest {
     void onExecute() {
 
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
 
         List<Fortune> fortunes = Arrays
-                .stream(Fortune.Chance.values())
+                .stream(Chance.values())
                 .map(FortuneCard::of)
                 .collect(Collectors.toList());
 
@@ -45,9 +45,9 @@ class FortuneCardTest {
     void fortuneMoveForwardOneSpace() {
         // test setup
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.STRATEGY), new BankImpl());
+        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
         Turn a = new TurnImpl(game, player);
-        Fortune fortune = FortuneCard.of(Fortune.Chance.MOVE_FORWARD_ONE_SPACE);
+        Fortune fortune = FortuneCard.of(Chance.MOVE_FORWARD_ONE_SPACE);
 
         // test
         List<ActionCard> result = ((BaseActionCard) fortune).onExecute(a);

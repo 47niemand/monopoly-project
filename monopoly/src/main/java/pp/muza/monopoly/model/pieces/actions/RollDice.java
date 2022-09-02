@@ -24,13 +24,13 @@ public final class RollDice extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(RollDice.class);
 
     RollDice() {
-        super("Roll Dice", Action.ROLL_DICE, Type.OBLIGATION, NEW_TURN_PRIORITY);
+        super("Roll Dice", Action.ROLL_DICE, ActionType.OBLIGATION, NEW_TURN_PRIORITY);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int dice = (int) (Math.random() * 6) + 1;
-        LOG.info("Player {} rolled {}", turn.getPlayer().getName(), dice);
+        LOG.info("{} rolled {}", turn.getPlayer().getName(), dice);
         return ImmutableList.of(new Move(dice));
     }
 }

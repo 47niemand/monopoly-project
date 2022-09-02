@@ -1,6 +1,5 @@
 package pp.muza.monopoly.model.bank;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,34 +14,34 @@ public class BankImpl implements Bank {
 
     private static final Logger LOG = LoggerFactory.getLogger(BankImpl.class);
 
-    private final Map<Player, BigDecimal> playerMoney = new HashMap<>();
+    private final Map<Player, Integer> playerCoins = new HashMap<>();
 
     @Override
-    public BigDecimal getBalance(Player player) {
-        return playerMoney.getOrDefault(player, BigDecimal.ZERO);
+    public Integer getBalance(Player player) {
+        return playerCoins.getOrDefault(player, 0);
     }
 
     @Override
-    public void deposit(Player player, BigDecimal amount) throws BankException {
-        LOG.info("Adding {} money to {}", amount, player.getName());
-        playerMoney.put(player, playerMoney.getOrDefault(player, BigDecimal.ZERO).add(amount));
-        LOG.info("{} has {}", player.getName(), playerMoney.get(player));
+    public void deposit(Player player, Integer number) throws BankException {
+        LOG.info("Adding {} coins to {}", number, player.getName());
+        playerCoins.put(player, playerCoins.getOrDefault(player, 0) + number);
+        LOG.info("{} has {}", player.getName(), playerCoins.get(player));
     }
 
     @Override
-    public void withdraw(Player player, BigDecimal price) throws BankException {
-        LOG.info("Withdrawing {} money from player {}", price, player.getName());
-        if (playerMoney.get(player).compareTo(price) < 0) {
-            LOG.warn("Player {} has not enough money {}, current balance: {}", player.getName(), price, playerMoney.get(player));
-            throw new BankException("Not enough money");
+    public void withdraw(Player player, Integer price) throws BankException {
+        LOG.info("Withdrawing {} coin(s) from player {}", price,  player.getName());
+        if (playerCoins.get(player).compareTo(price) < 0) {
+            LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), price, playerCoins.get(player));
+            throw new BankException("Not enough coins");
         }
-        playerMoney.put(player, playerMoney.getOrDefault(player, BigDecimal.ZERO).subtract(price));
-        LOG.info("Player {} has {}", player.getName(), playerMoney.get(player));
+        playerCoins.put(player, playerCoins.getOrDefault(player, 0) - price);
+        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
     }
 
     @Override
-    public void set(Player player, BigDecimal amount) {
-        LOG.info("Setting {} money to {}", amount, player.getName());
-        playerMoney.put(player, amount);
+    public void set(Player player, Integer number) {
+        LOG.info("Putting {} coins in {}'s account", number, player.getName());
+        playerCoins.put(player, number);
     }
 }

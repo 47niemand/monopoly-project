@@ -1,0 +1,51 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+}
+
+group 'pp.muza.monopoly.app'
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'pp.muza.monopoly.app.App'
+}
+
+dependencies {
+
+    testImplementation libs.junit.jupiter
+    // This dependency is used by the application.
+    implementation libs.guava
+    implementation libs.logback
+    implementation libs.commons.cli
+
+    implementation project(':monopoly')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('simJar', Jar) {
+    archiveClassifier = 'sim'
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes("Implementation-Title": "Monopoy Game Simulator",
+                "Implementation-Version": archiveVersion,
+                "Main-Class": application.mainClass
+
+        )
+    }
+}

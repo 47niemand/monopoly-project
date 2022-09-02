@@ -20,7 +20,7 @@ import pp.muza.monopoly.model.Turn;
 public final class NewTurn extends BaseActionCard {
 
     NewTurn() {
-        super("New Turn", Action.NEW_TURN, Type.OBLIGATION, NEW_TURN_PRIORITY);
+        super("New Turn", Action.NEW_TURN, ActionType.OBLIGATION, NEW_TURN_PRIORITY);
     }
 
     public static NewTurn of() {

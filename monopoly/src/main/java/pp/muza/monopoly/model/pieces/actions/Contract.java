@@ -19,7 +19,7 @@ import pp.muza.monopoly.model.Turn;
  * A contract for a property.
  * <p>
  * A player who owns the property can sale it to get a profit.
- * This card spawns when the player has no enough money to pay obligations.
+ * This card spawns when the player has no enough coins to pay obligations.
  * </p>
  */
 @Getter
@@ -30,12 +30,12 @@ public final class Contract extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
     /**
-     * the id of the land to be traded
+     * the id of the land to be traded.
      */
     private final int landId;
 
     Contract(int landId) {
-        super("Contract", Action.CONTRACT, Type.CHOOSE, HIGH_PRIORITY);
+        super("Contract", Action.CONTRACT, ActionType.CHOOSE, HIGH_PRIORITY);
         this.landId = landId;
     }
 
@@ -44,7 +44,7 @@ public final class Contract extends BaseActionCard {
         try {
             turn.doContract(landId);
         } catch (BankException | TurnException e) {
-            LOG.warn("Player cannot receive money: {}", e.getMessage());
+            LOG.warn("Player cannot receive coins: {}", e.getMessage());
         }
         return ImmutableList.of();
     }

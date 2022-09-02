@@ -8,7 +8,11 @@ import pp.muza.monopoly.model.Strategy;
 
 public class ObedientStrategy implements Strategy {
 
-    public static Strategy STRATEGY = new ObedientStrategy();
+    private static final ObedientStrategy STRATEGY = new ObedientStrategy();
+
+    public static Strategy getInstance() {
+        return STRATEGY;
+    }
 
     @Override
     public ActionCard playTurn(TurnInfo turnInfo) {

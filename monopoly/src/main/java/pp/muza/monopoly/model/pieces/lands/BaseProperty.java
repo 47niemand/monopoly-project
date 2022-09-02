@@ -1,29 +1,31 @@
 package pp.muza.monopoly.model.pieces.lands;
 
-import java.math.BigDecimal;
 
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Property;
 
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public final class BaseProperty extends BaseLand implements Property {
 
-    private final BigDecimal price;
-    private final Color color;
+    private final Integer price;
+    private final PropertyColor color;
     private final Asset asset;
 
     public BaseProperty(Asset asset) {
-        super(asset.getName(), Land.Type.PROPERTY);
+        super(asset.getName(), LandType.PROPERTY);
         this.price = asset.getPrice();
         this.color = asset.getColor();
         this.asset = asset;
     }
 
     @Override
-    public BigDecimal getPrice() {
+    public Integer getPrice() {
         return price;
     }
 }

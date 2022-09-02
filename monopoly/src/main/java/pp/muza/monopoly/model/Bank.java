@@ -1,9 +1,11 @@
 package pp.muza.monopoly.model;
 
-import java.math.BigDecimal;
-
 import pp.muza.monopoly.errors.BankException;
 
+/**
+ * This interface represents a bank in the game.
+ * There are methods to get the balance of a player, to deposit coins, to withdraw
+ */
 public interface Bank {
 
     /**
@@ -12,31 +14,31 @@ public interface Bank {
      * @param player the player.
      * @return the balance of the player.
      */
-    BigDecimal getBalance(Player player);
+    Integer getBalance(Player player);
 
     /**
-     * Adds money to the player's balance.
+     * Adds coins to the player's balance.
      *
-     * @param player the player to add money to
-     * @param amount the amount of money to add
+     * @param player the player to add coins to
+     * @param number the number of coins to add
      * @throws BankException if the player wallet is full
      */
-    void deposit(Player player, BigDecimal amount) throws BankException;
+    void deposit(Player player, Integer number) throws BankException;
 
     /**
-     * Subtracts the given amount from the player's balance.
+     * Subtracts the given number from the player's balance.
      *
-     * @param player the player to subtract money from
-     * @param price  the amount of money to subtract
-     * @throws BankException if the player doesn't have enough money
+     * @param player the player to subtract coins from
+     * @param price  the number of coins to subtract
+     * @throws BankException if the player doesn't have enough coins
      */
-    void withdraw(Player player, BigDecimal price) throws BankException;
+    void withdraw(Player player, Integer price) throws BankException;
 
     /**
-     * Set the player's balance to the given amount.
+     * Set the player's balance to the given number.
      *
      * @param player the player to set the balance for
-     * @param amount the amount to set the balance to
+     * @param number the number to set the balance to
      */
-    void set(Player player, BigDecimal amount);
+    void set(Player player, Integer number);
 }

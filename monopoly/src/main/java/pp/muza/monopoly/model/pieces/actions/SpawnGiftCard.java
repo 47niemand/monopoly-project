@@ -13,6 +13,9 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 
+/**
+ * Buy a free property. If all are owned, purchase from any player.
+ **/
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public final class SpawnGiftCard extends BaseActionCard {
@@ -20,12 +23,12 @@ public final class SpawnGiftCard extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Spawn \"BuyOrTrade\" cards", Action.GIFT, Type.OBLIGATION, HIGHEST_PRIORITY);
+        super("Gift: Move and trade", Action.GIFT, ActionType.OBLIGATION, HIGHEST_PRIORITY);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Spawning BuyOrTrade cards");
+        LOG.info("Spawning MoveAndTrade cards");
         List<IndexedEntry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
             // if there are no free properties, the player has to choose one of the
@@ -33,6 +36,6 @@ public final class SpawnGiftCard extends BaseActionCard {
             properties = turn.getAllProperties().stream()
                     .filter(x -> turn.getPropertyOwner(x.getIndex()) != turn.getPlayer()).collect(Collectors.toList());
         }
-        return properties.stream().map(x -> new BuyOrTrade(x.getIndex())).collect(Collectors.toList());
+        return properties.stream().map(x -> new MoveAndTrade(x.getIndex())).collect(Collectors.toList());
     }
 }

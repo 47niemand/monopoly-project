@@ -1,6 +1,5 @@
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
-    id 'application'
+    id 'java-library'
 }
 
 group 'pp.muza.monopoly'
@@ -16,22 +15,17 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation libs.junit.jupiter
     // Use Lombok for generating getters and setters.
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
 
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:30.1.1-jre'
-    implementation 'ch.qos.logback:logback-classic:1.2.6'
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    implementation 'commons-cli:commons-cli:1.5.0'
-}
-
-application {
-    // Define the main class for the application.
-    mainClass = 'pp.muza.monopoly.App'
+    implementation libs.guava
+    implementation libs.logback
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    //implementation libs.commons.cli
 }
 
 tasks.named('test') {
@@ -39,23 +33,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.register('simJar', Jar) {
-    archiveClassifier = 'sim'
 
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    from sourceSets.main.output
-
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-    }
-
-    manifest {
-        attributes("Implementation-Title": "Monopoy Game Simulator",
-                "Implementation-Version": archiveVersion,
-                "Main-Class": application.mainClass
-
-        )
-    }
-}

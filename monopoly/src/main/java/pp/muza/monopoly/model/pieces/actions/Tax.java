@@ -1,7 +1,10 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.math.BigDecimal;
+
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
@@ -9,33 +12,82 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.BaseGameException;
+import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * A player has to pay money to the bank.
+ * A player has to pay coins to the bank.
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Tax extends BaseActionCard {
+public class Tax extends BaseActionCard {
 
-    private final BigDecimal amount;
+    private static final Logger LOG = LoggerFactory.getLogger(Tax.class);
 
-    Tax(BigDecimal amount) {
-        super("Tax", Action.TAX, Type.OBLIGATION, DEFAULT_PRIORITY);
-        this.amount = amount;
+    protected final Integer number;
+
+    protected Tax(String name, ActionType type, int priority, Integer number) {
+        super(name, Action.TAX, type, priority);
+        this.number = number;
+    }
+
+    Tax(Integer number) {
+        this("Tax", ActionType.OBLIGATION, DEFAULT_PRIORITY, number);
+    }
+
+    /**
+     * Return cards if the player succeeds in paying the tax.
+     * <p>Override this method in subclasses to return cards if the player succeeds in paying the tax.</p>
+     *
+     * @param turn the turn to execute the action on.
+     * @return cards if the player succeeds in paying the tax.
+     */
+    protected List<ActionCard> onSuccess(Turn turn) {
+        return ImmutableList.of();
+    }
+
+    /**
+     * Return cards if the player cannot pay the tax.
+     *
+     * @param turn the turn to execute the action on.
+     * @return cards if the player cannot pay the tax.
+     */
+    protected List<ActionCard> onFailure(Turn turn, BaseGameException e) {
+        List<ActionCard> result;
+        if (e instanceof BankException) {
+            result = ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
+                    .build();
+        } else if (e instanceof TurnException) {
+            result = ImmutableList.of();
+        } else {
+            throw new IllegalStateException(e);
+        }
+        return result;
+    }
+
+    /**
+     * Check if the player can pay the tax.
+     *
+     * @param turn the turn to execute the action on.
+     * @throws TurnException if the player cannot pay the tax.
+     */
+    protected void check(Turn turn) throws TurnException {
+        //  check if the player can play the card
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
-            turn.payTax(amount);
-            result = ImmutableList.of();
-        } catch (BankException e) {
-            return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
-                    .build();
+            check(turn);
+            turn.withdraw(number);
+            result = onSuccess(turn);
+        } catch (BaseGameException e) {
+            LOG.warn("Player cannot play card: {}", e.getMessage());
+            result = onFailure(turn, e);
         }
         return result;
     }

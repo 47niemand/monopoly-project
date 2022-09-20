@@ -1,4 +1,4 @@
-package pp.muza.monopoly.utils;
+package pp.muza.monopoly.model;
 
 import static pp.muza.monopoly.model.Asset.AQUARIUM;
 import static pp.muza.monopoly.model.Asset.BAKERY;
@@ -21,10 +21,6 @@ import static pp.muza.monopoly.model.Asset.TOY_SHOP;
 import java.util.ArrayList;
 import java.util.List;
 
-import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.Board;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.board.BoardImpl;
 import pp.muza.monopoly.model.pieces.lands.BaseProperty;
 import pp.muza.monopoly.model.pieces.lands.ChanceLand;
@@ -33,7 +29,7 @@ import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.Parking;
 import pp.muza.monopoly.model.pieces.lands.Start;
 
-public class MonopolyBoard {
+public final class BoardLayout {
 
     /*@formatter:off
      *              |          BLUE         |         |           INDIGO        |           |

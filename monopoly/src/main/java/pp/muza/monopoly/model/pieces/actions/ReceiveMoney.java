@@ -24,12 +24,12 @@ public class ReceiveMoney extends Income {
      */
     private final Player sender;
 
-    protected ReceiveMoney(String name, ActionType actionType, int priority, Integer number, Player sender) {
+    protected ReceiveMoney(String name, ActionType actionType, int priority, int number, Player sender) {
         super(name, actionType, priority, number);
         this.sender = sender;
     }
 
-    ReceiveMoney(Integer number, Player sender) {
+    ReceiveMoney(int number, Player sender) {
         this("Receive Money", ActionType.OBLIGATION, HIGHEST_PRIORITY, number, sender);
     }
 }

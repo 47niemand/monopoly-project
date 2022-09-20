@@ -111,9 +111,12 @@ public class GameImpl extends BaseGame implements Game {
             }
 
             newCardsSpawned = (newCards.size() > 0 && cardUsed) || (newCards.size() > 1);
-            LOG.info("Used [{}]; {} received the following cards: {}", actionCard.getName(),
-                    player.getName(),
-                    newCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+            LOG.info("Used [{}]", actionCard.getName());
+            if (LOG.isDebugEnabled() && newCards.size() > 0) {
+                LOG.debug("{} received the following cards: {}",
+                        player.getName(),
+                        newCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+            }
             playerData.get(player).getActionCards().addAll(newCards);
 
             // Choose cards (ActionCard.Type.CHOOSE) can only be used once, thus we must take them out of the player's hand.
@@ -174,7 +177,7 @@ public class GameImpl extends BaseGame implements Game {
         if (player == salePlayer) {
             throw new TurnException("You can't trade with yourself");
         }
-        Integer price = property.getPrice();
+        int price = property.getPrice();
         bank.withdraw(player, price);
         bank.deposit(salePlayer, price);
         setPropertyOwner(landId, player);
@@ -205,7 +208,7 @@ public class GameImpl extends BaseGame implements Game {
 
     @Override
     public void sendCard(Player player, ActionCard actionCard) {
-        LOG.info("Player {} get {} card", player.getName(), actionCard.getName());
+        LOG.info("Player {} get [{}] card", player.getName(), actionCard.getName());
         playerData.get(player).getActionCards().add(actionCard);
     }
 
@@ -229,13 +232,13 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public void income(Player player, Integer number) throws BankException {
-        bank.deposit(player, number);
+    public void income(Player player, int value) throws BankException {
+        bank.deposit(player, value);
     }
 
     @Override
-    public void withdraw(Player player, Integer number) throws BankException {
-        bank.withdraw(player, number);
+    public void withdraw(Player player, int value) throws BankException {
+        bank.withdraw(player, value);
     }
 
     @Override
@@ -366,8 +369,8 @@ public class GameImpl extends BaseGame implements Game {
             throw new TurnException("Land is not owned by you");
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
-        Integer number = property.getPrice();
-        bank.deposit(player, number);
+        int value = property.getPrice();
+        bank.deposit(player, value);
         propertyOwnerRemove(landId);
     }
 
@@ -388,7 +391,7 @@ public class GameImpl extends BaseGame implements Game {
     @Override
     public void buyProperty(Player player, int landId) throws TurnException, BankException {
         Property property = (Property) getLand(landId);
-        Integer price = property.getPrice();
+        int price = property.getPrice();
         if (getPropertyOwner(landId) != null) {
             throw new TurnException("Land is already owned");
         }
@@ -397,8 +400,8 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public Integer getRent(int landId) {
-        Integer rent;
+    public int getRent(int landId) {
+        int rent;
         Property property = (Property) getLand(landId);
         Player owner = getPropertyOwner(landId);
         if (owner == null) {
@@ -422,10 +425,10 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public void pay(Player player, Player recipient, Integer number) throws BankException {
-        LOG.info("{} is paying {} to {}", player.getName(), number, recipient.getName());
-        bank.withdraw(player, number);
-        bank.deposit(recipient, number);
+    public void pay(Player player, Player recipient, int value) throws BankException {
+        LOG.info("{} is paying {} to {}", player.getName(), value, recipient.getName());
+        bank.withdraw(player, value);
+        bank.deposit(recipient, value);
     }
 
 
@@ -444,7 +447,7 @@ public class GameImpl extends BaseGame implements Game {
     }
 
     @Override
-    public Integer getJailFine() {
+    public int getJailFine() {
         return board.getLands().stream()
                 .filter(land -> land.getType() == LandType.JAIL)
                 .map(x -> ((Jail) x).getFine())

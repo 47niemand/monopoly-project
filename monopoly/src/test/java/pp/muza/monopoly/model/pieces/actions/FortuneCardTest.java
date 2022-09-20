@@ -17,8 +17,8 @@ import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.game.GameImpl;
 import pp.muza.monopoly.model.turn.TurnImpl;
 import pp.muza.monopoly.strategy.ObedientStrategy;
-import pp.muza.monopoly.utils.ChancePile;
-import pp.muza.monopoly.utils.MonopolyBoard;
+import pp.muza.monopoly.model.ChancePile;
+import pp.muza.monopoly.model.BoardLayout;
 
 class FortuneCardTest {
 
@@ -26,7 +26,7 @@ class FortuneCardTest {
     void onExecute() {
 
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
+        GameImpl game = new GameImpl(BoardLayout.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
 
         List<Fortune> fortunes = Arrays
                 .stream(Chance.values())
@@ -45,7 +45,7 @@ class FortuneCardTest {
     void fortuneMoveForwardOneSpace() {
         // test setup
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(MonopolyBoard.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
+        GameImpl game = new GameImpl(BoardLayout.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
         Turn a = new TurnImpl(game, player);
         Fortune fortune = FortuneCard.of(Chance.MOVE_FORWARD_ONE_SPACE);
 

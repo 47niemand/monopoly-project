@@ -26,7 +26,7 @@ public final class JailFine extends Tax {
 
     private static final Logger LOG = LoggerFactory.getLogger(JailFine.class);
 
-    JailFine(Integer number) {
+    JailFine(int number) {
         super("Jail Fine", ActionType.OBLIGATION, DEFAULT_PRIORITY, number);
     }
 

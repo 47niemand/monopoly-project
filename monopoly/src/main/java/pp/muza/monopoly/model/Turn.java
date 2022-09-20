@@ -124,7 +124,7 @@ public interface Turn {
      * @param position the position of the land.
      * @return the number of coins to pay.
      */
-    Integer getRent(int position);
+    int getRent(int position);
 
     /**
      * adds number to the player's balance.
@@ -132,7 +132,7 @@ public interface Turn {
      * @param number the number to add.
      * @throws BankException if operation fails.
      */
-    void income(Integer number) throws BankException;
+    void income(int number) throws BankException;
 
 
     /**
@@ -209,7 +209,7 @@ public interface Turn {
      *
      * @return number to pay.
      */
-    Integer getJailFine();
+    int getJailFine();
 
     /**
      * Returns the properties of the player.
@@ -255,10 +255,10 @@ public interface Turn {
     List<IndexedEntry<Property>> getFreeProperties();
 
     /**
-     * withdraws the number of coins from the player.
+     * withdraws the value of coins from the player.
      *
-     * @param number to withdraw
+     * @param value to withdraw
      * @throws BankException if a player doesn't have enough coins.
      */
-    void withdraw(Integer number) throws BankException;
+    void withdraw(int value) throws BankException;
 }

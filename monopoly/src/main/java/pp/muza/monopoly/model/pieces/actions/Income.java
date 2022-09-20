@@ -28,25 +28,25 @@ public class Income extends BaseActionCard {
     /**
      * The number of coins that is received.
      */
-    protected final Integer number;
+    protected final int value;
 
-    protected Income(String name, ActionType actionType, int priority, Integer number) {
+    protected Income(String name, ActionType actionType, int priority, int value) {
         super(name, Action.INCOME, actionType, priority);
-        this.number = number;
+        this.value = value;
     }
 
-    Income(Integer number) {
-        this("Income", ActionType.OBLIGATION, HIGHEST_PRIORITY, number);
+    Income(int value) {
+        this("Income", ActionType.OBLIGATION, HIGHEST_PRIORITY, value);
     }
 
-    public static ActionCard of(Integer number) {
+    public static ActionCard of(int number) {
         return new Income(number);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.income(number);
+            turn.income(value);
         } catch (BankException e) {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
         }

@@ -17,31 +17,31 @@ public class BankImpl implements Bank {
     private final Map<Player, Integer> playerCoins = new HashMap<>();
 
     @Override
-    public Integer getBalance(Player player) {
+    public int getBalance(Player player) {
         return playerCoins.getOrDefault(player, 0);
     }
 
     @Override
-    public void deposit(Player player, Integer number) throws BankException {
-        LOG.info("Adding {} coins to {}", number, player.getName());
-        playerCoins.put(player, playerCoins.getOrDefault(player, 0) + number);
-        LOG.info("{} has {}", player.getName(), playerCoins.get(player));
-    }
-
-    @Override
-    public void withdraw(Player player, Integer price) throws BankException {
-        LOG.info("Withdrawing {} coin(s) from player {}", price,  player.getName());
-        if (playerCoins.get(player).compareTo(price) < 0) {
-            LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), price, playerCoins.get(player));
-            throw new BankException("Not enough coins");
-        }
-        playerCoins.put(player, playerCoins.getOrDefault(player, 0) - price);
+    public void deposit(Player player, int value) throws BankException {
+        LOG.info("Adding {} coins to {}", value, player.getName());
+        playerCoins.put(player, playerCoins.getOrDefault(player, 0) + value);
         LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
     }
 
     @Override
-    public void set(Player player, Integer number) {
-        LOG.info("Putting {} coins in {}'s account", number, player.getName());
-        playerCoins.put(player, number);
+    public void withdraw(Player player, int value) throws BankException {
+        LOG.info("Withdrawing {} coin(s) from player {}", value,  player.getName());
+        if (playerCoins.get(player).compareTo(value) < 0) {
+            LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), value, playerCoins.get(player));
+            throw new BankException("Not enough coins");
+        }
+        playerCoins.put(player, playerCoins.getOrDefault(player, 0) - value);
+        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
+    }
+
+    @Override
+    public void set(Player player, int value) {
+        LOG.info("Putting {} coin(s) in {}'s account", value, player.getName());
+        playerCoins.put(player, value);
     }
 }

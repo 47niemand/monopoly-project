@@ -9,9 +9,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public final class Jail extends BaseLand {
 
-    private final Integer fine;
+    private final int fine;
 
-    public Jail(Integer fine) {
+    public Jail(int fine) {
         super("Jail", LandType.JAIL);
         this.fine = fine;
     }

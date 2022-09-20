@@ -25,7 +25,7 @@ public final class RentRevenue extends ReceiveMoney {
      */
     private final int landId;
 
-    RentRevenue(Integer number, Player sender, int landId) {
+    RentRevenue(int number, Player sender, int landId) {
         super("Rent Revenue", ActionType.OBLIGATION, HIGHEST_PRIORITY, number, sender);
         this.landId = landId;
     }

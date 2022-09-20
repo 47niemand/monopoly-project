@@ -18,15 +18,15 @@ public final class PayRent extends Payment {
 
     private final int landId;
 
-    PayRent(Player recipient, Integer number, int landId) {
-        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, number);
+    PayRent(Player recipient, int value, int landId) {
+        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, value);
         this.landId = landId;
     }
 
     @Override
     protected List<ActionCard> onSuccess(Turn turn) {
         // sent coins to the recipient
-        turn.sendCard(recipient, new RentRevenue(number, turn.getPlayer(), landId));
+        turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), landId));
         return ImmutableList.of();
     }
 }

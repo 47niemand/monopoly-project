@@ -9,9 +9,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public final class Start extends BaseLand {
 
-    private final Integer incomeTax;
+    private final int incomeTax;
 
-    public Start(Integer incomeTax) {
+    public Start(int incomeTax) {
         super("Start", LandType.START);
         this.incomeTax = incomeTax;
     }

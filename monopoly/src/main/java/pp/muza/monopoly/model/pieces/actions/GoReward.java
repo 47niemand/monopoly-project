@@ -18,7 +18,7 @@ public final class GoReward extends Income {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoReward.class);
 
-    GoReward(Integer number) {
-        super("Receive Money", ActionType.OBLIGATION, HIGHEST_PRIORITY, number);
+    GoReward(int number) {
+        super("Go Reward", ActionType.OBLIGATION, HIGHEST_PRIORITY, number);
     }
 }

@@ -30,11 +30,11 @@ public enum Asset {
     @Getter
     private final String name;
     @Getter
-    private final Integer price;
+    private final int price;
     @Getter
     private final PropertyColor color;
 
-    Asset(String name, Integer price, PropertyColor color) {
+    Asset(String name, int price, PropertyColor color) {
 
         this.name = name;
         this.price = price;

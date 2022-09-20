@@ -19,7 +19,7 @@ class PlayerInfo {
     Player player;
     int position;
     PlayerStatus status;
-    Integer coins;
+    int coins;
     List<ActionCard> actionCards;
     List<IndexedEntry<Property>> belongings;
 

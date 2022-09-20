@@ -11,7 +11,7 @@ public interface Property extends Land {
      *
      * @return the price of the property
      */
-    Integer getPrice();
+    int getPrice();
 
     /**
      * Returns the color of the property.

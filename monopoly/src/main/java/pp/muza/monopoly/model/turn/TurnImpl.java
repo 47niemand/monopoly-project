@@ -108,7 +108,7 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public Integer getJailFine() {
+    public int getJailFine() {
         return game.getJailFine();
     }
 
@@ -128,12 +128,12 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public Integer getRent(int landId) {
+    public int getRent(int landId) {
         return game.getRent(landId);
     }
 
     @Override
-    public void income(Integer number) throws BankException {
+    public void income(int number) throws BankException {
         game.income(player, number);
     }
 
@@ -199,8 +199,8 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public void withdraw(Integer number) throws BankException {
-        game.withdraw(player, number);
+    public void withdraw(int value) throws BankException {
+        game.withdraw(player, value);
     }
 
     @Override

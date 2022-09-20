@@ -28,16 +28,16 @@ public class Payment extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(Payment.class);
 
     protected final Player recipient;
-    protected final Integer number;
+    protected final int value;
 
-    protected Payment(String name, ActionType type, int priority, Player recipient, Integer number) {
+    protected Payment(String name, ActionType type, int priority, Player recipient, int value) {
         super(name, Action.PAY, type, priority);
         this.recipient = recipient;
-        this.number = number;
+        this.value = value;
     }
 
-    Payment(Integer number, Player recipient) {
-        this("Payment", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, number);
+    Payment(int value, Player recipient) {
+        this("Payment", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, value);
     }
 
     public static ActionCard of(Integer valueOf, Player recipient) {
@@ -80,7 +80,7 @@ public class Payment extends BaseActionCard {
      * @return cards if the player succeeds in paying the number to the recipient.
      */
     protected List<ActionCard> onSuccess(Turn turn) {
-        turn.sendCard(recipient, new ReceiveMoney(number, turn.getPlayer()));
+        turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
         return ImmutableList.of();
     }
 
@@ -89,7 +89,7 @@ public class Payment extends BaseActionCard {
         List<ActionCard> result;
         try {
             check(turn);
-            turn.withdraw(number);
+            turn.withdraw(value);
             result = onSuccess(turn);
         } catch (BaseGameException e) {
             LOG.warn("Player cannot play card: {}", e.getMessage());

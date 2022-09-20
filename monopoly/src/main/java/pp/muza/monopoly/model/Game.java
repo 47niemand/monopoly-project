@@ -123,7 +123,7 @@ public interface Game {
      *
      * @return number to pay.
      */
-    Integer getJailFine();
+    int getJailFine();
 
     /**
      * Returns the position of the player.
@@ -169,7 +169,7 @@ public interface Game {
      * @param landId the property.
      * @return the number of coins to pay for the rent, or 0 if anyone does not own the property.
      */
-    Integer getRent(int landId);
+    int getRent(int landId);
 
     /**
      * transfers the given number of coins from the player to the recipient.
@@ -179,7 +179,7 @@ public interface Game {
      * @param number    the number of coins to transfer.
      * @throws BankException if the player doesn't have enough coins.
      */
-    void pay(Player player, Player recipient, Integer number) throws BankException;
+    void pay(Player player, Player recipient, int number) throws BankException;
 
 
     /**
@@ -275,17 +275,17 @@ public interface Game {
      * Adds coins to the player's wallet.
      *
      * @param player the player.
-     * @param number the number of coins to add.
+     * @param value the value of coins to add.
      * @throws BankException if operation fails (e.g. if the player wallet is full).
      */
-    void income(Player player, Integer number) throws BankException;
+    void income(Player player, int value) throws BankException;
 
     /**
-     * Withdraws the given number of coins from a player.
+     * Withdraws the given value of coins from a player.
      *
      * @param player the player.
-     * @param number the number of coins to withdraw.
+     * @param value the value of coins to withdraw.
      * @throws BankException if the player doesn't have enough coins.
      */
-    void withdraw(Player player, Integer number) throws BankException;
+    void withdraw(Player player, int value) throws BankException;
 }

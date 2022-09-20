@@ -13,7 +13,7 @@ import pp.muza.monopoly.model.Property;
 @EqualsAndHashCode(callSuper = false)
 public final class BaseProperty extends BaseLand implements Property {
 
-    private final Integer price;
+    private final int price;
     private final PropertyColor color;
     private final Asset asset;
 
@@ -25,7 +25,7 @@ public final class BaseProperty extends BaseLand implements Property {
     }
 
     @Override
-    public Integer getPrice() {
+    public int getPrice() {
         return price;
     }
 }

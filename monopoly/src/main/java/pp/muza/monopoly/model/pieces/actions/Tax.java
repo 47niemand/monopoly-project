@@ -27,15 +27,15 @@ public class Tax extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Tax.class);
 
-    protected final Integer number;
+    protected final int value;
 
-    protected Tax(String name, ActionType type, int priority, Integer number) {
+    protected Tax(String name, ActionType type, int priority, int value) {
         super(name, Action.TAX, type, priority);
-        this.number = number;
+        this.value = value;
     }
 
-    Tax(Integer number) {
-        this("Tax", ActionType.OBLIGATION, DEFAULT_PRIORITY, number);
+    Tax(int value) {
+        this("Tax", ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
     }
 
     /**
@@ -83,7 +83,7 @@ public class Tax extends BaseActionCard {
         List<ActionCard> result;
         try {
             check(turn);
-            turn.withdraw(number);
+            turn.withdraw(value);
             result = onSuccess(turn);
         } catch (BaseGameException e) {
             LOG.warn("Player cannot play card: {}", e.getMessage());

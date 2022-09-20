@@ -1,4 +1,4 @@
-package pp.muza.monopoly.utils;
+package pp.muza.monopoly.model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +8,7 @@ import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.FortuneCard;
 
-public class ChancePile {
+public final class ChancePile {
 
     public static List<Fortune> defaultPile() {
         return Arrays

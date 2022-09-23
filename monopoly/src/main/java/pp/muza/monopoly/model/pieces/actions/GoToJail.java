@@ -22,7 +22,11 @@ public final class GoToJail extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        turn.setPlayerInJail();
+        try {
+            turn.setPlayerInJail();
+        } catch (pp.muza.monopoly.errors.TurnException e) {
+            throw new RuntimeException(e);
+        }
         return ImmutableList.of(new EndTurn());
     }
 }

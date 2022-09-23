@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
@@ -54,8 +53,7 @@ public final class Buy extends BaseActionCard {
             result = ImmutableList.<ActionCard>builder().add(this)
                     .addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
             finished = true;
-        } catch (TurnException e) {
-            LOG.info("Player cannot trade property: {}", e.getMessage());
+        } catch (pp.muza.monopoly.errors.TurnException e) {
             throw new RuntimeException(e);
         }
         if (!finished) {

@@ -39,6 +39,10 @@ public class Move extends BaseActionCard {
         this("Move", ActionType.OBLIGATION, DEFAULT_PRIORITY, distance);
     }
 
+    public static ActionCard of(int distance) {
+        return new Move(distance);
+    }
+
     /**
      * A method called when the player arrives at a new location on the board.
      * <p>can be overridden by subclasses to perform additional actions.</p>
@@ -52,11 +56,16 @@ public class Move extends BaseActionCard {
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
+    protected final List<ActionCard> onExecute(Turn turn) {
         int position = turn.nextPosition(distance);
         LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
                 turn.getLand(position).getName());
-        List<Land> path = turn.moveTo(position);
+        List<Land> path = null;
+        try {
+            path = turn.moveTo(position);
+        } catch (pp.muza.monopoly.errors.TurnException e) {
+            throw new RuntimeException(e);
+        }
         assert path.size() == distance;
         return ImmutableList.<ActionCard>builder()
                 .addAll(CardUtils.onPath(turn, path))

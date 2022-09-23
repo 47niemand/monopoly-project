@@ -3,15 +3,15 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.BaseGameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
@@ -50,17 +50,9 @@ public class Payment extends BaseActionCard {
      * @param turn the turn to execute the action on.
      * @return cards if the player cannot pay the tax.
      */
-    protected List<ActionCard> onFailure(Turn turn, BaseGameException e) {
-        List<ActionCard> result;
-        if (e instanceof BankException) {
-            result = ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
-                    .build();
-        } else if (e instanceof TurnException) {
-            result = ImmutableList.of();
-        } else {
-            throw new IllegalStateException(e);
-        }
-        return result;
+    protected final List<ActionCard> onFailure(Turn turn) {
+        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
+                .build();
     }
 
     /**
@@ -75,25 +67,35 @@ public class Payment extends BaseActionCard {
 
     /**
      * Return cards if the player succeeds in paying the number to the recipient.
+     * Can be overridden by subclasses to perform additional actions.
      *
      * @param turn the turn to execute the action on.
      * @return cards if the player succeeds in paying the number to the recipient.
      */
     protected List<ActionCard> onSuccess(Turn turn) {
-        turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
+        try {
+            turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
+        } catch (TurnException e) {
+            throw new RuntimeException(e);
+        }
         return ImmutableList.of();
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
+    protected final List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
             check(turn);
-            turn.withdraw(value);
-            result = onSuccess(turn);
-        } catch (BaseGameException e) {
+            try {
+                turn.withdraw(value);
+                result = onSuccess(turn);
+            } catch (BankException e) {
+                LOG.warn("Player cannot pay: {}", e.getMessage());
+                result = onFailure(turn);
+            }
+        } catch (TurnException e) {
             LOG.warn("Player cannot play card: {}", e.getMessage());
-            result = onFailure(turn, e);
+            result = ImmutableList.of();
         }
         return result;
     }

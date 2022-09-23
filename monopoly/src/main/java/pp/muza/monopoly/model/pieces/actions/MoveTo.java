@@ -51,9 +51,14 @@ public class MoveTo extends BaseActionCard {
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
+    protected final List<ActionCard> onExecute(Turn turn) {
         LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
-        List<Land> path = turn.moveTo(landId);
+        List<Land> path = null;
+        try {
+            path = turn.moveTo(landId);
+        } catch (pp.muza.monopoly.errors.TurnException e) {
+            throw new RuntimeException(e);
+        }
         if (path.size() == 0) {
             LOG.warn("Staying on the same land");
         }

@@ -3,21 +3,28 @@
  */
 package pp.muza.monopoly.app;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.cli.*;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.bank.BankImpl;
-import pp.muza.monopoly.model.game.GameImpl;
-import pp.muza.monopoly.strategy.DefaultStrategy;
-import pp.muza.monopoly.model.ChancePile;
-import pp.muza.monopoly.model.BoardLayout;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.model.game.BaseGame;
+import pp.muza.monopoly.model.game.GameImpl;
+import pp.muza.monopoly.strategy.DefaultStrategy;
+
 /**
- * This is a simple Monopoly game simulator
+ * This is a simple Game game simulator
  */
 public class App {
 
@@ -27,7 +34,7 @@ public class App {
 
     static final String OPT_PLAYERS = "players";
 
-    private static int playersNumber = DEFAULT_PLAYERS;
+    private static int playerNumbers = DEFAULT_PLAYERS;
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
@@ -41,30 +48,39 @@ public class App {
         try {
             CommandLine cmd = parser.parse(options, args);
             if (cmd.hasOption(OPT_PLAYERS)) {
-                playersNumber = Integer.parseInt(cmd.getOptionValue("players"));
-                if (playersNumber < MIN_PLAYERS || playersNumber > MAX_PLAYERS) {
+                playerNumbers = Integer.parseInt(cmd.getOptionValue("players"));
+                if (playerNumbers < MIN_PLAYERS || playerNumbers > MAX_PLAYERS) {
                     throw new IllegalArgumentException(String.format("Number of players must be between %s and %s", MIN_PLAYERS, MAX_PLAYERS));
                 }
-                System.out.println("Number of players: " + playersNumber);
+                System.out.println("Number of players: " + playerNumbers);
             }
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             helpFormatter.printHelp("java -jar <jar-file>", options);
             System.exit(1);
         }
-        game();
+
+        try {
+            game();
+        } catch (TurnException | GameException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    static void game() {
-        List<Player> players = IntStream.range(0, playersNumber).mapToObj(i -> new Player("@Player" + (i + 1)))
+    static void game() throws TurnException, GameException {
+        List<Player> players = IntStream.range(0, playerNumbers).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
-        GameImpl game = new GameImpl(BoardLayout.defaultBoard(), players, ChancePile.defaultPile(),
-                ImmutableList.of(DefaultStrategy.getInstance()), new BankImpl());
-        game.gameLoop();
+        PlayGame game = new GameImpl(new BankImpl(), BoardLayout.defaultBoard(), ChancePile.defaultPile(), players);
+        while (game.isGameInProgress()) {
+            PlayTurn turn = game.getTurn();
+            ActionCard card = DefaultStrategy.getInstance().playTurn(turn.getTurnInfo());
+            turn.playCard(card);
+        }
     }
 
 
     public String getGreeting() {
-        return "This is a game of Monopoly!";
+        return "This is a game of Game!";
     }
 }

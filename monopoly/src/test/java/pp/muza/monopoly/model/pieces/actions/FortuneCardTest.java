@@ -9,31 +9,32 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
+import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.BoardLayout;
+import pp.muza.monopoly.model.ChancePile;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.model.game.BaseGame;
 import pp.muza.monopoly.model.game.GameImpl;
-import pp.muza.monopoly.model.turn.TurnImpl;
-import pp.muza.monopoly.strategy.ObedientStrategy;
-import pp.muza.monopoly.model.ChancePile;
-import pp.muza.monopoly.model.BoardLayout;
 
 class FortuneCardTest {
 
     @Test
-    void onExecute() {
+    void onExecute() throws GameException {
 
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(BoardLayout.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
+        BaseGame game = GameImpl.create(new BankImpl(), BoardLayout.defaultBoard(), ChancePile.defaultPile(), ImmutableList.of(player));
+
 
         List<Fortune> fortunes = Arrays
                 .stream(Chance.values())
                 .map(FortuneCard::of)
                 .collect(Collectors.toList());
 
-        Turn a = new TurnImpl(game, player);
+        Turn a = (Turn) game.getTurn();
 
         for (Fortune fortune : fortunes) {
             List<ActionCard> result = ((BaseActionCard) fortune).onExecute(a);
@@ -42,11 +43,11 @@ class FortuneCardTest {
     }
 
     @Test
-    void fortuneMoveForwardOneSpace() {
+    void fortuneMoveForwardOneSpace() throws GameException {
         // test setup
         Player player = new Player("@Player1");
-        GameImpl game = new GameImpl(BoardLayout.defaultBoard(), ImmutableList.of(player), ChancePile.defaultPile(), ImmutableList.of(ObedientStrategy.getInstance()), new BankImpl());
-        Turn a = new TurnImpl(game, player);
+        BaseGame game = GameImpl.create(new BankImpl(), BoardLayout.defaultBoard(), ChancePile.defaultPile(), ImmutableList.of(player));
+        Turn a = (Turn) game.getTurn();
         Fortune fortune = FortuneCard.of(Chance.MOVE_FORWARD_ONE_SPACE);
 
         // test

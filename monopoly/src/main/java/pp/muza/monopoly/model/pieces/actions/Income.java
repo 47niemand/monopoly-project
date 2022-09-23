@@ -44,7 +44,7 @@ public class Income extends BaseActionCard {
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
+    protected final List<ActionCard> onExecute(Turn turn) {
         try {
             turn.income(value);
         } catch (BankException e) {

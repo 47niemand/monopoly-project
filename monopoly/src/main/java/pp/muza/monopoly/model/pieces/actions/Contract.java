@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
 
@@ -43,8 +42,10 @@ public final class Contract extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         try {
             turn.doContract(landId);
-        } catch (BankException | TurnException e) {
+        } catch (BankException e) {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
+        } catch (pp.muza.monopoly.errors.TurnException e) {
+            throw new RuntimeException(e);
         }
         return ImmutableList.of();
     }

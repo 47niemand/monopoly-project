@@ -39,8 +39,12 @@ public abstract class BaseActionCard implements ActionCard {
         assert action.getClassList().contains(this.getClass());
         this.name = name;
         this.action = action;
-        this.priority = priority;
         this.type = type;
+        this.priority = priority;
+    }
+
+    protected boolean canBeUsed(Turn turn) {
+        return true;
     }
 
     /**
@@ -66,4 +70,7 @@ public abstract class BaseActionCard implements ActionCard {
         return result;
     }
 
+    public final boolean canPlay(Turn turn) {
+        return canBeUsed(turn);
+    }
 }

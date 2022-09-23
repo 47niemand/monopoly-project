@@ -3,6 +3,7 @@ package pp.muza.monopoly.data;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Builder;
 import lombok.Value;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
@@ -14,8 +15,8 @@ import pp.muza.monopoly.model.Property;
  * This class represents the player's information in the game.
  */
 @Value
-public
-class PlayerInfo {
+@Builder
+public class PlayerInfo {
     Player player;
     int position;
     PlayerStatus status;

@@ -25,8 +25,12 @@ public final class PayRent extends Payment {
 
     @Override
     protected List<ActionCard> onSuccess(Turn turn) {
-        // sent coins to the recipient
-        turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), landId));
+        // sent rent to the owner
+        try {
+            turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), landId));
+        } catch (pp.muza.monopoly.errors.TurnException e) {
+            throw new RuntimeException(e);
+        }
         return ImmutableList.of();
     }
 }

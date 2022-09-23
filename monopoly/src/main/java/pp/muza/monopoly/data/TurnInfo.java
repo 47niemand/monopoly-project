@@ -3,6 +3,7 @@ package pp.muza.monopoly.data;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Value;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Board;
@@ -19,9 +20,10 @@ import pp.muza.monopoly.model.Player;
  */
 
 @Value
+@Builder
 public class TurnInfo {
 
-    int turn;
+    int turnNumber;
     /**
      * Action cards that the player can play.
      */

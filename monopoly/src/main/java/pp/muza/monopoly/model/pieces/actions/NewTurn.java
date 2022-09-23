@@ -29,7 +29,7 @@ public final class NewTurn extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        PlayerStatus status = turn.getStatus();
+        PlayerStatus status = turn.getPlayerStatus();
         List<ActionCard> result;
         switch (status) {
             case IN_GAME:

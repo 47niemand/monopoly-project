@@ -33,11 +33,7 @@ public final class EndTurn extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        try {
-            turn.endTurn();
-        } catch (TurnException e) {
-            throw new IllegalStateException(e);
-        }
+        turn.endTurn();
         return ImmutableList.of();
     }
 }

@@ -1,7 +1,7 @@
-monopoly-project
+game-project
 ================
 
-The simple application which plays a game of monopoly with a given number of players.
+The simple application which plays a game of game with a given number of players.
 There is a board with a number of properties, each with a name, a price, and a color.
 Specific lands are also on the board, such as the Go, Jail, and Chance spaces.
 
@@ -45,7 +45,7 @@ usage: monopoly_app-sim.jar
       
 ## Execution example:
 
-    java -jar build/libs/monopoly-0.1-sim.jar -p 4
+    java -jar build/libs/game-0.1-sim.jar -p 4
 
     This is a game of Monopoly!
     14:18:12.830 Putting 18 coins in @Player1's account

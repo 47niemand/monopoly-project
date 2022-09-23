@@ -1,8 +1,6 @@
 package pp.muza.monopoly.model;
 
-
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.entry.IndexedEntry;
@@ -27,7 +25,7 @@ public interface Turn {
     /**
      * set player to jail.
      */
-    void setPlayerInJail();
+    void setPlayerInJail() throws TurnException;
 
     /**
      * Moves the player to the given position.
@@ -36,7 +34,7 @@ public interface Turn {
      * @return the path from the current position (excluded) to the new position
      * (included).
      */
-    List<Land> moveTo(int position);
+    List<Land> moveTo(int position) throws TurnException;
 
 
     /**
@@ -53,22 +51,15 @@ public interface Turn {
      *
      * @throws TurnException if the player is not in jail.
      */
-    void leaveJail() throws TurnException;
-
-    /**
-     * Ends the turn.
-     *
-     * @throws TurnException if operation fails.
-     */
-    void endTurn() throws TurnException;
+    void leaveJail() throws  TurnException;
 
     /**
      * Executes the contract
      *
      * @param landId the land id.
      * @throws BankException if operation fails.
-     * @throws TurnException if property does not belong to the player.
      */
+
     void doContract(int landId) throws BankException, TurnException;
 
     /**
@@ -92,10 +83,10 @@ public interface Turn {
     /**
      * Sends a card to the player.
      *
-     * @param player     the player.
+     * @param to         the player.
      * @param actionCard the action card.
      */
-    void sendCard(Player player, ActionCard actionCard);
+    void sendCard(Player to, ActionCard actionCard) throws TurnException;
 
     /**
      * Birthday party.
@@ -105,13 +96,11 @@ public interface Turn {
     /**
      * trades a property.
      *
-     * @param salePlayer the player who is selling.
-     * @param landId     the land id to sell.
+     * @param seller the player who is selling.
+     * @param landId the land id to sell.
      * @throws BankException if a player doesn't have enough coins.
-     * @throws TurnException operation fails if the salePlayer does not own the
-     *                       property.
      */
-    void tradeProperty(Player salePlayer, int landId) throws BankException, TurnException;
+    void tradeProperty(Player seller, int landId) throws BankException, TurnException;
 
     /**
      * removes start_turn/roll_dice actions from the player's stack.
@@ -129,55 +118,18 @@ public interface Turn {
     /**
      * adds number to the player's balance.
      *
-     * @param number the number to add.
+     * @param value the number to add.
      * @throws BankException if operation fails.
      */
-    void income(int number) throws BankException;
+    void income(int value) throws BankException;
 
-
-    /**
-     * Returns the property owners map.
-     *
-     * @return the property owners map.
-     */
-    Map<Integer, Player> getPropertyOwners();
-
-    /**
-     * Returns the active action cards for the player at the moment.
-     *
-     * @return the list of active action cards.
-     */
-    List<ActionCard> getActiveActionCards();
-
-    /**
-     * Executes an action card.
-     *
-     * @param actionCard the action card to execute.
-     * @return true if the action card was executed successfully.
-     * @throws TurnException if it is impossible to execute the action card.
-     */
-    boolean playCard(ActionCard actionCard) throws TurnException;
-
-    /**
-     * get turn's status (finished or not).
-     *
-     * @return true if the turn is finished.
-     */
-    boolean isFinished();
-
-    /**
-     * get current player.
-     *
-     * @return returns current player.
-     */
-    Player getPlayer();
 
     /**
      * get player's status.
      *
      * @return return status.
      */
-    PlayerStatus getStatus();
+    PlayerStatus getPlayerStatus();
 
 
     /**
@@ -226,13 +178,6 @@ public interface Turn {
     int getStartPos();
 
     /**
-     * returns all players in the game.
-     *
-     * @return the players.
-     */
-    List<Player> getPlayers();
-
-    /**
      * returns all properties on the board.
      *
      * @return the properties.
@@ -261,4 +206,19 @@ public interface Turn {
      * @throws BankException if a player doesn't have enough coins.
      */
     void withdraw(int value) throws BankException;
+
+    /**
+     * @return the player
+     */
+    Player getPlayer();
+
+    /**
+     * Finishes the turn.
+     */
+    void endTurn();
+
+    /**
+     * @return list of the players in the game.
+     */
+    List<Player> getPlayers();
 }

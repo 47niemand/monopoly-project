@@ -1,9 +1,8 @@
 package pp.muza.monopoly.model.game;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,127 +15,101 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
-import lombok.Data;
-import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.consts.Meta;
 import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.PlayGame;
+import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Strategy;
-import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.ActionType;
-import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
+import pp.muza.monopoly.model.game.turn.TurnImpl;
 
-abstract class BaseGame {
+public class BaseGame implements PlayGame {
 
-    static final Logger LOG = LoggerFactory.getLogger(BaseGame.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseGame.class);
+    protected final LinkedList<Fortune> fortuneCards;
+    protected final Map<Integer, Player> propertyOwners = new HashMap<>();
+    private final Bank bank;
+    private final List<Player> players;
+    private final Map<Player, PlayerContext> playerState = new HashMap<>();
+    private final Board board;
 
-    static final int DEFAULT_MAX_TURNS = 150;
-    final Bank bank;
-    final LinkedList<Fortune> fortuneCards;
-    final List<Player> players = new ArrayList<>();
-    final Map<Player, PlayerData> playerData = new HashMap<>();
-    final Map<Integer, Player> propertyOwners = new HashMap<>();
-    final Board board;
-    int currentPlayerIndex;
-    int turnNumber;
-    int maxTurns = DEFAULT_MAX_TURNS;
+    private PlayTurn currentTurn;
+    private int currentPlayerIndex = -1;
+    private int turnNumber = 0;
 
-    protected BaseGame(Bank bank, List<Fortune> fortuneCards, Board board) {
+    protected BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
         this.bank = bank;
-        this.fortuneCards = new LinkedList<>(fortuneCards);
         this.board = board;
-    }
-
-    protected BaseGame(GameInfo gameInfo, List<Strategy> strategies, Bank bank) {
-        this(bank, gameInfo.getFortunes(), gameInfo.getBoard());
-        this.players.addAll(gameInfo.getPlayers());
-        Iterator<Strategy> strategyIterator = strategies.iterator();
-        Strategy strategy = null;
-
-        Map<Player, PlayerData> playerData = new HashMap<>();
-        for (PlayerInfo x : gameInfo.getPlayerInfo()) {
-            if (strategyIterator.hasNext()) {
-                strategy = strategyIterator.next();
-            }
-            PlayerData data = new PlayerData(x.getPlayer(), x.getStatus(), x.getPosition(), strategy, x.getActionCards());
-            if (playerData.put(x.getPlayer(), data) != null) {
-                throw new IllegalStateException("Duplicate key");
-            }
-            this.bank.set(x.getPlayer(), x.getCoins());
-
-            for (IndexedEntry<Property> belonging : x.getBelongings()) {
-                if (this.propertyOwners.put(belonging.getIndex(), x.getPlayer()) != null) {
-                    throw new IllegalStateException("Duplicate key");
-                }
-            }
-
+        this.fortuneCards = new LinkedList<>(fortuneCards);
+        this.players = new ArrayList<>(players);
+        for (Player player : players) {
+            PlayerContext playerContext = new PlayerContext(player);
+            playerContext.setStatus(PlayerStatus.IN_GAME);
+            playerContext.setPosition(board.getStartPosition());
+            playerState.put(player, playerContext);
         }
-        this.playerData.putAll(playerData);
-        this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
-        this.turnNumber = gameInfo.getTurnNumber();
-        this.maxTurns = gameInfo.getMaxTurns();
+        for (Player player : playerState.keySet()) {
+            bank.set(player, Meta.STARTING_AMOUNT);
+        }
     }
 
-    boolean nextPlayer() {
+    public Bank getBank() {
+        return bank;
+    }
+
+    int getNextPlayerIndex() {
         int temp = currentPlayerIndex;
         do {
             temp++;
             if (temp >= players.size()) {
                 temp = 0;
             }
-        } while (playerData.get(players.get(temp)).getStatus().isFinished() && temp != currentPlayerIndex);
-        int nextPlayerId = temp;
-        boolean result = nextPlayerId != currentPlayerIndex;
-        currentPlayerIndex = nextPlayerId;
-        if (result) {
-            LOG.info("Next player: {}", players.get(currentPlayerIndex).getName());
-        } else {
-            LOG.info("No next player");
-        }
-        return result;
+        } while (playerState.get(players.get(temp)).getStatus().isFinal() && temp != currentPlayerIndex);
+        return temp;
     }
 
-    public PlayerInfo getPlayerInfo(Player player) {
-        PlayerData data = playerData.get(player);
-        return new PlayerInfo(player
-                , data.getPosition()
-                , data.getStatus()
-                , bank.getBalance(player)
-                , ImmutableList.copyOf(data.getActionCards())
-                , propertyOwners.entrySet().stream()
+    void newTurn() {
+        if (currentPlayerIndex < 0) {
+            throw new IllegalStateException("Game is not started");
+        }
+        Player currentPlayer = players.get(currentPlayerIndex);
+        currentTurn = (PlayTurn) TurnImpl.of((Game) this, currentPlayer, turnNumber);
+        LOG.info("Player {} is starting turn {}", currentPlayer.getName(), turnNumber);
+        LOG.debug("Info: {}", getPlayerInfo(currentPlayer));
+    }
+
+
+    protected List<IndexedEntry<Property>> belongings(Player player) {
+        return propertyOwners.entrySet().stream()
                 .filter(x -> x.getValue() == player)
                 .map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey())))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    void setPropertyOwner(int landId, Player player) {
-        Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now owned by {}", landId, property.getName(), player.getName());
-        Player oldOwner = propertyOwners.put(landId, player);
-        if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
+    public void getBackChanceCard(ActionCard card) {
+        if (card == null) {
+            throw new IllegalArgumentException("Card cannot be null");
         }
-    }
-
-    void getBackChanceCard(ActionCard card) {
         if (card.getAction() != Action.CHANCE) {
             throw new IllegalArgumentException("Not a chance card");
         }
-        assert card instanceof Fortune;
         Fortune fortune = (Fortune) card;
-        LOG.info("Fortune card [{}] returned", card.getName());
-        assert !fortuneCards.contains(fortune);
+        if (fortuneCards.contains(fortune)) {
+            throw new IllegalArgumentException("Card already in deck");
+        }
+        LOG.info("Fortune card '{}; returned", card.getName());
         fortuneCards.addLast(fortune);
     }
 
@@ -149,6 +122,131 @@ abstract class BaseGame {
         }
     }
 
+    void getBackAllCards(Player player) {
+        PlayerContext data = playerState.get(player);
+        List<ActionCard> chanceCards = ImmutableList.copyOf(data.getCards());
+        for (ActionCard card : chanceCards) {
+            if (card.getAction() == Action.CHANCE) {
+                getBackChanceCard(card);
+            }
+            data.removeCard(card);
+        }
+    }
+
+    void getBackAllChanceCards(Player player) {
+        PlayerContext data = playerState.get(player);
+        List<ActionCard> chanceCards = data.getCards().stream().filter(x -> x.getAction() == Action.CHANCE && x.getType() != ActionType.KEEPABLE).collect(Collectors.toList());
+        chanceCards.stream().map(data::removeCard).forEach(this::getBackChanceCard);
+    }
+
+    public void finishTurn(Player player) throws GameException {
+        if (currentTurn == null || currentTurn.isFinished()) {
+            throw new GameException("No turn in progress");
+        }
+        if (player != currentTurn.getPlayer()) {
+            throw new GameException("Not current player");
+        }
+        LOG.debug("Finishing turn for {}", player.getName());
+
+        PlayerContext data = playerState.get(player);
+        data.releaseAll();
+        getBackAllChanceCards(player);
+        List<ActionCard> mandatoryCards = data.getCards().stream()
+                .filter(actionCard -> actionCard.getType().isMandatory())
+                .collect(Collectors.toList());
+        if (mandatoryCards.size() > 0) {
+            LOG.info("Player {} has mandatory cards: {}", player.getName(), mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+            // Player with obligation cards is out of the game.
+            data.setStatus(PlayerStatus.OUT_OF_GAME);
+
+            // return properties to game
+            for (IndexedEntry<Property> entry : belongings(player)) {
+                propertyOwnerRemove(entry.getIndex());
+            }
+
+            // return chance cards to game if any
+            getBackAllCards(player);
+            return;
+        }
+        getBackAllChanceCards(player);
+        currentTurn = null;
+    }
+
+    public PlayerContext playerContext(Player player) {
+        return playerState.get(player);
+    }
+
+
+    //================================================================================================
+
+    @Override
+    public boolean isGameInProgress() {
+        return (currentTurn != null && !currentTurn.isFinished()) || (getNextPlayerIndex() != currentPlayerIndex);
+    }
+
+    void nextPlayer() throws GameException {
+        LOG.debug("Player {} is ending turn {}", players.get(currentPlayerIndex).getName(), turnNumber);
+        int nextPlayerIndex = getNextPlayerIndex();
+        if (nextPlayerIndex == currentPlayerIndex) {
+            throw new GameException("No more players in game");
+        }
+        if (currentTurn != null && !currentTurn.isFinished()) {
+            throw new IllegalStateException("Current turn is not finished");
+        }
+    }
+
+    @Override
+    public PlayTurn getTurn() throws GameException {
+        if (currentTurn == null || currentTurn.isFinished()) {
+            nextPlayer();
+            newTurn();
+            playerContext(currentTurn.getPlayer()).addCard(NewTurn.of());
+        }
+        return currentTurn;
+    }
+
+    @Override
+    public List<ActionCard> getActiveCards(Player player) {
+        PlayerContext data = playerState.get(player);
+        List<ActionCard> result = data.getActiveCards();
+        LOG.debug("Cards in play: {} for {}", result, player.getName());
+        return result;
+    }
+
+    @Override
+    public List<ActionCard> getCards(Player player) {
+        return playerState.get(player).getCards();
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
+    }
+
+    @Override
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
+    }
+
+    @Override
+    public PlayerInfo getPlayerInfo(Player player) {
+        PlayerContext data = playerState.get(player);
+        return PlayerInfo.builder()
+                .player(player)
+                .position(data.getPosition())
+                .status(data.getStatus())
+                .coins(bank.getBalance(player))
+                .actionCards(data.getCards())
+                .belongings(belongings(player))
+                .build();
+    }
+
+
+    @Override
+    public Map<Integer, Player> getPropertyOwners() {
+        return Collections.unmodifiableMap(propertyOwners);
+    }
+
     /**
      * for testing
      */
@@ -156,6 +254,17 @@ abstract class BaseGame {
         Fortune fortune = pickFortuneCard(card);
         fortuneCards.addFirst(fortune);
     }
+
+    void setPropertyOwner(int landId, Player player) {
+        Property property = (Property) getBoard().getLand(landId);
+        LOG.info("Property {} ({}) is now owned by {}", landId, property.getName(), player.getName());
+        Player oldOwner = propertyOwners.put(landId, player);
+        if (oldOwner != null) {
+            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
+        }
+    }
+
+    //================================================================================================
 
     /**
      * for testing
@@ -167,221 +276,35 @@ abstract class BaseGame {
                 .filter(i -> fortuneCards.get(i).getChance() == chance)
                 .findFirst();
         if (index.isPresent()) {
-            LOG.info("Fortune card [{}] removed from pile", chance.name());
+            LOG.info("Fortune card '{}' removed from pile", chance.name());
             result = fortuneCards.remove(index.getAsInt());
         } else {
-            LOG.error("Fortune card [{}] not found", chance.name());
+            LOG.error("Fortune card '{}' not found", chance.name());
             result = null;
         }
         return result;
     }
 
-    void getBackAllChanceCards(Player player) {
-        playerData.get(player).actionCards.removeIf(x -> {
-                    boolean found = false;
-                    if (x.getAction() == Action.CHANCE) {
-                        // return chance card to pile
-                        getBackChanceCard(x);
-                        found = true;
-                    }
-                    return found;
-                }
-        );
-    }
-
-    void getBackAllPlayerCards(Player player) {
-        playerData.get(player).actionCards.removeIf(x -> {
-                    boolean found = x.getType() != ActionType.KEEPABLE;
-                    if (found) {
-                        LOG.info("{} lost action card {}", player.getName(), x.getName());
-                        if (x.getAction() == Action.CHANCE) {
-                            getBackChanceCard(x);
-                        }
-                    }
-                    return found;
-                }
-        );
-    }
-
-    void setPlayerStatus(Player player, PlayerStatus status) {
-        playerData.get(player).setStatus(status);
-    }
-
-    void endGame() {
-        LOG.info("Game ended");
-        for (Player player : players) {
-            getBackAllChanceCards(player);
-        }
-    }
-
-    private boolean canExecute(Turn turn, ActionCard card) {
-        // there is some logic for checking if the card can be executed
-        if (card.getAction() == Action.CHANCE && ((Fortune) card).getChance() == Chance.GET_OUT_OF_JAIL_FREE) {
-            return turn.getStatus() == PlayerStatus.IN_JAIL;
-        }
-        return true;
-    }
-
-    void playTurn(Turn turn) {
-        Strategy strategy = playerData.get(turn.getPlayer()).getStrategy();
-        LOG.debug("Player's strategy: {}", strategy);
-        int step = 0;
-        boolean playTurn;
-        while (!turn.isFinished()) {
-            step++;
-            LOG.debug("Step {}", step);
-            List<ActionCard> activeCards = turn.getActiveActionCards();
-            //TODO: some cards cannot be used at the moment, however they can be used in the future.
-            // If they are chosen at the wrong moment, this can lead to the end of the game.
-            // This should be fixed with one of the following:
-            //  # they do not need to be returned from the getActiveActionCards() if they cannot be used at the moment;
-            //  # check at the level of the strategy;
-            //  # if a player tries to use such a card, move them it into hold until the next turn;
-
-            // hack: remove cards that cannot be used at the moment
-            List<ActionCard> activeCardsExecutable = activeCards.stream()
-                    .filter(x -> canExecute(turn, x))
-                    .collect(Collectors.toList());
-            // take a snapshot of the game's state at this moment
-            TurnInfo turnInfo = new TurnInfo(turnNumber, activeCardsExecutable, getPlayerInfo(turn.getPlayer()), board, turn.getPlayers(), turn.getPropertyOwners());
-            // execute the strategy
-            ActionCard result = strategy.playTurn(turnInfo);
-            if (result != null) {
-                try {
-                    // execute the card
-                    playTurn = turn.playCard(result);
-                } catch (TurnException e) {
-                    // there should be no exception while playing a card
-                    throw new RuntimeException(e);
-                }
-            } else if (turnInfo.getActiveCards().isEmpty()) {
-                LOG.info("{} has no action cards to play", turn.getPlayer().getName());
-                playTurn = false;
-            } else {
-                LOG.info("{} skipped turn", turn.getPlayer().getName());
-                playTurn = false;
-            }
-
-            if (!playTurn) {
-                try {
-                    turn.endTurn();
-                } catch (TurnException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (step > 20) {
-                throw new IllegalStateException("To many steps");
-            }
-
-        }
-    }
-
-    public void gameLoop() {
-        turnNumber = 0;
-        do {
-            turnNumber++;
-            Player player = players.get(currentPlayerIndex);
-            LOG.info("Game turn {} for player {}", turnNumber, player.getName());
-            Turn turn = turn(player);
-            playerData.get(player).getActionCards().add(NewTurn.of());
-            playTurn(turn);
-            if (turnNumber >= maxTurns) {
-                GameImpl.LOG.info("Game reached max turns");
-                break;
-            }
-        } while (nextPlayer());
-        endGame();
-        printResults();
-    }
-
-    private void printResults() {
-        List<String> freeProperties = IntStream.range(0, board.getLands().size())
-                .filter(x -> board.getLand(x) instanceof Property)
-                .filter(x -> propertyOwners.get(x) == null)
-                .mapToObj(x -> board.getLand(x).getName())
-                .collect(Collectors.toList());
-        LOG.info("Free properties on the board: {}", freeProperties);
-        // get player with maximum coins
-        Player winner = players.stream()
-                .filter(x -> !playerData.get(x).getStatus().isFinished())
-                .max(Comparator.comparing(bank::getBalance))
-                .orElseThrow(() -> new RuntimeException("No winner"));
-        GameImpl.LOG.info("Winner: " + winner.getName());
-        // print results
-        players.forEach(x -> GameImpl.LOG.info("{} - {}", x.getName(), getPlayerInfo(x)));
-    }
-
-
     /**
-     * Create a new turn for a player.
-     *
-     * @param player the player
-     * @return the turn
+     * for testing
      */
-    abstract Turn turn(Player player);
-
-    protected int getCurrentPriority(Player player) {
-        OptionalInt priority = playerData.get(player).getActionCards().stream()
-                .filter(actionCard1 -> actionCard1.getType().isMandatory())
-                .mapToInt(ActionCard::getPriority)
-                .min();
-
-        if (priority.isEmpty()) {
-            priority = playerData.get(player).getActionCards().stream()
-                    .mapToInt(ActionCard::getPriority)
-                    .min();
-        }
-        return priority.orElse(BaseActionCard.LOW_PRIORITY);
+    void sendCard(Player to, ActionCard actionCard) {
+        LOG.info("Sending card '{}' to {}", actionCard.getName(), to.getName());
+        playerState.get(to).addCard(actionCard);
     }
 
-    @Data
-    protected static final class PlayerData {
-        final List<ActionCard> actionCards;
-        private final Player player;
-        private PlayerStatus status;
-        private int position;
-        private Strategy strategy;
-
-        PlayerData(Player player, PlayerStatus status, int position, Strategy strategy) {
-            this.player = player;
-            this.status = status;
-            this.position = position;
-            this.actionCards = new ArrayList<>() {
-                @Override
-                public boolean add(ActionCard actionCard) {
-                    if (actionCard.getType().isMandatory()) {
-                        return super.add(actionCard);
-                    } else {
-                        return false;
-                    }
-                }
-            };
-            this.strategy = strategy;
+    public void start() {
+        LOG.info("Starting game");
+        if (players.size() < 2) {
+            throw new IllegalStateException("Not enough players");
         }
-
-        PlayerData(Player player, PlayerStatus status, int position, Strategy strategy, List<ActionCard> actionCards) {
-            this(player, status, position, strategy);
-            this.actionCards.addAll(actionCards);
+        if (players.size() > 4) {
+            throw new IllegalStateException("Too many players");
         }
-
-        void setPosition(int position) {
-            if (this.position != position) {
-                LOG.info("{} is moving from position {} to position {}", this.player.getName(), this.position, position);
-                this.position = position;
-            } else {
-                LOG.info("{} at position {}", this.player.getName(), this.position);
-            }
+        if (currentPlayerIndex >= 0) {
+            throw new IllegalStateException("Game already started");
         }
-
-        void setStatus(PlayerStatus status) {
-            assert status != null;
-            if (this.status == null) {
-                LOG.debug("{} set status to {}", player.getName(), status);
-            } else {
-                LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
-            }
-            this.status = status;
-        }
+        currentPlayerIndex = 0;
     }
 
 }

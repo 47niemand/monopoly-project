@@ -3,8 +3,8 @@ package pp.muza.monopoly.utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import pp.muza.monopoly.model.BoardLayout;
 import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.BoardLayout;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
 class BoardLayoutTest {

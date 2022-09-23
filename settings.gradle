@@ -12,18 +12,12 @@ rootProject.name = 'monopoly-project'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            library('junit', 'junit:junit:4.12')
             library('junit_jupiter', 'org.junit.jupiter:junit-jupiter:5.7.2')
             library('junit_jupiter_engine', 'org.junit.jupiter:junit-jupiter-engine:5.7.2')
             library('lombok', 'org.projectlombok:lombok:1.18.22')
             library('guava', 'com.google.guava:guava:30.1.1-jre')
             library('logback', 'ch.qos.logback:logback-classic:1.2.6')
             library('commons_cli', 'commons-cli:commons-cli:1.5.0')
-            library('commons-io', 'commons-io:commons-io:2.11.0')
-            library('jfree_svg', 'org.jfree:org.jfree.svg:5.0.3')
-            library('batik-codec', 'org.apache.xmlgraphics:batik-codec:1.14')
-            library('commons-text', 'org.apache.commons:commons-text:1.9')
-            library('jackson-databind', 'com.fasterxml.jackson.core:jackson-databind:2.13.3')
         }
     }
 }

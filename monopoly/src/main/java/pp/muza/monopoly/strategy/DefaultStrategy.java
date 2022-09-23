@@ -1,6 +1,7 @@
 package pp.muza.monopoly.strategy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,8 @@ public class DefaultStrategy implements Strategy {
 
     @Override
     public ActionCard playTurn(TurnInfo turnInfo) {
-        List<ActionCard> a = turnInfo.getActiveCards();
+        List<ActionCard> cards = turnInfo.getActiveCards();
+        LOG.info("Active cards: {}", cards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         // TODO: implement a better strategy
         //  if there are CONTRACT cards, chose which a better to sale (to cover the obligation, or get more profit);
         //  If there is a BUY card, decide whether to buy it or not if a better option could be available;
@@ -28,8 +30,8 @@ public class DefaultStrategy implements Strategy {
         //  if there are GetOrPay cards, It is preferable to select an unowned land, but consider the player's balance;
         //  if there are OptionMove cards, chose the one which is better to the player's current situation;
 
-        int random = (int) (Math.random() * a.size());
+        int random = (int) (Math.random() * cards.size());
         LOG.debug("Random card: {}", random);
-        return a.size() > 0 ? a.get(random) : null;
+        return cards.size() > 0 ? cards.get(random) : null;
     }
 }

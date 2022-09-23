@@ -26,7 +26,7 @@ public enum PlayerStatus {
         this.isFinal = isFinal;
     }
 
-    public boolean isFinished() {
+    public boolean isFinal() {
         return isFinal;
     }
 }

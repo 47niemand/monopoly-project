@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.BaseGameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Turn;
@@ -55,17 +54,9 @@ public class Tax extends BaseActionCard {
      * @param turn the turn to execute the action on.
      * @return cards if the player cannot pay the tax.
      */
-    protected List<ActionCard> onFailure(Turn turn, BaseGameException e) {
-        List<ActionCard> result;
-        if (e instanceof BankException) {
-            result = ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
-                    .build();
-        } else if (e instanceof TurnException) {
-            result = ImmutableList.of();
-        } else {
-            throw new IllegalStateException(e);
-        }
-        return result;
+    protected final List<ActionCard> onFailure(Turn turn) {
+        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
+                .build();
     }
 
     /**
@@ -79,15 +70,20 @@ public class Tax extends BaseActionCard {
     }
 
     @Override
-    protected List<ActionCard> onExecute(Turn turn) {
+    protected final List<ActionCard> onExecute(Turn turn) {
         List<ActionCard> result;
         try {
             check(turn);
-            turn.withdraw(value);
-            result = onSuccess(turn);
-        } catch (BaseGameException e) {
+            try {
+                turn.withdraw(value);
+                result = onSuccess(turn);
+            } catch (BankException e) {
+                LOG.warn("Player {} cannot pay the tax.", turn.getPlayer());
+                result = onFailure(turn);
+            }
+        } catch (TurnException e) {
             LOG.warn("Player cannot play card: {}", e.getMessage());
-            result = onFailure(turn, e);
+            result = ImmutableList.of();
         }
         return result;
     }

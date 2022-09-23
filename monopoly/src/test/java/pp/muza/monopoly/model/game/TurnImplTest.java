@@ -31,21 +31,20 @@ class TurnImplTest {
         // setup
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
-        PlayGame playGame = new Monopoly(ImmutableList.of(player1, player2));
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
 
         // act
-        assertFalse(playGame.isGameInProgress());
-        playGame.start();
+        assertFalse(game.isGameInProgress());
+        game.start();
 
-        Monopoly monopoly = (Monopoly) playGame;
-        monopoly.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
-        monopoly.baseGame.sendCard(player1, monopoly.baseGame.pickFortuneCard(Chance.GET_OUT_OF_JAIL_FREE));
-        PlayTurn turn1 = playGame.getTurn();
+        game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
+        game.baseGame.sendCard(player1, game.baseGame.pickFortuneCard(Chance.GET_OUT_OF_JAIL_FREE));
+        PlayTurn turn1 = game.getTurn();
         while (!turn1.isFinished()) {
             ActionCard card = ObedientStrategy.getInstance().playTurn(turn1.getTurnInfo());
             turn1.playCard(card);
         }
-        assertEquals(PlayerStatus.IN_GAME, playGame.getPlayerInfo(player1).getStatus());
+        assertEquals(PlayerStatus.IN_GAME, game.getPlayerInfo(player1).getStatus());
     }
 
 
@@ -56,37 +55,35 @@ class TurnImplTest {
         // setup
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
-        PlayGame playGame = new Monopoly(ImmutableList.of(player1, player2));
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
 
         // act
-        assertFalse(playGame.isGameInProgress());
-        playGame.start();
+        assertFalse(game.isGameInProgress());
+        game.start();
 
-        Monopoly monopoly = (Monopoly) playGame;
-        monopoly.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
+        game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
 
-        PlayTurn turn1 = playGame.getTurn();
+        PlayTurn turn1 = game.getTurn();
         while (!turn1.isFinished()) {
             ActionCard card = ObedientStrategy.getInstance().playTurn(turn1.getTurnInfo());
             turn1.playCard(card);
         }
-        assertEquals(PlayerStatus.IN_GAME, playGame.getPlayerInfo(player1).getStatus());
+        assertEquals(PlayerStatus.IN_GAME, game.getPlayerInfo(player1).getStatus());
     }
 
     @Test
     void endGame() throws GameException, TurnException {
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
-        PlayGame playGame = new Monopoly(ImmutableList.of(player1, player2));
-        playGame.start();
-        Monopoly monopoly = (Monopoly) playGame;
-        monopoly.baseGame.playerData(player1).setStatus(PlayerStatus.OUT_OF_GAME);
-        monopoly.baseGame.playerData(player2).setStatus(PlayerStatus.IN_GAME);
-        monopoly.baseGame.nextPlayer(); // player2
-        monopoly.baseGame.newTurn();    // new turn for player2
-        playGame.getTurn().endTurn();
-        assertThrows(GameException.class, playGame::getTurn);
-        assertFalse(playGame.isGameInProgress());
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
+        game.start();
+        game.baseGame.playerData(player1).setStatus(PlayerStatus.OUT_OF_GAME);
+        game.baseGame.playerData(player2).setStatus(PlayerStatus.IN_GAME);
+        game.baseGame.nextPlayer(); // player2
+        game.baseGame.newTurn();    // new turn for player2
+        game.getTurn().endTurn();
+        assertThrows(GameException.class, game::getTurn);
+        assertFalse(game.isGameInProgress());
 
 
     }

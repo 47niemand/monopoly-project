@@ -20,10 +20,6 @@ import pp.muza.monopoly.model.PlayerStatus;
 class MonopolyTest {
 
     @Test
-    void isGameInProgress() {
-    }
-
-    @Test
     void start() throws GameException, TurnException {
         // test if the game starts
 
@@ -50,31 +46,4 @@ class MonopolyTest {
         assertThrows(GameException.class, playGame::start);
     }
 
-    @Test
-    void getTurn() {
-    }
-
-    @Test
-    void getPlayers() {
-    }
-
-    @Test
-    void getPlayerInfo() {
-    }
-
-    @Test
-    void getActiveCards() {
-    }
-
-    @Test
-    void getCards() {
-    }
-
-    @Test
-    void getPropertyOwners() {
-    }
-
-    @Test
-    void getBoard() {
-    }
 }

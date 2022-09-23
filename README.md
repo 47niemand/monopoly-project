@@ -1,7 +1,7 @@
-game-project
+monopoly-project
 ================
 
-The simple application which plays a game of game with a given number of players.
+The simple application which plays a game of Monopoly with a given number of players.
 There is a board with a number of properties, each with a name, a price, and a color.
 Specific lands are also on the board, such as the Go, Jail, and Chance spaces.
 

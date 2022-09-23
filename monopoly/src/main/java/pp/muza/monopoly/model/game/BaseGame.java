@@ -68,6 +68,9 @@ public abstract class BaseGame {
             info.setPosition(board.getStartPosition());
             this.playerData.put(player, info);
         }
+        if (playerData.size() != players.size()) {
+            throw new IllegalArgumentException("Duplicate players");
+        }
         for (Player player : playerData.keySet()) {
             bank.set(player, Meta.STARTING_AMOUNT);
         }

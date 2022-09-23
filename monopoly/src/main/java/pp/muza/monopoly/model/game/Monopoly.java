@@ -1,5 +1,6 @@
 package pp.muza.monopoly.model.game;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +30,9 @@ public class Monopoly implements PlayGame {
 
     public Monopoly(List<Player> players) {
         this.players = ImmutableList.copyOf(players);
+        Collections.shuffle(fortunes);
         this.baseGame = new BaseGame(bank, board, fortunes, this.players) {
         };
-
     }
 
     @Override

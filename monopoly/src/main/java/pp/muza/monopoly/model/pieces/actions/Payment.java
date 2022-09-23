@@ -77,6 +77,7 @@ public class Payment extends BaseActionCard {
         try {
             turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
         } catch (TurnException e) {
+            LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);
         }
         return ImmutableList.of();

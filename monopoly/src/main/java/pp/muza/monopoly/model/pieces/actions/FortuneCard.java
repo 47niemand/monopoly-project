@@ -68,6 +68,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         Player recipient;
         if (players.size() > playerId) {
             recipient = players.get(playerId);
+            LOG.warn("### " + turn.getPlayerStatus());
         } else {
             recipient = null;
         }
@@ -159,9 +160,10 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     throw new IllegalStateException("Unknown chance card: " + chance);
             }
         } catch (TurnException e) {
-            throw new IllegalStateException("Error while executing chance card " + this, e);
+            LOG.error("Error executing chance card {}", this, e);
+            throw new IllegalStateException(e);
         }
-        LOG.debug("resulting cards: {}", result);
+        LOG.debug("Fortune: resulting cards: {}", result);
         return result;
     }
 

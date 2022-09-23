@@ -102,12 +102,14 @@ public abstract class TurnImpl implements Turn {
 
     @Override
     public void doBirthdayParty() throws TurnException {
+        LOG.info("Birthday party for {}", player());
         Player player = getPlayer();
-        for (Player x : game().getPlayers()) {
-            if (x != player && !getPlayerStatus(x).isFinal()) {
+        for (Player guest : game().getPlayers()) {
+            if (guest != player && !getPlayerStatus(guest).isFinal()) {
                 try {
-                    sendCard(x, Gift.of(Meta.BIRTHDAY_GIFT_AMOUNT, player));
+                    sendCard(guest, Gift.of(Meta.BIRTHDAY_GIFT_AMOUNT, player));
                 } catch (TurnException e) {
+                    LOG.error("Error while sending card to player {}", guest, e);
                     throw new RuntimeException(e);
                 }
             }
@@ -185,7 +187,7 @@ public abstract class TurnImpl implements Turn {
 
     @Override
     public PlayerStatus getPlayerStatus(Player player) {
-        return game().getPlayerStatus(player());
+        return game().getPlayerStatus(player);
     }
 
     @Override

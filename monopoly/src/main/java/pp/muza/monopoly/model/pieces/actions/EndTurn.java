@@ -37,6 +37,7 @@ public final class EndTurn extends BaseActionCard {
         try {
             turn.endTurn();
         } catch (TurnException e) {
+            LOG.error("Error during executing the action: {}", this);
             throw new RuntimeException(e);
         }
         return ImmutableList.of();

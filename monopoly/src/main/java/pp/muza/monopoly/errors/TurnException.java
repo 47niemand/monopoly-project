@@ -10,6 +10,6 @@ public final class TurnException extends Exception {
     }
 
     public TurnException(Exception e) {
-        super(e.getMessage());
+        super(e.getMessage(), e);
     }
 }

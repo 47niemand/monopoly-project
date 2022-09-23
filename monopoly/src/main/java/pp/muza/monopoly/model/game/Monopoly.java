@@ -88,4 +88,9 @@ public class Monopoly implements PlayGame {
     public int getBalance(Player player) {
         return baseGame.getBank().getBalance(player);
     }
+
+    @Override
+    public int getTurnNumber() {
+        return baseGame.getTurnNumber();
+    }
 }

@@ -2,6 +2,9 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.errors.TurnException;
@@ -10,6 +13,8 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 public final class BirthdayParty extends BaseActionCard {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BirthdayParty.class);
 
     public BirthdayParty() {
         super("Birthday Party", Action.PARTY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
@@ -24,6 +29,7 @@ public final class BirthdayParty extends BaseActionCard {
         try {
             turn.doBirthdayParty();
         } catch (TurnException e) {
+            LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);
         }
         return ImmutableList.of();

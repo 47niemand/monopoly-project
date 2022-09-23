@@ -1,16 +1,26 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.PlayGame;
+import pp.muza.monopoly.model.PlayTurn;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
 import pp.muza.monopoly.strategy.ObedientStrategy;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TurnImplTest {
 

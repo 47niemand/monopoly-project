@@ -32,7 +32,8 @@ public abstract class GameImpl implements Game {
     protected abstract BaseGame baseGame();
 
     private void checkPlayerInGame(Player player) throws GameException {
-        if (baseGame().getPlayerInfo(player).getStatus().isFinal()) {
+        if (baseGame().playerData(player).getStatus().isFinal()) {
+            LOG.error("Player {} is not in game", player);
             throw new GameException("Player is not in game");
         }
     }
@@ -134,7 +135,7 @@ public abstract class GameImpl implements Game {
 
     @Override
     public void sendCard(Player sender, Player to, ActionCard actionCard) throws GameException {
-        LOG.info("Player {} is sending card '{}' to {}", sender.getName(), actionCard, to.getName());
+        LOG.info("Player {} is sending card '{}' to {}", sender.getName(), actionCard.getName(), to.getName());
         checkPlayerInGame(to);
         baseGame().playerData(to).addCard(actionCard);
     }

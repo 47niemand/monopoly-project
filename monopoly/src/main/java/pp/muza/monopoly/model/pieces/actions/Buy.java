@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -54,7 +55,8 @@ public final class Buy extends BaseActionCard {
             result = ImmutableList.<ActionCard>builder().add(this)
                     .addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
             finished = true;
-        } catch (pp.muza.monopoly.errors.TurnException e) {
+        } catch (TurnException e) {
+            LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);
         }
         if (!finished) {

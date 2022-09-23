@@ -1,12 +1,12 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.game.TurnImpl;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Game API for engine.

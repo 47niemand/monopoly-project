@@ -79,7 +79,25 @@ public interface PlayGame {
      */
     Board getBoard();
 
+    /**
+     * Returns status of the player.
+     *
+     * @return the player status.
+     */
     PlayerStatus getPlayerStatus(Player player);
 
+    /**
+     * Returns the player's balance.
+     *
+     * @param player the player.
+     * @return the player's balance.
+     */
     int getBalance(Player player);
+
+    /**
+     * Returns the turn's number.
+     *
+     * @return the turn's number.
+     */
+    int getTurnNumber();
 }

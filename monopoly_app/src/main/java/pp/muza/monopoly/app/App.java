@@ -96,6 +96,9 @@ public class App {
             } else {
                 turn.endTurn();
             }
+            if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
+                break;
+            }
         }
         System.out.println("Game finished");
         printResults(game);

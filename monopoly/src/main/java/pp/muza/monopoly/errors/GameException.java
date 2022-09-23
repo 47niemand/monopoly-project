@@ -7,6 +7,6 @@ public final class GameException extends Exception {
     }
 
     public GameException(Exception e) {
-        super(e.getMessage());
+        super(e.getMessage(), e);
     }
 }

@@ -1,8 +1,5 @@
 package pp.muza.monopoly.model.game;
 
-import static pp.muza.monopoly.model.pieces.actions.BaseActionCard.NEW_TURN_PRIORITY;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,6 +30,7 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Action;
+import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 
@@ -63,7 +61,7 @@ public abstract class BaseGame {
         this.bank = bank;
         this.board = board;
         this.fortuneCards = new LinkedList<>(fortuneCards);
-        this.players = new ArrayList<>(players);
+        this.players = ImmutableList.copyOf(players);
         for (Player player : players) {
             PlayerData info = new PlayerData(player);
             info.setStatus(PlayerStatus.IN_GAME);
@@ -87,7 +85,8 @@ public abstract class BaseGame {
     }
 
     void newTurn() {
-        if (turnNumber > 200) {
+        if (turnNumber > Meta.DEFAULT_MAX_TURNS) {
+            LOG.error("Number of turns exceeded {}.", Meta.DEFAULT_MAX_TURNS);
             throw new RuntimeException("Too many turns.");
         }
         Player currentPlayer = players.get(currentPlayerIndex);
@@ -99,7 +98,7 @@ public abstract class BaseGame {
             }
         };
         LOG.info("{} is starting turn {}", currentPlayer.getName(), turnNumber);
-        LOG.debug("Info: {}", getPlayerInfo(currentPlayer));
+        LOG.info("Info: {}", getPlayerInfo(currentPlayer));
     }
 
     private void getBackAllCards(Player player) {
@@ -188,7 +187,6 @@ public abstract class BaseGame {
         return inProgress && started && !lastPlayer;
     }
 
-
     private void checkTurn(Turn turn) throws GameException {
         if (currentTurn == null || currentTurn.isFinished()) {
             throw new GameException("No turn in progress");
@@ -266,7 +264,7 @@ public abstract class BaseGame {
             Player currentPlayer = players.get(currentPlayerIndex);
             // check if the player has obligation cards with high priority
             boolean activeCards = playerData(currentPlayer).getActiveCards().stream()
-                    .anyMatch(actionCard -> actionCard.getType().isMandatory() && actionCard.getPriority() < NEW_TURN_PRIORITY);
+                    .anyMatch(actionCard -> actionCard.getType().isMandatory() && actionCard.getPriority() <= BaseActionCard.NEW_TURN_PRIORITY);
             if (!activeCards) {
                 // if not, then the player can start a new turn
                 playerData(currentPlayer).addCard(NewTurn.of());
@@ -295,7 +293,7 @@ public abstract class BaseGame {
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
+        return players;
     }
 
     public PlayerInfo getPlayerInfo(Player player) {
@@ -318,6 +316,10 @@ public abstract class BaseGame {
 
     public Player getPropertyOwner(int position) {
         return propertyOwners.get(position);
+    }
+
+    public int getTurnNumber() {
+        return this.turnNumber;
     }
 
     //================================================================================================

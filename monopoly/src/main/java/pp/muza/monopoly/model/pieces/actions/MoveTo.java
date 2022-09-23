@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
@@ -57,7 +58,8 @@ public class MoveTo extends BaseActionCard {
         List<Land> path;
         try {
             path = turn.moveTo(landId);
-        } catch (pp.muza.monopoly.errors.TurnException e) {
+        } catch (TurnException e) {
+            LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);
         }
         if (path.size() == 0) {

@@ -1,21 +1,23 @@
 package pp.muza.monopoly.model.game;
 
-import lombok.ToString;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+public final class PlayerData {
 
-@ToString
-public final class PlayerContext {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PlayerContext.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerData.class);
 
     final Player player;
     PlayerStatus status;
@@ -23,7 +25,7 @@ public final class PlayerContext {
     private final List<ActionCard> cards = new ArrayList<>();
     private final List<ActionCard> hold = new ArrayList<>();
 
-    public PlayerContext(Player player) {
+    public PlayerData(Player player) {
         this.player = player;
     }
 
@@ -64,16 +66,14 @@ public final class PlayerContext {
         return seen1 ? best1 : (seen2 ? best2 : BaseActionCard.LOW_PRIORITY);
     }
 
-    public boolean holdCard(ActionCard actionCard) {
+    public void holdCard(ActionCard actionCard) {
         ActionCard card = removeCard(actionCard);
         if (card != null) {
             LOG.debug("Holding card: {}", card);
             hold.add(card);
-            return true;
         } else {
             LOG.warn("Cannot hold card: {}", actionCard);
         }
-        return false;
     }
 
     public void releaseAll() {
@@ -95,8 +95,14 @@ public final class PlayerContext {
     }
 
 
+    /**
+     * Adds the card to the player's hand. card can be added only if the player does not have it already.
+     *
+     * @param card the card to add
+     * @return true if the card was added and false if the card was not added
+     */
     public boolean addCard(ActionCard card) {
-        if (cards.contains(card) || hold.contains(card)) {
+        if (cards.contains(card)) {
             LOG.debug("Card {} already on player's hand", card);
             return false;
         }
@@ -104,6 +110,12 @@ public final class PlayerContext {
         return cards.add(card);
     }
 
+    /**
+     * Removes card from player's hand.
+     *
+     * @param card card to remove
+     * @return removed card or null if card was not found
+     */
     public ActionCard removeCard(ActionCard card) {
         ActionCard result = null;
         List<ActionCard> removed;
@@ -139,4 +151,13 @@ public final class PlayerContext {
         }
     }
 
+    @Override
+    public String toString() {
+        return "BaseGame.PlayerData(player=" + this.getPlayer()
+                + ", status=" + this.getStatus()
+                + ", position=" + this.getPosition()
+                + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ")";
+    }
 }

@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.pieces.actions;
+package pp.muza.monopoly.model;
 
 import lombok.Getter;
 

@@ -1,13 +1,15 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.TurnException;
-
-import java.util.List;
 
 public interface PlayTurn {
 
     /**
+     * Returns the player of the turn.
+     *
      * @return the player
      */
     Player getPlayer();
@@ -46,5 +48,6 @@ public interface PlayTurn {
      *
      * @throws TurnException if the turn already finished.
      */
-    void finishTurn() throws TurnException;
+    void endTurn() throws TurnException;
+
 }

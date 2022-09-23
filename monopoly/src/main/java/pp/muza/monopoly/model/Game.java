@@ -3,25 +3,35 @@ package pp.muza.monopoly.model;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.pieces.lands.PropertyColor;
+import pp.muza.monopoly.model.game.TurnImpl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
-public interface Game  {
+/**
+ * Game API for engine.
+ */
+public interface Game {
+
+    /**
+     * Returns the id of the jail.
+     *
+     * @return jail position
+     */
+    int getJailPosition();
 
     /**
      * Pops a chance card from the top of the deck.
      *
      * @return the chance card.
      */
-    Fortune popFortuneCard();
+    Fortune takeFortuneCard();
 
     /**
      * Sets the player status to JAIL and moves the player to the jail position.
      *
      * @param player the player.
+     * @throws GameException if the player is not in the game.
      */
     void setPlayerInJail(Player player) throws GameException;
 
@@ -32,6 +42,7 @@ public interface Game  {
      * @param position the position.
      * @return the path from the current position (excluded) to the new position
      * (included).
+     * @throws GameException if the player is not in the game.
      */
     List<Land> moveTo(Player player, int position) throws GameException;
 
@@ -205,4 +216,28 @@ public interface Game  {
      */
     void withdraw(Player player, int value) throws BankException;
 
+    /**
+     * Returns the list of all players in the game.
+     *
+     * @return the list of players.
+     */
+    List<Player> getPlayers();
+
+    /**
+     * ends the current turn
+     *
+     * @param turn the turn to end
+     * @throws GameException if the turn is not the current turn
+     */
+    void endTurn(Turn turn) throws GameException;
+
+    /**
+     * holds the current turn
+     *
+     * @param turn the turn to hold
+     * @throws GameException if the turn is not the current turn
+     */
+    void holdTurn(TurnImpl turn) throws GameException;
+
+    ;
 }

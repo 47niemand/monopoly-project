@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 
@@ -23,7 +24,7 @@ public final class SpawnGiftCard extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Gift: Move and trade", Action.GIFT, ActionType.OBLIGATION, HIGHEST_PRIORITY);
+        super("Gift: Move and trade", Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     @Override

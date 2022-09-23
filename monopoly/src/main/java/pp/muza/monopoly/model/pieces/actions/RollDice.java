@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -24,7 +25,7 @@ public final class RollDice extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(RollDice.class);
 
     RollDice() {
-        super("Roll Dice", Action.ROLL_DICE, ActionType.OBLIGATION, NEW_TURN_PRIORITY);
+        super("Roll Dice", Action.ROLL_DICE, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     @Override

@@ -13,15 +13,15 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
  * This is a specific card that stores the chance pile of the game.
@@ -62,31 +62,27 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         return true;
     }
 
-    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) throws GameException {
+    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) throws TurnException {
         List<ActionCard> result = new ArrayList<>();
         List<Player> players = turn.getPlayers();
-        Player player;
+        Player recipient;
         if (players.size() > playerId) {
-            player = players.get(playerId);
+            recipient = players.get(playerId);
         } else {
-            player = null;
+            recipient = null;
         }
-        if (player == null) {
+        if (recipient == null) {
             LOG.warn("Player #{} is not in the game, get another chance card", 1 + playerId);
             result.add(turn.popFortuneCard());
-        } else if (player == turn.getPlayer()) {
+        } else if (recipient == turn.getPlayer()) {
             LOG.warn("{} is trying to give a chance card to himself, get another chance card",
-                    player.getName());
+                    recipient.getName());
             result.add(turn.popFortuneCard());
-        } else if (turn.getPlayerStatus(player).isFinal()) {
-            LOG.warn("{} is out of the game, get another chance card", player.getName());
+        } else if (turn.getPlayerStatus(recipient).isFinal()) {
+            LOG.warn("{} is out of the game, get another chance card", recipient.getName());
             result.add(turn.popFortuneCard());
         } else {
-            try {
-                turn.sendCard(player, new SpawnGiftCard());
-            } catch (TurnException e) {
-                throw new RuntimeException(e);
-            }
+            turn.sendCard(recipient, new SpawnGiftCard());
             result.add(turn.popFortuneCard());
         }
         return result;
@@ -124,7 +120,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     result.add(Income.of(PRIZE_AMOUNT));
                     break;
                 case BIRTHDAY:
-                    turn.birthdayParty();
+                    result.add(new BirthdayParty());
                     break;
                 case LUXURY_TAX:
                     result.add(new Tax(LUXURY_TAX_AMOUNT));
@@ -141,12 +137,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     break;
                 case GET_OUT_OF_JAIL_FREE:
                     if (turn.getPlayerStatus() == PlayerStatus.IN_JAIL) {
-                        try {
-                            turn.leaveJail();
-                        } catch (TurnException e) {
-                            LOG.error("Error while leaving jail", e);
-                            throw new GameException(e);
-                        }
+                        turn.leaveJail();
                     } else {
                         LOG.warn("Player {} is not in jail", turn.getPlayer().getName());
                         result.add(this);
@@ -167,7 +158,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                 default:
                     throw new IllegalStateException("Unknown chance card: " + chance);
             }
-        } catch (GameException e) {
+        } catch (TurnException e) {
             throw new IllegalStateException("Error while executing chance card " + this, e);
         }
         LOG.debug("resulting cards: {}", result);

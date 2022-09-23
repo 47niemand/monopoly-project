@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -34,7 +35,7 @@ public final class Contract extends BaseActionCard {
     private final int landId;
 
     Contract(int landId) {
-        super("Contract", Action.CONTRACT, ActionType.CHOOSE, HIGH_PRIORITY);
+        super("Contract", Action.CONTRACT, ActionType.CHOOSE, HIGHEST_PRIORITY);
         this.landId = landId;
     }
 

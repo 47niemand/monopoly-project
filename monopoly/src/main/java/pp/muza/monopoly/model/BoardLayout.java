@@ -17,7 +17,6 @@ import static pp.muza.monopoly.model.Asset.THEATRE;
 import static pp.muza.monopoly.model.Asset.THE_ZOO;
 import static pp.muza.monopoly.model.Asset.TOY_SHOP;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Turn;
 
@@ -60,7 +61,7 @@ public class Move extends BaseActionCard {
         int position = turn.nextPosition(distance);
         LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
                 turn.getLand(position).getName());
-        List<Land> path = null;
+        List<Land> path;
         try {
             path = turn.moveTo(position);
         } catch (pp.muza.monopoly.errors.TurnException e) {

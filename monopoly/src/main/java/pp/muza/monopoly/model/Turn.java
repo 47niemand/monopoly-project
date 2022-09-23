@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 /**
  * This interface represents a turn in the game.
@@ -24,6 +23,8 @@ public interface Turn {
 
     /**
      * set player to jail.
+     *
+     * @throws TurnException if the player is not in the game.
      */
     void setPlayerInJail() throws TurnException;
 
@@ -33,6 +34,7 @@ public interface Turn {
      * @param position the position.
      * @return the path from the current position (excluded) to the new position
      * (included).
+     * @throws TurnException if the player is not in the game.
      */
     List<Land> moveTo(int position) throws TurnException;
 
@@ -51,15 +53,15 @@ public interface Turn {
      *
      * @throws TurnException if the player is not in jail.
      */
-    void leaveJail() throws  TurnException;
+    void leaveJail() throws TurnException;
 
     /**
      * Executes the contract
      *
      * @param landId the land id.
-     * @throws BankException if operation fails.
+     * @throws BankException if the player doesn't have enough coins.
+     * @throws TurnException if the player is not in the game.
      */
-
     void doContract(int landId) throws BankException, TurnException;
 
     /**
@@ -91,7 +93,9 @@ public interface Turn {
     /**
      * Birthday party.
      */
-    void birthdayParty();
+    void doBirthdayParty() throws TurnException;
+
+    void holdTurn() throws TurnException;
 
     /**
      * trades a property.
@@ -99,13 +103,10 @@ public interface Turn {
      * @param seller the player who is selling.
      * @param landId the land id to sell.
      * @throws BankException if a player doesn't have enough coins.
+     * @throws TurnException if the player is not in the game.
      */
     void tradeProperty(Player seller, int landId) throws BankException, TurnException;
 
-    /**
-     * removes start_turn/roll_dice actions from the player's stack.
-     */
-    void playerTurnStarted();
 
     /**
      * returns number of coins to pay for the rent.
@@ -208,17 +209,24 @@ public interface Turn {
     void withdraw(int value) throws BankException;
 
     /**
+     * returns the turn's player.
+     *
      * @return the player
      */
     Player getPlayer();
 
     /**
      * Finishes the turn.
+     *
+     * @throws TurnException if operation fails.
      */
-    void endTurn();
+    void endTurn() throws TurnException;
 
     /**
+     * Returns the list of players.
+     *
      * @return list of the players in the game.
      */
     List<Player> getPlayers();
+
 }

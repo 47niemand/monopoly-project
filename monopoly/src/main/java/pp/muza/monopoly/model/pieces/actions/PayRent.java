@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 

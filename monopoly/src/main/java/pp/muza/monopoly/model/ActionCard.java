@@ -1,7 +1,6 @@
 package pp.muza.monopoly.model;
 
 import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.ActionType;
 
 /**
  * ActionCard is a card that can be used by a player.
@@ -38,6 +37,5 @@ public interface ActionCard {
      * @return the priority of the action card
      */
     int getPriority();
-
 
 }

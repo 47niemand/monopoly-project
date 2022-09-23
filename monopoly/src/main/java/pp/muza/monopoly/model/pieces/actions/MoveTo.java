@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Turn;
 
@@ -53,7 +54,7 @@ public class MoveTo extends BaseActionCard {
     @Override
     protected final List<ActionCard> onExecute(Turn turn) {
         LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
-        List<Land> path = null;
+        List<Land> path;
         try {
             path = turn.moveTo(landId);
         } catch (pp.muza.monopoly.errors.TurnException e) {

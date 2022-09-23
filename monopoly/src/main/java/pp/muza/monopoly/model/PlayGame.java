@@ -1,11 +1,14 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.errors.GameException;
-
 import java.util.List;
 import java.util.Map;
 
+import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.errors.GameException;
+
+/**
+ * Game API for players.
+ */
 public interface PlayGame {
 
     /**
@@ -14,6 +17,13 @@ public interface PlayGame {
      * @return the current turn
      */
     boolean isGameInProgress();
+
+    /**
+     * starts the game
+     *
+     * @throws GameException if the game already started
+     */
+    void start() throws GameException;
 
     /**
      * returns the current turn
@@ -68,4 +78,8 @@ public interface PlayGame {
      * @return the game board.
      */
     Board getBoard();
+
+    PlayerStatus getPlayerStatus(Player player);
+
+    int getBalance(Player player);
 }

@@ -2,43 +2,31 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
+public final class BirthdayParty extends BaseActionCard {
 
-/**
- * This card finishes the turn.
- */
-@Getter
-@EqualsAndHashCode(callSuper = true)
-public final class EndTurn extends BaseActionCard {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EndTurn.class);
-
-    EndTurn() {
-        super("End Turn", Action.END_TURN, ActionType.OBLIGATION, LOW_PRIORITY);
+    public BirthdayParty() {
+        super("Birthday Party", Action.PARTY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     public static ActionCard of() {
-        return new EndTurn();
+        return new BirthdayParty();
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.endTurn();
+            turn.doBirthdayParty();
         } catch (TurnException e) {
             throw new RuntimeException(e);
         }
         return ImmutableList.of();
     }
 }
+

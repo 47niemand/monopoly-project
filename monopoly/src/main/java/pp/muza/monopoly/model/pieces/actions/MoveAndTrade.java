@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -21,7 +22,6 @@ public final class MoveAndTrade extends MoveTo {
     @Override
     protected List<ActionCard> onArrival(Turn turn) {
         // there is no need to roll dice or move if a player did this action
-        turn.playerTurnStarted();
         return ImmutableList.<ActionCard>builder()
                 .add(new Buy(landId))
                 .add(new EndTurn())

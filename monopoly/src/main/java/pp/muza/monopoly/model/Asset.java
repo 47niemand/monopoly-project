@@ -1,9 +1,6 @@
 package pp.muza.monopoly.model;
 
-
-
 import lombok.Getter;
-import pp.muza.monopoly.model.pieces.lands.PropertyColor;
 
 public enum Asset {
     /**

@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.pieces.lands;
+package pp.muza.monopoly.model;
 
 public enum PropertyColor {
     /**

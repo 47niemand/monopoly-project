@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
+import pp.muza.monopoly.model.ActionType;
 
 
 /**

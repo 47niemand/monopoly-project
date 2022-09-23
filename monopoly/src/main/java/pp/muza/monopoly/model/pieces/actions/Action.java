@@ -31,7 +31,7 @@ public enum Action {
     /**
      * Player pays the given number of coins to other players.
      */
-    PAY(ImmutableList.of(Payment.class, PayRent.class)),
+    PAY(ImmutableList.of(Payment.class, PayRent.class, Gift.class)),
     /**
      * Pay tax or fine to the bank.
      */
@@ -65,7 +65,11 @@ public enum Action {
     /**
      * Get a gift.
      */
-    GIFT(ImmutableList.of(SpawnGiftCard.class, TakeFortuneCard.class));
+    GIFT(ImmutableList.of(SpawnGiftCard.class, TakeFortuneCard.class)),
+    /**
+     * Birthday party.
+     */
+    PARTY(ImmutableList.of(BirthdayParty.class));
 
     @Getter
     private final List<Class<? extends BaseActionCard>> classList;

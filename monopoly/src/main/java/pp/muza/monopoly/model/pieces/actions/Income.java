@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**

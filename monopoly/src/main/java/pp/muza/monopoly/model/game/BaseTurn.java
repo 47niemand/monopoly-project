@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game.turn;
+package pp.muza.monopoly.model.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,50 +10,72 @@ import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.game.BaseGame;
-import pp.muza.monopoly.model.game.PlayerContext;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.PlayTurn;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.ActionType;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
 
-abstract class BaseTurn implements PlayTurn {
+public abstract class BaseTurn implements PlayTurn {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseTurn.class);
+    public static final int MAX_STEPS_PER_TURN = 30;
 
-    private final BaseGame baseGame;
-    protected final Player player;
-    protected final int turnNumber;
-
-    protected boolean finished = false;
+    private final Player player;
+    private final int turnNumber;
+    private boolean finished = false;
     private final List<ActionCard> usedCards = new ArrayList<>();
     private int steps = 0;
 
-    protected BaseTurn(BaseGame game, Player player, int turnNumber) {
-        this.baseGame = game;
+    private final Turn turn = new TurnImpl() {
+
+        @Override
+        protected Game game() {
+            return baseGame().getGame();
+        }
+
+        @Override
+        protected Player player() {
+            return player;
+        }
+    };
+
+    BaseTurn(Player player, int turnNumber) {
         this.player = player;
         this.turnNumber = turnNumber;
     }
 
-    void checkFinished() throws TurnException {
+    protected abstract BaseGame baseGame();
+
+    private void checkFinished() throws TurnException {
         if (finished) {
             throw new TurnException("The turn is finished.");
         }
     }
 
+    /**
+     * Plays the card
+     *
+     * @return returns true if the card played and false if the card was not played
+     * @throws TurnException if the player cannot play the card
+     */
+
     private boolean doPlayCard(ActionCard actionCard) throws TurnException {
-        PlayerContext playerContext = baseGame.playerContext(player);
+        PlayerData playerData = baseGame().playerData(player);
         boolean cardUsed;
         boolean newCardsSpawned = false;
-        if (playerContext.getActiveCards().contains(actionCard)) {
-            BaseActionCard card = (BaseActionCard) playerContext.removeCard(actionCard);
+        if (playerData.getActiveCards().contains(actionCard)) {
+            BaseActionCard card = (BaseActionCard) playerData.removeCard(actionCard);
             if (card != null) {
                 LOG.debug("Playing card: {}", card);
-                List<ActionCard> result = card.play((Turn) this);
+                List<ActionCard> result = card.play(turn);
                 cardUsed = !result.contains(card);
                 for (ActionCard newCard : result) {
-                    if (playerContext.addCard(newCard)) {
+                    if (playerData.addCard(newCard)) {
                         if (!newCardsSpawned && !card.equals(newCard)) {
                             newCardsSpawned = true;
                         }
@@ -62,7 +84,7 @@ abstract class BaseTurn implements PlayTurn {
             } else {
                 throw new IllegalStateException("Card not found on player's hand");
             }
-        } else if (baseGame.getCards(player).contains(actionCard)) {
+        } else if (baseGame().getCards(player).contains(actionCard)) {
             throw new TurnException("The card is not active.");
         } else {
             throw new TurnException("The card is not in the player's hand.");
@@ -72,19 +94,17 @@ abstract class BaseTurn implements PlayTurn {
 
     @Override
     public void playCard(ActionCard actionCard) throws TurnException {
+        if (actionCard == null) {
+            throw new TurnException("The card is null.");
+        }
         checkFinished();
         steps++;
-        if (steps > 30) {
+        if (steps > MAX_STEPS_PER_TURN) {
             throw new IllegalStateException("Too many steps in the turn.");
         }
         LOG.debug("Step {}", steps);
-        if (actionCard == null) {
-            LOG.info("Player {} skipped turn", player);
-            finishTurn();
-            return;
-        }
-        PlayerContext playerContext = baseGame.playerContext(player);
-        int currentPriority = playerContext.getCurrentPriority();
+        PlayerData playerData = baseGame().playerData(player);
+        int currentPriority = playerData.getCurrentPriority();
         LOG.debug("{}'s current priority: {}", player.getName(), currentPriority);
         LOG.info("'{}' is being played by {}", actionCard.getName(), player.getName());
         boolean result = doPlayCard(actionCard);
@@ -94,10 +114,10 @@ abstract class BaseTurn implements PlayTurn {
             // it is not an error if the card was already used.
         }
         if (result) {
-            markUsed(actionCard, playerContext, currentPriority);
+            markUsed(actionCard, playerData, currentPriority);
         } else {
             // hold card to prevent using it again
-            playerContext.holdCard(actionCard);
+            playerData.holdCard(actionCard);
         }
     }
 
@@ -106,23 +126,26 @@ abstract class BaseTurn implements PlayTurn {
         return finished;
     }
 
+    void markFinished() {
+        finished = true;
+    }
 
     @Override
     public TurnInfo getTurnInfo() {
         return TurnInfo.builder()
                 .turnNumber(turnNumber)
-                .activeCards(baseGame.getActiveCards(player))
-                .playerInfo(baseGame.getPlayerInfo(player))
-                .board(baseGame.getBoard())
-                .players(baseGame.getPlayers())
-                .propertyOwners(baseGame.getPropertyOwners())
+                .activeCards(baseGame().getActiveCards(player))
+                .playerInfo(baseGame().getPlayerInfo(player))
+                .board(baseGame().getBoard())
+                .players(baseGame().getPlayers())
+                .propertyOwners(baseGame().getPropertyOwners())
                 .build();
     }
 
 
     @Override
     public List<Player> getPlayers() {
-        return baseGame.getPlayers();
+        return baseGame().getPlayers();
     }
 
     @Override
@@ -130,36 +153,39 @@ abstract class BaseTurn implements PlayTurn {
         return player;
     }
 
-    private void markUsed(ActionCard actionCard, PlayerContext playerContext, int currentPriority) {
+    private void markUsed(ActionCard actionCard, PlayerData playerData, int currentPriority) {
         usedCards.add(actionCard);
         if (actionCard.getType() == ActionType.CHOOSE) {
-            List<ActionCard> chooses = playerContext.getCards()
+            List<ActionCard> chooses = playerData.getCards()
                     .stream()
                     .filter(it -> it.getType() == ActionType.CHOOSE && it.getPriority() <= currentPriority)
                     .collect(Collectors.toList());
             LOG.debug("Removing choose cards from player's hand: {}", chooses.stream().map(ActionCard::getName).collect(Collectors.toList()));
             for (ActionCard choose : chooses) {
-                playerContext.removeCard(choose);
+                playerData.removeCard(choose);
             }
         }
         if (actionCard.getAction() == Action.CHANCE) {
             LOG.debug("Returning chance card {} to the game", actionCard);
-            baseGame.getBackChanceCard(actionCard);
+            baseGame().getBackChanceCard(actionCard);
         }
     }
 
     @Override
-    public void finishTurn() throws TurnException {
+    public void endTurn() throws TurnException {
         checkFinished();
-        LOG.info("Finishing turn for player {}", player.getName());
+        LOG.info("End turn for {}", player.getName());
         LOG.info("Used cards: {}",
                 usedCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         try {
-            baseGame.finishTurn(player);
+            baseGame().finishTurn(turn);
         } catch (GameException e) {
             throw new IllegalStateException(e);
         }
         finished = true;
     }
 
+    public Turn getTurn() {
+        return turn;
+    }
 }

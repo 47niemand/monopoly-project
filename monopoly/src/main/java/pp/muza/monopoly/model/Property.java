@@ -1,9 +1,6 @@
 package pp.muza.monopoly.model;
 
 
-
-import pp.muza.monopoly.model.pieces.lands.PropertyColor;
-
 public interface Property extends Land {
 
     /**

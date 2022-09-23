@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -22,8 +23,8 @@ import pp.muza.monopoly.model.Turn;
 public abstract class BaseActionCard implements ActionCard {
 
     public static final int HIGHEST_PRIORITY = 0;
+    public static final int HIGH_PRIORITY = 50;
     public static final int NEW_TURN_PRIORITY = 100;
-    public static final int HIGH_PRIORITY = 200;
     public static final int DEFAULT_PRIORITY = 1000;
     public static final int LOW_PRIORITY = 10000;
     private static final Logger LOG = LoggerFactory.getLogger(BaseActionCard.class);
@@ -70,7 +71,4 @@ public abstract class BaseActionCard implements ActionCard {
         return result;
     }
 
-    public final boolean canPlay(Turn turn) {
-        return canBeUsed(turn);
-    }
 }

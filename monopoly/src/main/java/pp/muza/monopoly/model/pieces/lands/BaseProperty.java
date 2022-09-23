@@ -1,12 +1,11 @@
 package pp.muza.monopoly.model.pieces.lands;
 
-
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.PropertyColor;
 
 @Getter
 @ToString(callSuper = true)

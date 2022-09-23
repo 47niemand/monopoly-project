@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
@@ -30,11 +31,11 @@ public final class Arrival extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 
-    private final int landId;
+    private final int position;
 
-    Arrival(int landId) {
+    Arrival(int position) {
         super("Arrival", Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
-        this.landId = landId;
+        this.position = position;
     }
 
     public static ActionCard of(Integer position) {
@@ -43,17 +44,17 @@ public final class Arrival extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        Land land = turn.getLand(landId);
+        Land land = turn.getLand(position);
         List<ActionCard> result;
         switch (land.getType()) {
             case PROPERTY:
-                Player owner = turn.getPropertyOwner(landId);
+                Player owner = turn.getPropertyOwner(position);
                 if (owner == null) {
                     LOG.info("No one owns the {}, {} can purchase it", land.getName(), turn.getPlayer().getName());
-                    result = ImmutableList.of(new Buy(landId));
+                    result = ImmutableList.of(new Buy(position));
                 } else if (owner != turn.getPlayer()) {
                     LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer().getName(), owner.getName(), land.getName());
-                    result = ImmutableList.of(new PayRent(owner, turn.getRent(landId), landId));
+                    result = ImmutableList.of(new PayRent(owner, turn.getRent(position), position));
                 } else {
                     LOG.info("Property {} is owned by player, nothing to do", land.getName());
                     result = ImmutableList.of();

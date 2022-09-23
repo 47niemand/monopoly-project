@@ -14,6 +14,7 @@ import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
@@ -37,7 +38,7 @@ public class Payment extends BaseActionCard {
     }
 
     Payment(int value, Player recipient) {
-        this("Payment", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, value);
+        this("Payment", ActionType.OBLIGATION, HIGH_PRIORITY, recipient, value);
     }
 
     public static ActionCard of(Integer valueOf, Player recipient) {

@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.PlayGame;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -94,22 +93,21 @@ class TurnImplTest {
         // setup
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
-        PlayGame playGame = new Monopoly(ImmutableList.of(player1, player2));
-        playGame.start();
-        Monopoly monopoly = (Monopoly) playGame;
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
+        game.start();
         // it is player1's birthday. Everyone gives him a present
-        monopoly.baseGame.nextPlayer(); // player1
-        monopoly.baseGame.newTurn();    // new turn
-        monopoly.baseGame.sendCard(player1, BirthdayParty.of());
-        monopoly.baseGame.sendCard(player1, EndTurn.of());
+        game.baseGame.nextPlayer(); // player1
+        game.baseGame.newTurn();    // new turn
+        game.baseGame.sendCard(player1, BirthdayParty.of());
+        game.baseGame.sendCard(player1, EndTurn.of());
 
-        PlayTurn turn1 = monopoly.getTurn();
+        PlayTurn turn1 = game.getTurn();
         ActionCard card = ObedientStrategy.getInstance().playTurn(turn1.getTurnInfo());
         turn1.playCard(card);
         assertTrue(turn1.isFinished());
 
 
-        PlayTurn turn2 = monopoly.getTurn();
+        PlayTurn turn2 = game.getTurn();
         assertNotSame(turn1, turn2);
         assertNotSame(turn1.getPlayer(), turn2.getPlayer());
         card = ObedientStrategy.getInstance().playTurn(turn2.getTurnInfo());

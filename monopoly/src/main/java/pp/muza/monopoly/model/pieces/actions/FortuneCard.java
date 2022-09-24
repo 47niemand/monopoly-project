@@ -68,7 +68,6 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         Player recipient;
         if (players.size() > playerId) {
             recipient = players.get(playerId);
-            LOG.warn("### " + turn.getPlayerStatus());
         } else {
             recipient = null;
         }
@@ -91,6 +90,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
+        LOG.info("Chance: " + chance.getDescription());
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = new ArrayList<>();
         try {

@@ -95,6 +95,12 @@ public interface Turn {
      */
     void doBirthdayParty() throws TurnException;
 
+    /**
+     * Holds current turn.
+     *
+     * @throws TurnException
+     */
+
     void holdTurn() throws TurnException;
 
     /**

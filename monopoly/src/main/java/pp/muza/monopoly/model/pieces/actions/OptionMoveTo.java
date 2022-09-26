@@ -9,7 +9,7 @@ import lombok.ToString;
 import pp.muza.monopoly.model.ActionType;
 
 /**
- * A player can decide to move on a specific distance.
+ * A player can decide to move on a specific land.
  */
 @Getter
 @ToString(callSuper = true)

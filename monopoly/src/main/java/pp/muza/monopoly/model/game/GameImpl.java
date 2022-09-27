@@ -220,7 +220,9 @@ public abstract class GameImpl implements Game {
 
     @Override
     public List<IndexedEntry<Property>> getProperties(Player player) {
-        return baseGame().belongings(player);
+        return baseGame().belongings(player).stream()
+                .map(x -> new IndexedEntry<>(x, (Property) baseGame().getBoard().getLand(x)))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override

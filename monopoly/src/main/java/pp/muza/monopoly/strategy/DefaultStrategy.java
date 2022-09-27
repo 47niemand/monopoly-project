@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Strategy;
 
 public class DefaultStrategy implements Strategy {
@@ -20,7 +22,7 @@ public class DefaultStrategy implements Strategy {
     }
 
     @Override
-    public ActionCard playTurn(TurnInfo turnInfo) {
+    public ActionCard playTurn(Board board, List<Player> players, TurnInfo turnInfo) {
         List<ActionCard> cards = turnInfo.getActiveCards();
         LOG.info("Active cards: {}", cards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         // TODO: implement a better strategy

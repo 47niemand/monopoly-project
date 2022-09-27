@@ -3,6 +3,7 @@ package pp.muza.monopoly.data;
 import java.util.List;
 
 import lombok.Builder;
+import lombok.ToString;
 import lombok.Value;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
@@ -13,24 +14,13 @@ import pp.muza.monopoly.model.Player;
  */
 @Value
 @Builder
+@ToString
 public class GameInfo {
     List<Player> players;
-    List<PlayerInfo> playerInfo;
+    List<PlayerInfo> playerInfos;
     Board board;
     List<Fortune> fortunes;
     int currentPlayerIndex;
     int turnNumber;
     int maxTurns;
-
-
-    @Override
-    public String toString() {
-        return "GameInfo(players=" + this.getPlayers()
-                + ", playerInfo=" + this.getPlayerInfo()
-                + ", board=" + this.getBoard()
-                + ", fortunes=" + this.getFortunes()
-                + ", currentPlayerIndex=" + this.getCurrentPlayerIndex()
-                + ", turnNumber=" + this.getTurnNumber()
-                + ", maxTurns=" + this.getMaxTurns() + ")";
-    }
 }

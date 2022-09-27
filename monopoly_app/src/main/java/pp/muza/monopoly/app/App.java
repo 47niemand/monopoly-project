@@ -57,7 +57,9 @@ public class App {
         }
 
         try {
-            game();
+            AppStatistics statistics = new AppStatistics();
+            game(statistics);
+            // TODO: export statistics for analysing the game
         } catch (TurnException | GameException e) {
             throw new RuntimeException(e);
         }
@@ -83,21 +85,26 @@ public class App {
     }
 
 
-    static void game() throws TurnException, GameException {
+    static void game(StatCollector statCollector) throws TurnException, GameException {
+
         List<Player> players = IntStream.range(0, playerNumbers).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
         PlayGame game = new Monopoly(players);
         game.start();
         while (game.isGameInProgress()) {
             PlayTurn turn = game.getTurn();
-            ActionCard card = DefaultStrategy.getInstance().playTurn(turn.getTurnInfo());
+            ActionCard card = DefaultStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn.getTurnInfo());
             if (card != null) {
                 turn.playCard(card);
             } else {
                 turn.endTurn();
             }
             if (turn.isFinished()) {
+
                 System.out.println("Turn finished: " + turn.getTurnInfo());
+                if (statCollector != null) {
+                    statCollector.collect(turn.getTurnInfo());
+                }
             }
             if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
                 break;

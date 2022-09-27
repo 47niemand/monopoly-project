@@ -2,6 +2,7 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import pp.muza.monopoly.model.Turn;
  * This card finishes the turn.
  */
 @Getter
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class EndTurn extends BaseActionCard {
 

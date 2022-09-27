@@ -2,6 +2,9 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,9 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
+@Getter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public final class BirthdayParty extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(BirthdayParty.class);

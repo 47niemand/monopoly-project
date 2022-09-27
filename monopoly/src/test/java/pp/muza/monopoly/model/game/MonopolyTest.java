@@ -35,7 +35,7 @@ class MonopolyTest {
         game.start();
         while (game.isGameInProgress()) {
             PlayTurn turn = game.getTurn();
-            ActionCard card = ObedientStrategy.getInstance().playTurn(turn.getTurnInfo());
+            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn.getTurnInfo());
             if (card != null) {
                 turn.playCard(card);
             } else {
@@ -85,8 +85,8 @@ class MonopolyTest {
         // start the game and make some turns
         playGame.start();
         PlayTurn turn = playGame.getTurn();
-        turn.playCard(ObedientStrategy.getInstance().playTurn(turn.getTurnInfo()));
-        turn.playCard(ObedientStrategy.getInstance().playTurn(turn.getTurnInfo()));
+        turn.playCard(ObedientStrategy.getInstance().playTurn(playGame.getBoard(), playGame.getPlayers(), turn.getTurnInfo()));
+        turn.playCard(ObedientStrategy.getInstance().playTurn(playGame.getBoard(), playGame.getPlayers(), turn.getTurnInfo()));
 
         // check the game state
         GameInfo gameInfo = playGame.getGameInfo();
@@ -100,8 +100,8 @@ class MonopolyTest {
 
         // make some turns on both instances of the game
         PlayTurn turn2 = playGame2.getTurn();
-        turn2.playCard(ObedientStrategy.getInstance().playTurn(turn2.getTurnInfo()));
-        turn.playCard(ObedientStrategy.getInstance().playTurn(turn.getTurnInfo()));
+        turn2.playCard(ObedientStrategy.getInstance().playTurn(playGame2.getBoard(), playGame2.getPlayers(), turn2.getTurnInfo()));
+        turn.playCard(ObedientStrategy.getInstance().playTurn(playGame.getBoard(), playGame.getPlayers(), turn.getTurnInfo()));
 
         // check if the game state is the same
         assertEquals(playGame.getGameInfo().toString(), playGame2.getGameInfo().toString());

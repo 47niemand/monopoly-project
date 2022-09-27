@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +18,9 @@ import pp.muza.monopoly.model.Turn;
 /**
  * Buy a free property. If all are owned, purchase from any player.
  **/
-@EqualsAndHashCode(callSuper = true)
+@Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public final class SpawnGiftCard extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());

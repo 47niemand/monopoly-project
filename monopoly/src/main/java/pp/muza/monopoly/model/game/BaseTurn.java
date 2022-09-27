@@ -78,9 +78,9 @@ public abstract class BaseTurn implements PlayTurn {
             if (card != null) {
                 LOG.debug("Playing card: {}", card);
                 List<ActionCard> result = card.play(turn);
-                LOG.info("Card played: '{}'", card.getName());
                 if (result.size() > 0) {
-                    LOG.info("{} received the following cards: {}",
+                    LOG.info("Card '{}' has been played by {}, and received the following cards: {}",
+                            card.getName(),
                             player.getName(),
                             result.stream().map(ActionCard::getName).collect(Collectors.toList()));
                 } else {
@@ -131,7 +131,7 @@ public abstract class BaseTurn implements PlayTurn {
         boolean result = doPlayCard(card);
         LOG.debug("Card '{}' played: {}", card, result);
         if (usedCards.remove(card)) {
-            LOG.warn("{}: card '{}' was already used", player.getName(), card);
+            LOG.warn("{}: card '{}' was already played", player.getName(), card.getName());
             // it is not an error if the card was already used.
         }
         if (result) {
@@ -155,13 +155,9 @@ public abstract class BaseTurn implements PlayTurn {
     public TurnInfo getTurnInfo() {
         return TurnInfo.builder()
                 .turnNumber(turnNumber)
-                .activeCards(baseGame().getActiveCards(player))
                 .playerInfo(baseGame().getPlayerInfo(player))
-                .board(baseGame().getBoard())
-                .players(baseGame().getPlayers())
-                .propertyOwners(baseGame().getPropertyOwners())
+                .activeCards(baseGame().getActiveCards(player))
                 .usedCards(usedCards)
-                .cards(baseGame().getCards(player))
                 .isFinished(finished)
                 .build();
     }

@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 import pp.muza.monopoly.consts.Meta;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -33,7 +32,6 @@ import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
@@ -45,7 +43,7 @@ public abstract class BaseGame {
     private final LinkedList<Fortune> fortuneCards;
     private final Map<Integer, Player> propertyOwners = new HashMap<>();
     private final Bank bank;
-    private final List<Player> players;
+    private final ImmutableList<Player> players;
     private final Map<Player, PlayerData> playerData = new HashMap<>();
     private final Board board;
     private final BaseGame thisGame = this;
@@ -72,20 +70,20 @@ public abstract class BaseGame {
         this.turnNumber = gameInfo.getTurnNumber();
         for (Player player : this.players) {
             PlayerData data = new PlayerData(player);
-            PlayerInfo playerInfo = gameInfo.getPlayerInfo().stream()
+            PlayerInfo playerInfo = gameInfo.getPlayerInfos().stream()
                     .filter(x -> x.getPlayer().equals(player))
                     .findFirst()
                     .orElseThrow();
             bank.set(player, playerInfo.getCoins());
-            for (IndexedEntry<Property> belonging : playerInfo.getBelongings()) {
-                Land land = board.getLand(belonging.getIndex());
+            for (Integer landId : playerInfo.getBelongings()) {
+                Land land = board.getLand(landId);
                 if (land.getType() != LandType.PROPERTY) {
                     throw new IllegalStateException("Land is not a property");
                 }
                 assert land instanceof Property;
-                Player oldOwner = propertyOwners.put(belonging.getIndex(), player);
+                Player oldOwner = propertyOwners.put(landId, player);
                 if (oldOwner != null) {
-                    throw new IllegalStateException("Property " + belonging.getIndex() + " is already owned by " + oldOwner);
+                    throw new IllegalStateException("Property " + landId + " is already owned by " + oldOwner);
                 }
             }
             for (ActionCard actionCard : playerInfo.getActionCards()) {
@@ -149,20 +147,12 @@ public abstract class BaseGame {
         LOG.info("Info: {}", getPlayerInfo(currentPlayer));
     }
 
-    private void getBackAllCards(Player player) {
+    private void getBackAllChanceCards(Player player, boolean includeKeepable) {
         PlayerData data = playerData.get(player);
-        List<ActionCard> chanceCards = ImmutableList.copyOf(data.getCards());
-        for (ActionCard card : chanceCards) {
-            if (card.getAction() == Action.CHANCE) {
-                getBackChanceCard(card);
-            }
-            data.removeCard(card);
-        }
-    }
-
-    private void getBackAllChanceCards(Player player) {
-        PlayerData data = playerData.get(player);
-        List<ActionCard> chanceCards = data.getCards().stream().filter(x -> x.getAction() == Action.CHANCE && x.getType() != ActionType.KEEPABLE).collect(Collectors.toList());
+        List<ActionCard> chanceCards = data.getCards().stream()
+                .filter(x ->
+                        x.getAction() == Action.CHANCE && (includeKeepable || x.getType() != ActionType.KEEPABLE))
+                .collect(Collectors.toList());
         chanceCards.stream().map(data::removeCard).forEach(this::getBackChanceCard);
     }
 
@@ -203,10 +193,10 @@ public abstract class BaseGame {
 
     //================================================================================================
 
-    public List<IndexedEntry<Property>> belongings(Player player) {
+    public List<Integer> belongings(Player player) {
         return propertyOwners.entrySet().stream()
                 .filter(x -> x.getValue() == player)
-                .map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey())))
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -251,7 +241,6 @@ public abstract class BaseGame {
         Player player = currentTurn.getPlayer();
         PlayerData data = playerData.get(player);
         data.releaseAll();
-        getBackAllChanceCards(player);
     }
 
     public void holdTurn(Turn turn) throws GameException {
@@ -275,21 +264,22 @@ public abstract class BaseGame {
         releaseTurn();
         PlayerData data = playerData.get(player);
         List<ActionCard> mandatoryCards = data.getCards().stream().filter(actionCard -> actionCard.getType().isMandatory()).collect(Collectors.toList());
+        currentTurn.markFinished();
         if (mandatoryCards.size() > 0) {
             LOG.info("Player {} has mandatory cards: {}", player.getName(), mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
             // Player with obligation cards is out of the game.
             data.setStatus(PlayerStatus.OUT_OF_GAME);
 
             // return properties to game
-            for (IndexedEntry<Property> entry : belongings(player)) {
-                propertyOwnerRemove(entry.getIndex());
+            for (Integer entry : belongings(player)) {
+                propertyOwnerRemove(entry);
             }
 
             // return chance cards to game if any
-            getBackAllCards(player);
+            getBackAllChanceCards(player, true);
             return;
         }
-        currentTurn.markFinished();
+        getBackAllChanceCards(player, false);
         currentTurn = null;
     }
 
@@ -314,9 +304,8 @@ public abstract class BaseGame {
             newTurn();
             Player currentPlayer = players.get(currentPlayerIndex);
             // check if the player has obligation cards with high priority
-            boolean activeCards = playerData(currentPlayer).getActiveCards().stream()
-                    .anyMatch(actionCard -> actionCard.getType().isMandatory() && actionCard.getPriority() <= BaseActionCard.NEW_TURN_PRIORITY);
-            if (!activeCards) {
+            boolean mandatoryCards = playerData(currentPlayer).getActiveCards().stream().anyMatch(actionCard -> actionCard.getType().isMandatory() && (actionCard.getAction() != Action.END_TURN));
+            if (!mandatoryCards) {
                 // if not, then the player can start a new turn
                 playerData(currentPlayer).addCard(NewTurn.of());
             }
@@ -330,9 +319,8 @@ public abstract class BaseGame {
 
     public List<ActionCard> getActiveCards(Player player) {
         PlayerData data = playerData.get(player);
-        List<ActionCard> result = data.getActiveCards();
-        LOG.debug("Cards in play: {} for {}", result, player.getName());
-        return result;
+
+        return data.getActiveCards();
     }
 
     public List<ActionCard> getCards(Player player) {
@@ -348,13 +336,13 @@ public abstract class BaseGame {
     }
 
     public PlayerInfo getPlayerInfo(Player player) {
-        PlayerData info = playerData.get(player);
+        PlayerData data = playerData.get(player);
         return PlayerInfo.builder()
                 .player(player)
-                .position(info.getPosition())
-                .status(info.getStatus())
+                .position(data.getPosition())
+                .status(data.getStatus())
                 .coins(bank.getBalance(player))
-                .actionCards(info.getCards())
+                .actionCards(data.getCards())
                 .belongings(belongings(player))
                 .build();
     }
@@ -383,7 +371,7 @@ public abstract class BaseGame {
     public GameInfo getGameInfo() {
         return GameInfo.builder()
                 .players(getPlayers())
-                .playerInfo(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
+                .playerInfos(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
                 .board(board)
                 .fortunes(ImmutableList.copyOf(fortuneCards))
                 .currentPlayerIndex(currentPlayerIndex)

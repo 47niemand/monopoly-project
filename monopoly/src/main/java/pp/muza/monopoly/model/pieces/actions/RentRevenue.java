@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
 
@@ -24,8 +25,12 @@ public final class RentRevenue extends ReceiveMoney {
      */
     private final int landId;
 
-    RentRevenue(int number, Player sender, int landId) {
-        super("Rent Revenue", ActionType.OBLIGATION, HIGHEST_PRIORITY, number, sender);
+    RentRevenue(int value, Player sender, int landId) {
+        super("Rent Revenue", ActionType.OBLIGATION, HIGHEST_PRIORITY, value, sender);
         this.landId = landId;
+    }
+
+    public static ActionCard of(int value, Player sender, int landId) {
+        return new RentRevenue(value, sender, landId);
     }
 }

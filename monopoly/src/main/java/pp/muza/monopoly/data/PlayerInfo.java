@@ -5,32 +5,33 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Value;
-import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
 
 /**
  * This class represents the player's information in the game.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class PlayerInfo {
     Player player;
     int position;
     PlayerStatus status;
     int coins;
-    List<ActionCard> actionCards;
-    List<IndexedEntry<Property>> belongings;
+    @Builder.Default
+    List<ActionCard> actionCards = null;
+    @Builder.Default
+    List<Integer> belongings = null;
 
+    @SuppressWarnings("all")
     @Override
     public String toString() {
         return "Player: " + player.getName()
                 + " at position: " + position
-                + ", with status: " + status
                 + ", with coins: " + coins
-                + ", with action cards: " + actionCards.stream().map(ActionCard::getName).collect(Collectors.toList())
-                + " and belongings: " + belongings.stream().map(x -> x.getValue().getName()).collect(Collectors.toList());
+                + ", with status: " + status
+                + (actionCards != null ? ", with action cards: " + actionCards.stream().map(ActionCard::getName).collect(Collectors.toList()) : "")
+                + (belongings != null ? " and belongings: " + belongings.stream().map(x -> x).collect(Collectors.toList()) : "");
     }
 }

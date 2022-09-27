@@ -39,8 +39,8 @@ public class Income extends BaseActionCard {
         this("Income", ActionType.OBLIGATION, HIGHEST_PRIORITY, value);
     }
 
-    public static ActionCard of(int number) {
-        return new Income(number);
+    public static ActionCard of(int value) {
+        return new Income(value);
     }
 
     @Override

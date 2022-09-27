@@ -2,6 +2,8 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,8 @@ import pp.muza.monopoly.model.Turn;
 /**
  * A player has to pay coins to the property owner on which player is standing.
  */
+@Getter
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class PayRent extends Payment {
 

@@ -2,6 +2,9 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,9 @@ import pp.muza.monopoly.model.Turn;
  * Buying properties is compulsory, so if the player cannot buy the property,
  * he loses the game.
  */
+@Getter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public final class Buy extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
@@ -35,6 +41,10 @@ public final class Buy extends BaseActionCard {
     Buy(int landId) {
         super("Buy", Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.landId = landId;
+    }
+
+    public static Buy of(int landId) {
+        return new Buy(landId);
     }
 
     @Override

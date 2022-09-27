@@ -291,6 +291,7 @@ public abstract class BaseGame {
             throw new GameException("Game already started");
         }
         LOG.info("Starting game");
+        Collections.shuffle(fortuneCards);
         started = true;
     }
 

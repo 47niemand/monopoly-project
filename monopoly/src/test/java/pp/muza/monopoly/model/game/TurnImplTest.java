@@ -67,6 +67,29 @@ class TurnImplTest {
     }
 
     @Test
+    void leaveJailByCard() throws GameException, TurnException {
+
+        // setup
+        Player player1 = new Player("player1");
+        Player player2 = new Player("player2");
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
+
+        // act
+        game.start();
+
+        game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
+        game.baseGame.playerData(player1).addCard(game.baseGame.pickFortuneCard(Chance.GET_OUT_OF_JAIL_FREE));
+
+        PlayTurn turn1 = game.getTurn();
+        while (!turn1.isFinished()) {
+            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+            turn1.playCard(card);
+        }
+        assertEquals(PlayerStatus.IN_GAME, game.getPlayerInfo(player1).getStatus());
+    }
+
+
+    @Test
     void endGame() throws GameException, TurnException {
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");

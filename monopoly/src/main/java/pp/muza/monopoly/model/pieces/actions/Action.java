@@ -9,9 +9,9 @@ import pp.muza.monopoly.model.Fortune;
 
 public enum Action {
     /**
-     * Player arrives to a land and should use this card.
+     * Player arrives to a land and should use this action card.
      */
-    ARRIVAL(ImmutableList.of(Arrival.class)),
+    ARRIVAL(ImmutableList.of(Arrival.class, Takeover.class)),
     /**
      * Any property-related action in which the player can buy a property.
      */
@@ -49,7 +49,7 @@ public enum Action {
     /**
      * Move to the land with the given id.
      */
-    MOVE_TO(ImmutableList.of(MoveTo.class, OptionMoveTo.class, MoveAndTrade.class)),
+    MOVE_TO(ImmutableList.of(MoveTo.class, OptionMoveTo.class, MoveAndTakeover.class)),
     /**
      * New turn, the player starts a new turn with this card.
      */

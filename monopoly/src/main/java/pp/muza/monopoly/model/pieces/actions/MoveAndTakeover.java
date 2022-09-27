@@ -18,18 +18,14 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class MoveAndTrade extends MoveTo {
+public final class MoveAndTakeover extends MoveTo {
 
-    MoveAndTrade(int landId) {
-        super("Move and Trade", ActionType.CHOOSE, HIGHEST_PRIORITY, landId);
+    MoveAndTakeover(int landId) {
+        super("Move and Takeover", ActionType.CHOOSE, HIGHEST_PRIORITY, landId);
     }
 
     @Override
     protected List<ActionCard> onArrival(Turn turn) {
-        // there is no need to roll dice or move if a player did this action
-        return ImmutableList.<ActionCard>builder()
-                .add(new Buy(landId))
-                .add(new EndTurn())
-                .build();
+        return ImmutableList.of(new Takeover(landId), new EndTurn());
     }
 }

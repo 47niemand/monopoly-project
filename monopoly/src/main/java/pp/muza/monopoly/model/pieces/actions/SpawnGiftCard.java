@@ -31,7 +31,7 @@ public final class SpawnGiftCard extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Spawning MoveAndTrade cards");
+        LOG.info("Spawning MoveAndTakeover cards");
         List<IndexedEntry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
             // if there are no free properties, the player has to choose one of the
@@ -39,6 +39,6 @@ public final class SpawnGiftCard extends BaseActionCard {
             properties = turn.getAllProperties().stream()
                     .filter(x -> turn.getPropertyOwner(x.getIndex()) != turn.getPlayer()).collect(Collectors.toList());
         }
-        return properties.stream().map(x -> new MoveAndTrade(x.getIndex())).collect(Collectors.toList());
+        return properties.stream().map(x -> new MoveAndTakeover(x.getIndex())).collect(Collectors.toList());
     }
 }

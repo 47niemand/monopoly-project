@@ -28,7 +28,7 @@ public class DefaultStrategy implements Strategy {
         // TODO: implement a better strategy
         //  if there are CONTRACT cards, chose which a better to sale (to cover the obligation, or get more profit);
         //  If there is a BUY card, decide whether to buy it or not if a better option could be available;
-        //  if there are MoveAndTrade cards, chose card which fits player balance;
+        //  if there are MoveAndTakeover cards, chose card which fits player balance;
         //  if there are GetOrPay cards, It is preferable to select an unowned land, but consider the player's balance;
         //  if there are OptionMove cards, chose the one which is better to the player's current situation;
 

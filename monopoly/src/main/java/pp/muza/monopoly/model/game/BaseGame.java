@@ -130,7 +130,7 @@ public abstract class BaseGame {
         return temp;
     }
 
-    void newTurn() {
+    private void newTurn() {
         if (turnNumber > maxTurns) {
             LOG.error("Number of turns exceeded {}.", maxTurns);
             throw new RuntimeException("Too many turns.");
@@ -156,10 +156,7 @@ public abstract class BaseGame {
         chanceCards.stream().map(data::removeCard).forEach(this::getBackChanceCard);
     }
 
-    void nextPlayer() throws GameException {
-        if (turnNumber > 0) {
-            LOG.debug("{} is ending turn {}", players.get(currentPlayerIndex).getName(), turnNumber);
-        }
+    private void nextPlayer() throws GameException {
         int nextPlayerIndex = getNextPlayerIndex();
         if (nextPlayerIndex == currentPlayerIndex) {
             throw new GameException("No more players in game");
@@ -304,7 +301,7 @@ public abstract class BaseGame {
             newTurn();
             Player currentPlayer = players.get(currentPlayerIndex);
             // check if the player has obligation cards with high priority
-            boolean mandatoryCards = playerData(currentPlayer).getActiveCards().stream().anyMatch(actionCard -> actionCard.getType().isMandatory() && (actionCard.getAction() != Action.END_TURN));
+            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() == ActionType.OBLIGATION);
             if (!mandatoryCards) {
                 // if not, then the player can start a new turn
                 playerData(currentPlayer).addCard(NewTurn.of());

@@ -1,10 +1,5 @@
 package pp.muza.monopoly.model.game;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -17,12 +12,10 @@ import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
-import pp.muza.monopoly.model.pieces.actions.Buy;
-import pp.muza.monopoly.model.pieces.actions.Chance;
-import pp.muza.monopoly.model.pieces.actions.EndTurn;
-import pp.muza.monopoly.model.pieces.actions.RentRevenue;
+import pp.muza.monopoly.model.pieces.actions.*;
 import pp.muza.monopoly.strategy.ObedientStrategy;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TurnImplTest {
 
@@ -81,8 +74,7 @@ class TurnImplTest {
         game.start();
         game.baseGame.playerData(player1).setStatus(PlayerStatus.OUT_OF_GAME);
         game.baseGame.playerData(player2).setStatus(PlayerStatus.IN_GAME);
-        game.baseGame.nextPlayer(); // player2
-        game.baseGame.newTurn();    // new turn for player2
+        game.baseGame.getTurn();    // new turn for player2
         game.getTurn().endTurn();
         assertThrows(GameException.class, game::getTurn);
         assertFalse(game.isGameInProgress());
@@ -112,8 +104,7 @@ class TurnImplTest {
         assert Asset.THE_ZOO.getPrice() < Asset.MAYFAIR.getPrice(); // the zoo is cheaper than mayfair
 
         // act
-        game.baseGame.nextPlayer(); // player1
-        game.baseGame.newTurn();    // new turn
+        game.baseGame.getTurn();    // player1 new turn
 
         PlayTurn turn1 = game.getTurn();
         while (!turn1.isFinished()) {
@@ -139,21 +130,15 @@ class TurnImplTest {
         int land = game.baseGame.getGame().findProperty(Asset.THE_ZOO);
         game.baseGame.getBank().set(player1, 0);
         game.baseGame.playerData(player1).addCard(RentRevenue.of(Asset.THE_ZOO.getPrice(), player2, land));
-        game.baseGame.playerData(player1).addCard(EndTurn.of());
 
         // act
-        game.baseGame.nextPlayer(); // player1
-        game.baseGame.newTurn();    // new turn
-
         PlayTurn turn1 = game.getTurn();
-        while (!turn1.isFinished()) {
-            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
-            if (card != null) {
-                turn1.playCard(card);
-            } else {
-                turn1.endTurn();
-            }
-        }
+
+        ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+        turn1.playCard(card);
+
+        card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+        assertEquals(NewTurn.class, card.getClass());
 
         // assert
         assertEquals(Asset.THE_ZOO.getPrice(), game.baseGame.getBank().getBalance(player1));
@@ -172,10 +157,7 @@ class TurnImplTest {
         Player player4 = new Player("player4");
         Monopoly game = new Monopoly(ImmutableList.of(player1, player2, player3, player4));
         game.start();
-        game.baseGame.nextPlayer(); // player1
-        game.baseGame.newTurn();    // new turn
 
-        assert game.baseGame.currentPlayerIndex == 0;
 
         game.baseGame.getBank().set(player1, 0); // player1 has no money
         game.baseGame.sendCard(player1, BirthdayParty.of());
@@ -183,7 +165,9 @@ class TurnImplTest {
 
         {
             PlayTurn turn1 = game.getTurn();
+            assert game.baseGame.currentPlayerIndex == 0;
             ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+            assertEquals(BirthdayParty.class, card.getClass());
             turn1.playCard(card);
             assertTrue(turn1.isFinished());
             assertEquals(player1, turn1.getPlayer());

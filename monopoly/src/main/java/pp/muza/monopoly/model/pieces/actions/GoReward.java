@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.ActionType;
 
 
 /**
@@ -20,6 +19,6 @@ public final class GoReward extends Income {
     private static final Logger LOG = LoggerFactory.getLogger(GoReward.class);
 
     GoReward(int number) {
-        super("Go Reward", ActionType.OBLIGATION, HIGHEST_PRIORITY, number);
+        super("Go Reward", HIGHEST_PRIORITY, number);
     }
 }

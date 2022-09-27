@@ -16,9 +16,9 @@ public enum ActionType {
      */
     OBLIGATION(true),
     /**
-     * Optional card, player can choose to use it
+     * This is a profit card. It could be used before beginning a new turn.
      */
-    OPTIONAL(false);
+    PROFIT(true);
 
     /**
      * true if the card is obligatory, false otherwise

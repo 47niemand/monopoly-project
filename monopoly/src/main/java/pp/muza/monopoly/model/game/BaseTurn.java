@@ -89,13 +89,6 @@ public abstract class BaseTurn implements PlayTurn {
 
                 cardUsed = !result.contains(card);
                 for (ActionCard newCard : result) {
-                    if (newCard.getAction() == Action.ROLL_DICE) {
-                        // check if the player has {@link Action#END_TURN} card in his hand
-                        if (playerData.getCards().stream().anyMatch(c -> c.getAction() == Action.END_TURN)) {
-                            LOG.debug("Player has END_TURN card in his hand. Skipping the {}.", newCard.getName());
-                            continue;
-                        }
-                    }
                     if (playerData.addCard(newCard)) {
                         if (!newCardsSpawned && !card.equals(newCard)) {
                             newCardsSpawned = true;

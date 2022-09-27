@@ -57,9 +57,7 @@ public class App {
         }
 
         try {
-            AppStatistics statistics = new AppStatistics();
-            game(statistics);
-            // TODO: export statistics for analysing the game
+            game();
         } catch (TurnException | GameException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +83,7 @@ public class App {
     }
 
 
-    static void game(StatCollector statCollector) throws TurnException, GameException {
+    static void game() throws TurnException, GameException {
 
         List<Player> players = IntStream.range(0, playerNumbers).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
@@ -102,9 +100,6 @@ public class App {
             if (turn.isFinished()) {
 
                 System.out.println("Turn finished: " + turn.getTurnInfo());
-                if (statCollector != null) {
-                    statCollector.collect(turn.getTurnInfo());
-                }
             }
             if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
                 break;

@@ -21,19 +21,12 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Takeover extends BaseActionCard {
+public final class Takeover extends Arrival {
 
     private static final Logger LOG = LoggerFactory.getLogger(Takeover.class);
 
-    private final int position;
-
     Takeover(int position) {
-        super("Takeover", Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
-        this.position = position;
-    }
-
-    public static ActionCard of(Integer position) {
-        return new Takeover(position);
+        super("Takeover", position);
     }
 
     @Override

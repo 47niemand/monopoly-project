@@ -27,19 +27,19 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Arrival extends BaseActionCard {
+public class Arrival extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Arrival.class);
 
-    private final int position;
+    protected final int position;
 
-    Arrival(int position) {
-        super("Arrival", Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+    protected Arrival(String name, int position) {
+        super(name, Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.position = position;
     }
 
-    public static ActionCard of(Integer position) {
-        return new Arrival(position);
+    Arrival(int position) {
+        this("Arrival", position);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-
 import java.util.List;
 
 import org.slf4j.Logger;

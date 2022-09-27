@@ -20,7 +20,7 @@ import pp.muza.monopoly.model.Player;
  */
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class TurnInfo {
 
     int turnNumber;
@@ -44,4 +44,13 @@ public class TurnInfo {
      * Belongings of the players.
      */
     Map<Integer, Player> propertyOwners;
+
+    @Builder.Default
+    boolean isFinished = false;
+
+    @Builder.Default
+    List<ActionCard> usedCards = null;
+
+    @Builder.Default
+    List<ActionCard> cards = null;
 }

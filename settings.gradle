@@ -12,6 +12,7 @@ rootProject.name = 'monopoly-project'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
+            library('mockito', 'org.mockito:mockito-core:4.6.1')
             library('junit_jupiter', 'org.junit.jupiter:junit-jupiter:5.7.2')
             library('junit_jupiter_engine', 'org.junit.jupiter:junit-jupiter-engine:5.7.2')
             library('lombok', 'org.projectlombok:lombok:1.18.22')

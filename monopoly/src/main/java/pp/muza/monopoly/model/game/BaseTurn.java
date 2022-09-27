@@ -49,6 +49,11 @@ public abstract class BaseTurn implements PlayTurn {
         this.turnNumber = turnNumber;
     }
 
+    /**
+     * Returns the game. should be implemented by the subclass.
+     *
+     * @return the game.
+     */
     protected abstract BaseGame baseGame();
 
     private void checkFinished() throws TurnException {
@@ -84,6 +89,13 @@ public abstract class BaseTurn implements PlayTurn {
 
                 cardUsed = !result.contains(card);
                 for (ActionCard newCard : result) {
+                    if (newCard.getAction() == Action.ROLL_DICE) {
+                        // check if the player has {@link Action#END_TURN} card in his hand
+                        if (playerData.getCards().stream().anyMatch(c -> c.getAction() == Action.END_TURN)) {
+                            LOG.debug("Player has END_TURN card in his hand. Skipping the {}.", newCard.getName());
+                            continue;
+                        }
+                    }
                     if (playerData.addCard(newCard)) {
                         if (!newCardsSpawned && !card.equals(newCard)) {
                             newCardsSpawned = true;
@@ -148,6 +160,9 @@ public abstract class BaseTurn implements PlayTurn {
                 .board(baseGame().getBoard())
                 .players(baseGame().getPlayers())
                 .propertyOwners(baseGame().getPropertyOwners())
+                .usedCards(usedCards)
+                .cards(baseGame().getCards(player))
+                .isFinished(finished)
                 .build();
     }
 

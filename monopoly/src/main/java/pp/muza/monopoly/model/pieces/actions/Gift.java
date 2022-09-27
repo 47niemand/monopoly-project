@@ -1,6 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-
 import lombok.EqualsAndHashCode;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;

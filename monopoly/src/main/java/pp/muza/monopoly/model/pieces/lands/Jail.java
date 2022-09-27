@@ -1,7 +1,5 @@
 package pp.muza.monopoly.model.pieces.lands;
 
-
-
 import lombok.Getter;
 import lombok.ToString;
 

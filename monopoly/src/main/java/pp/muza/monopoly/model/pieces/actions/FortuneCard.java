@@ -1,6 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -121,7 +120,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     result.add(Income.of(PRIZE_AMOUNT));
                     break;
                 case BIRTHDAY:
-                    result.add(new BirthdayParty());
+                    result.add(BirthdayParty.of());
                     break;
                 case LUXURY_TAX:
                     result.add(new Tax(LUXURY_TAX_AMOUNT));

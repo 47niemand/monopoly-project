@@ -96,6 +96,9 @@ public class App {
             } else {
                 turn.endTurn();
             }
+            if (turn.isFinished()) {
+                System.out.println("Turn finished: " + turn.getTurnInfo());
+            }
             if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
                 break;
             }

@@ -22,6 +22,9 @@ import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Gift;
 
+/**
+ * The Turn interface implementation.
+ */
 public abstract class TurnImpl implements Turn {
 
     private static final Logger LOG = LoggerFactory.getLogger(TurnImpl.class);

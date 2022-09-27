@@ -43,7 +43,10 @@ final class CardUtils {
             LOG.info("Creating contracts for player's possession");
         }
         return properties.stream()
-                .map(property -> new Contract(property.getIndex()))
+                .peek(entry -> {
+                    assert entry.getValue() == turn.getLand(entry.getIndex());
+                } )
+                .map(entry -> new Contract(entry.getIndex()))
                 .collect(Collectors.toList());
     }
 }

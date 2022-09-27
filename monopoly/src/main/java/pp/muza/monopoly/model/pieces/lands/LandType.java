@@ -4,14 +4,29 @@ import lombok.Getter;
 
 public enum LandType {
     /**
-     * type of land
+     * Chance card.
      */
-    START(Start.class),
-    PROPERTY(BaseProperty.class),
-    JAIL(Jail.class),
-    PARKING(Parking.class),
+    CHANCE(ChanceLand.class),
+    /**
+     * The GOTO_JAIL is a land that sends the player to jail.
+     */
     GOTO_JAIL(GotoJail.class),
-    CHANCE(ChanceLand.class);
+    /**
+     * The JAIL is a land that the player is sent when he/she is caught by the police.
+     */
+    JAIL(Jail.class),
+    /**
+     * The parking is the place where the players can do nothing.
+     */
+    PARKING(Parking.class),
+    /**
+     * The property is a land that can be bought or sold.
+     */
+    PROPERTY(BaseProperty.class),
+    /**
+     * start is a land that is used to start the game.
+     */
+    START(Start.class);
 
     @Getter
     private final Class<? extends BaseLand> aClass;

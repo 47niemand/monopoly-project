@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.GameException;
@@ -24,15 +25,18 @@ import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
+import pp.muza.monopoly.model.pieces.lands.LandType;
 
 public abstract class BaseGame {
 
@@ -53,9 +57,50 @@ public abstract class BaseGame {
         }
     };
     BaseTurn currentTurn;
-    private int currentPlayerIndex = -1;
-    private int turnNumber = 0;
+    int currentPlayerIndex = -1;
+    int turnNumber = 0;
+    int maxTurns = Meta.DEFAULT_MAX_TURNS;
     private boolean started = false;
+
+    protected BaseGame(GameInfo gameInfo) {
+        this.bank = new BankImpl();
+        this.board = gameInfo.getBoard();
+        this.fortuneCards = new LinkedList<>(gameInfo.getFortunes());
+        this.players = ImmutableList.copyOf(gameInfo.getPlayers());
+        this.maxTurns = gameInfo.getMaxTurns();
+        this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
+        this.turnNumber = gameInfo.getTurnNumber();
+        for (Player player : this.players) {
+            PlayerData data = new PlayerData(player);
+            PlayerInfo playerInfo = gameInfo.getPlayerInfo().stream()
+                    .filter(x -> x.getPlayer().equals(player))
+                    .findFirst()
+                    .orElseThrow();
+            bank.set(player, playerInfo.getCoins());
+            for (IndexedEntry<Property> belonging : playerInfo.getBelongings()) {
+                Land land = board.getLand(belonging.getIndex());
+                if (land.getType() != LandType.PROPERTY) {
+                    throw new IllegalStateException("Land is not a property");
+                }
+                assert land instanceof Property;
+                Player oldOwner = propertyOwners.put(belonging.getIndex(), player);
+                if (oldOwner != null) {
+                    throw new IllegalStateException("Property " + belonging.getIndex() + " is already owned by " + oldOwner);
+                }
+            }
+            for (ActionCard actionCard : playerInfo.getActionCards()) {
+                data.addCard(actionCard);
+            }
+            data.setStatus(playerInfo.getStatus());
+            data.setPosition(playerInfo.getPosition());
+            playerData.put(player, data);
+        }
+        started = currentPlayerIndex >= 0;
+        if (started) {
+            turnNumber--;
+            newTurn();
+        }
+    }
 
     public BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
         this.bank = bank;
@@ -88,8 +133,8 @@ public abstract class BaseGame {
     }
 
     void newTurn() {
-        if (turnNumber > Meta.DEFAULT_MAX_TURNS) {
-            LOG.error("Number of turns exceeded {}.", Meta.DEFAULT_MAX_TURNS);
+        if (turnNumber > maxTurns) {
+            LOG.error("Number of turns exceeded {}.", maxTurns);
             throw new RuntimeException("Too many turns.");
         }
         Player currentPlayer = players.get(currentPlayerIndex);
@@ -159,7 +204,10 @@ public abstract class BaseGame {
     //================================================================================================
 
     public List<IndexedEntry<Property>> belongings(Player player) {
-        return propertyOwners.entrySet().stream().filter(x -> x.getValue() == player).map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey()))).collect(Collectors.toUnmodifiableList());
+        return propertyOwners.entrySet().stream()
+                .filter(x -> x.getValue() == player)
+                .map(x -> new IndexedEntry<>(x.getKey(), (Property) board.getLand(x.getKey())))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public void propertyOwnerRemove(int landId) {
@@ -301,7 +349,14 @@ public abstract class BaseGame {
 
     public PlayerInfo getPlayerInfo(Player player) {
         PlayerData info = playerData.get(player);
-        return PlayerInfo.builder().player(player).position(info.getPosition()).status(info.getStatus()).coins(bank.getBalance(player)).actionCards(info.getCards()).belongings(belongings(player)).build();
+        return PlayerInfo.builder()
+                .player(player)
+                .position(info.getPosition())
+                .status(info.getStatus())
+                .coins(bank.getBalance(player))
+                .actionCards(info.getCards())
+                .belongings(belongings(player))
+                .build();
     }
 
     public Map<Integer, Player> getPropertyOwners() {
@@ -323,6 +378,18 @@ public abstract class BaseGame {
 
     public int getTurnNumber() {
         return this.turnNumber;
+    }
+
+    public GameInfo getGameInfo() {
+        return GameInfo.builder()
+                .players(getPlayers())
+                .playerInfo(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
+                .board(board)
+                .fortunes(ImmutableList.copyOf(fortuneCards))
+                .currentPlayerIndex(currentPlayerIndex)
+                .turnNumber(turnNumber)
+                .maxTurns(maxTurns)
+                .build();
     }
 
     //================================================================================================

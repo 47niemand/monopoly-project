@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -159,5 +160,9 @@ public final class PlayerData {
                 + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ")";
+    }
+
+    public void assign(PlayerInfo playerInfo) {
+
     }
 }

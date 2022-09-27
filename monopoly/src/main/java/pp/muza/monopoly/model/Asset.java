@@ -2,10 +2,10 @@ package pp.muza.monopoly.model;
 
 import lombok.Getter;
 
+/**
+ * properties for a game board
+ */
 public enum Asset {
-    /**
-     * properties for a game board
-     */
     COFFEE_SHOP("Coffee Shop", 1, PropertyColor.RED),
     DONUT_SHOP("Donut Shop", 1, PropertyColor.RED),
     BAKERY("Bakery", 1, PropertyColor.ORANGE),

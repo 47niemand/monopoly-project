@@ -10,7 +10,6 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
 
 
-
 /**
  * A player receives coins from the card.
  */

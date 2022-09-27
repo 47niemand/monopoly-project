@@ -14,6 +14,8 @@ repositories {
 }
 
 dependencies {
+    // Use Mockito for mocking in unit tests
+    testImplementation libs.mockito
     // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter
     // Use Lombok for generating getters and setters.
@@ -25,7 +27,6 @@ dependencies {
     implementation libs.logback
     compileOnly libs.lombok
     annotationProcessor libs.lombok
-    //implementation libs.commons.cli
 }
 
 tasks.named('test') {

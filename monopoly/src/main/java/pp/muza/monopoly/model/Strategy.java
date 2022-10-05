@@ -1,8 +1,8 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.data.TurnInfo;
-
 import java.util.List;
+
+import pp.muza.monopoly.data.TurnInfo;
 
 public interface Strategy {
 

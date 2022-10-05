@@ -52,4 +52,11 @@ public interface Board {
      * @return returns the position index.
      */
     int getStartPosition();
+
+    /**
+     * Returns the size of the board.
+     *
+     * @return returns the size of the board.
+     */
+    int size();
 }

@@ -70,4 +70,9 @@ public class BoardImpl implements Board {
     public List<Land> getLands() {
         return lands;
     }
+
+    @Override
+    public int size() {
+        return lands.size();
+    }
 }

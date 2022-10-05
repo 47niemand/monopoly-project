@@ -3,11 +3,11 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;

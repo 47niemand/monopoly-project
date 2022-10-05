@@ -30,7 +30,7 @@ public interface PlayTurn {
     boolean isFinished();
 
     /**
-     * Returns turn information
+     * Returns a snapshot of the turn's information at the moment.
      *
      * @return turn information
      */

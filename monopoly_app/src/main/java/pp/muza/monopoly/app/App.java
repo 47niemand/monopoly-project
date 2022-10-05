@@ -57,7 +57,7 @@ public class App {
         }
 
         try {
-            game();
+            gameLoop();
         } catch (TurnException | GameException e) {
             throw new RuntimeException(e);
         }
@@ -83,7 +83,7 @@ public class App {
     }
 
 
-    static void game() throws TurnException, GameException {
+    static void gameLoop() throws TurnException, GameException {
 
         List<Player> players = IntStream.range(0, playerNumbers).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
@@ -98,7 +98,6 @@ public class App {
                 turn.endTurn();
             }
             if (turn.isFinished()) {
-
                 System.out.println("Turn finished: " + turn.getTurnInfo());
             }
             if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {

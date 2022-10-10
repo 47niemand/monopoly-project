@@ -1,5 +1,6 @@
 package pp.muza.monopoly.model.game;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.BoardLayout;
 import pp.muza.monopoly.model.ChancePile;
+import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.PlayGame;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
@@ -28,10 +30,12 @@ public class Monopoly implements PlayGame {
     }
 
     public Monopoly(List<Player> players) {
+        List<Fortune> fortunes = ChancePile.defaultPile();
+        Collections.shuffle(fortunes);
         baseGame = new BaseGame(
                 new BankImpl(),
                 BoardLayout.defaultBoard(),
-                ChancePile.defaultPile(), ImmutableList.copyOf(players)) {
+                fortunes, ImmutableList.copyOf(players)) {
         };
     }
 

@@ -14,12 +14,12 @@ import pp.muza.monopoly.model.ActionType;
 @EqualsAndHashCode(callSuper = true)
 public class Tax extends Debt {
 
-    protected Tax(String name, ActionType type, int priority, int value) {
-        super(name, type, priority, value);
+    protected Tax(ActionType type, int priority, int value) {
+        super(type, priority, value);
     }
 
     Tax(int value) {
-        this("Tax", ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
+        this(ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
     }
 
     public static ActionCard of(int value) {

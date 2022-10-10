@@ -38,14 +38,12 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     private static final int PLAYER_3 = 2;
     private static final int PLAYER_4 = 3;
     private final Chance chance;
-    private final String description;
 
     FortuneCard(Chance chance) {
-        super(chance.getName(), Action.CHANCE
-                , chance.isGiftCard() ? ActionType.KEEPABLE : ActionType.OBLIGATION
-                , chance.isGiftCard() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
+        super(Action.CHANCE.name(), Action.CHANCE
+                , chance.isKeepable() ? ActionType.KEEPABLE : ActionType.OBLIGATION
+                , chance.isKeepable() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
         this.chance = chance;
-        this.description = chance.getDescription();
     }
 
     public static Fortune of(Chance chance) {
@@ -88,7 +86,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Chance: " + chance.getDescription());
+        LOG.info("Chance: " + chance.name());
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = new ArrayList<>();
         try {

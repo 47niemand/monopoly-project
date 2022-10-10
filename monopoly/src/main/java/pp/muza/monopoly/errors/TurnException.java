@@ -5,11 +5,12 @@ package pp.muza.monopoly.errors;
  */
 public final class TurnException extends Exception {
 
-    public TurnException(String message) {
-        super(message);
+    public TurnException(TurnError error) {
+        super(error.getMessage());
     }
 
     public TurnException(Exception e) {
         super(e.getMessage(), e);
     }
+
 }

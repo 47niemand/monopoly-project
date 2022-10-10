@@ -26,7 +26,7 @@ public final class GoToJail extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(GoToJail.class);
 
     GoToJail() {
-        super("Go to Jail", Action.GO_TO_JAIL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        super(Action.GO_TO_JAIL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     public static ActionCard of() {

@@ -29,7 +29,7 @@ public final class PayRent extends Payment {
     private final int position;
 
     PayRent(int value, Player recipient, int position) {
-        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, value, recipient);
+        super(ActionType.OBLIGATION, DEFAULT_PRIORITY, value, recipient);
         this.position = position;
     }
 

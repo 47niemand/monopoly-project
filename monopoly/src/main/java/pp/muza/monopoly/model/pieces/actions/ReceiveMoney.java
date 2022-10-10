@@ -20,13 +20,13 @@ public class ReceiveMoney extends Income {
      */
     private final Player sender;
 
-    protected ReceiveMoney(String name, int priority, int value, Player sender) {
-        super(name, priority, value);
+    protected ReceiveMoney(int priority, int value, Player sender) {
+        super(priority, value);
         this.sender = sender;
     }
 
     ReceiveMoney(int number, Player sender) {
-        this("Receive Money", HIGHEST_PRIORITY, number, sender);
+        this(HIGHEST_PRIORITY, number, sender);
     }
 
     public static ActionCard of(int number, Player sender) {

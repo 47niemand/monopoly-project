@@ -28,13 +28,13 @@ public class MoveTo extends BaseActionCard {
 
     protected final int position;
 
-    protected MoveTo(String name, ActionType type, int priority, int position) {
-        super(name, Action.MOVE_TO, type, priority);
+    protected MoveTo(ActionType type, int priority, int position) {
+        super(Action.MOVE_TO, type, priority);
         this.position = position;
     }
 
     MoveTo(int position) {
-        this("Move To", ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
+        this(ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
     }
 
     public static ActionCard of(int position) {

@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableList;
 import pp.muza.monopoly.consts.Meta;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -159,17 +160,17 @@ public abstract class BaseGame {
     private void nextPlayer() throws GameException {
         int nextPlayerIndex = getNextPlayerIndex();
         if (nextPlayerIndex == currentPlayerIndex) {
-            throw new GameException("No more players in game");
+            throw new GameException(GameError.NO_MORE_PLAYERS_IN_GAME);
         }
         if (currentTurn != null && !currentTurn.isFinished()) {
-            throw new GameException("Current turn is not finished");
+            throw new GameException(GameError.TURN_NOT_FINISHED);
         }
         currentPlayerIndex = nextPlayerIndex;
     }
 
     private void checkStarted() throws GameException {
         if (!started) {
-            throw new GameException("Game is not started");
+            throw new GameException(GameError.GAME_NOT_STARTED);
         }
     }
 
@@ -227,10 +228,10 @@ public abstract class BaseGame {
 
     private void checkTurn(Turn turn) throws GameException {
         if (currentTurn == null || currentTurn.isFinished()) {
-            throw new GameException("No turn in progress");
+            throw new GameException(GameError.NO_TURN_IN_PROGRESS);
         }
         if (turn != currentTurn.getTurn()) {
-            throw new GameException("Wrong turn");
+            throw new GameException(GameError.WRONG_TURN);
         }
     }
 
@@ -282,13 +283,13 @@ public abstract class BaseGame {
 
     public void start() throws GameException {
         if (players.size() < Meta.MIN_PLAYERS) {
-            throw new GameException("Not enough players");
+            throw new GameException(GameError.NOT_ENOUGH_PLAYERS);
         }
         if (players.size() > Meta.MAX_PLAYERS) {
-            throw new GameException("Too many players");
+            throw new GameException(GameError.TOO_MANY_PLAYERS);
         }
         if (started) {
-            throw new GameException("Game already started");
+            throw new GameException(GameError.GAME_ALREADY_STARTED);
         }
         LOG.info("Starting game");
         started = true;

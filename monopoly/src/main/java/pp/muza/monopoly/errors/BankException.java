@@ -6,7 +6,8 @@ package pp.muza.monopoly.errors;
  */
 public final class BankException extends Exception {
 
-    public BankException(String message) {
-        super(message);
+    public BankException(BankError error) {
+        super(error.getMessage());
     }
+
 }

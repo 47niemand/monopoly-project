@@ -15,7 +15,7 @@ import pp.muza.monopoly.model.ActionType;
 public final class OptionMove extends Move {
 
     OptionMove(int distance) {
-        super("Choice to Move", ActionType.CHOOSE, DEFAULT_PRIORITY, distance);
+        super(ActionType.CHOOSE, DEFAULT_PRIORITY, distance);
     }
 
     public static ActionCard of(int distance) {

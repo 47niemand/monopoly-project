@@ -33,13 +33,9 @@ public class Arrival extends BaseActionCard {
 
     protected final int position;
 
-     Arrival(String name, int position) {
-        super(name, Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+     Arrival(int position) {
+        super(Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.position = position;
-    }
-
-    Arrival(int position) {
-        this("Arrival", position);
     }
 
     public static ActionCard of(int position) {

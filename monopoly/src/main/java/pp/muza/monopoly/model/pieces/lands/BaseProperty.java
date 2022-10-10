@@ -17,7 +17,7 @@ public final class BaseProperty extends BaseLand implements Property {
     private final Asset asset;
 
     public BaseProperty(Asset asset) {
-        super(asset.getName(), LandType.PROPERTY);
+        super(asset.name(), LandType.PROPERTY);
         this.price = asset.getPrice();
         this.color = asset.getColor();
         this.asset = asset;

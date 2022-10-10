@@ -39,7 +39,7 @@ public final class Buy extends BaseActionCard {
     private final int position;
 
     Buy(int position) {
-        super("Buy", Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        super(Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.position = position;
     }
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
@@ -33,7 +34,7 @@ public class BankImpl implements Bank {
         LOG.info("Withdrawing {} coin(s) from player {}", value,  player.getName());
         if (playerCoins.get(player).compareTo(value) < 0) {
             LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), value, playerCoins.get(player));
-            throw new BankException("Not enough coins");
+            throw new BankException(BankError.NOT_ENOUGH_COINS);
         }
         playerCoins.put(player, playerCoins.getOrDefault(player, 0) - value);
         LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));

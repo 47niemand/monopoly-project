@@ -36,7 +36,7 @@ public final class Contract extends BaseActionCard {
     private final int position;
 
     Contract(int position) {
-        super("Contract", Action.CONTRACT, ActionType.CHOOSE, HIGHEST_PRIORITY);
+        super(Action.CONTRACT, ActionType.CHOOSE, HIGHEST_PRIORITY);
         this.position = position;
     }
 

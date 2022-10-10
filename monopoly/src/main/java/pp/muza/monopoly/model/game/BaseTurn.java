@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -58,7 +59,7 @@ public abstract class BaseTurn implements PlayTurn {
 
     private void checkFinished() throws TurnException {
         if (finished) {
-            throw new TurnException("The turn is finished.");
+            throw new TurnException(TurnError.THE_TURN_IS_FINISHED);
         }
     }
 
@@ -99,9 +100,9 @@ public abstract class BaseTurn implements PlayTurn {
                 throw new IllegalStateException("Card not found on player's hand");
             }
         } else if (baseGame().getCards(player).contains(actionCard)) {
-            throw new TurnException("The card is not active.");
+            throw new TurnException(TurnError.THE_CARD_IS_NOT_ACTIVE);
         } else {
-            throw new TurnException("The card is not in the player's hand.");
+            throw new TurnException(TurnError.THE_CARD_IS_NOT_IN_THE_PLAYER_S_HAND);
         }
         return cardUsed || newCardsSpawned;
     }
@@ -109,7 +110,7 @@ public abstract class BaseTurn implements PlayTurn {
     @Override
     public void playCard(ActionCard card) throws TurnException {
         if (card == null) {
-            throw new TurnException("The card is null.");
+            throw new TurnException(TurnError.THE_CARD_IS_NULL);
         }
         checkFinished();
         steps++;

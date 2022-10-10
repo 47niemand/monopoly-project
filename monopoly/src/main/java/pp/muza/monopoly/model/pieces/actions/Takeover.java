@@ -32,7 +32,7 @@ public final class Takeover extends Arrival {
     private static final Logger LOG = LoggerFactory.getLogger(Takeover.class);
 
     Takeover(int position) {
-        super("Takeover", position);
+        super(position);
     }
 
     public static ActionCard of(int position) {

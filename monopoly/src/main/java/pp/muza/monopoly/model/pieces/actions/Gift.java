@@ -16,7 +16,7 @@ import pp.muza.monopoly.model.Player;
 public final class Gift extends Payment {
 
     Gift(Player recipient, int value) {
-        super("Gift", ActionType.OBLIGATION, HIGH_PRIORITY, value, recipient);
+        super(ActionType.OBLIGATION, HIGH_PRIORITY, value, recipient);
     }
 
     public static ActionCard of(int value, Player recipient) {

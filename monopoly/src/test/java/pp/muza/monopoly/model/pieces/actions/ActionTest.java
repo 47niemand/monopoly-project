@@ -29,9 +29,11 @@ class ActionTest {
     final int TWO = 2;
     final int THREE = 3;
 
+
+
     @Test
     @SuppressWarnings("unchecked")
-    public void generate() throws JsonProcessingException {
+    public void testRules() throws JsonProcessingException {
         // rule: all actions in the package should have a static method of() with 0, 1, 2 or 3 parameters
         // rule: invocation of the method of() should return an instance of the class
         // rule: all constructors should be protected or package-private
@@ -127,5 +129,7 @@ class ActionTest {
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         System.out.println(mapper.writeValueAsString(map));
     }
+
+
 }
 

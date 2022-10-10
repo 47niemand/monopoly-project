@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Asset;
@@ -38,7 +39,7 @@ public abstract class GameImpl implements Game {
     private void checkPlayerInGame(Player player) throws GameException {
         if (baseGame().playerData(player).getStatus().isFinal()) {
             LOG.error("Player {} is not in game", player);
-            throw new GameException("Player is not in game");
+            throw new GameException(GameError.PLAYER_IS_NOT_IN_GAME);
         }
     }
 
@@ -79,7 +80,7 @@ public abstract class GameImpl implements Game {
         Property property = (Property) getLand(position);
         int price = property.getPrice();
         if (getPropertyOwner(position) != null) {
-            throw new GameException("Land is already owned");
+            throw new GameException(GameError.LAND_IS_ALREADY_OWNED);
         }
         baseGame().getBank().withdraw(player, price);
         baseGame().setPropertyOwner(position, player);
@@ -88,7 +89,7 @@ public abstract class GameImpl implements Game {
     @Override
     public void leaveJail(Player player) throws GameException {
         if (getPlayerStatus(player) != PlayerStatus.IN_JAIL) {
-            throw new GameException("Player is not in jail");
+            throw new GameException(GameError.PLAYER_IS_NOT_IN_JAIL);
         }
         baseGame().playerData(player).setStatus(PlayerStatus.IN_GAME);
     }
@@ -98,7 +99,7 @@ public abstract class GameImpl implements Game {
         checkPlayerInGame(player);
         Property property = (Property) getLand(position);
         if (getPropertyOwner(position) != player) {
-            throw new GameException("Land is not owned by Player");
+            throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_PLAYER);
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), position, property.getName());
         int value = property.getPrice();
@@ -148,10 +149,10 @@ public abstract class GameImpl implements Game {
     public void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException {
         Property property = (Property) baseGame().getBoard().getLand(position);
         if (getPropertyOwner(position) != seller) {
-            throw new GameException("Land is not owned by " + seller.getName());
+            throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_SELLER);
         }
         if (seller == buyer) {
-            throw new GameException("You can't trade with yourself");
+            throw new GameException(GameError.YOU_CAN_T_TRADE_WITH_YOURSELF);
         }
         int price = property.getPrice();
         baseGame().getBank().withdraw(buyer, price);

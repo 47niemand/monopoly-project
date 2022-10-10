@@ -30,13 +30,13 @@ public class Income extends BaseActionCard {
      */
     protected final int value;
 
-    protected Income(String name, int priority, int value) {
-        super(name, Action.INCOME, ActionType.PROFIT, priority);
+    protected Income(int priority, int value) {
+        super(Action.INCOME, ActionType.PROFIT, priority);
         this.value = value;
     }
 
     Income(int value) {
-        this("Income", HIGHEST_PRIORITY, value);
+        this(HIGHEST_PRIORITY, value);
     }
 
     public static ActionCard of(int value) {

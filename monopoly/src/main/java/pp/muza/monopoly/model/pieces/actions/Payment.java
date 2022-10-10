@@ -28,8 +28,8 @@ public class Payment extends Debt {
 
     protected final Player recipient;
 
-    protected Payment(String name, ActionType type, int priority, int value, Player recipient) {
-        super(name, type, priority, value);
+    protected Payment(ActionType type, int priority, int value, Player recipient) {
+        super(type, priority, value);
         this.recipient = recipient;
     }
 

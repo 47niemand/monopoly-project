@@ -20,7 +20,7 @@ public final class RentRevenue extends ReceiveMoney {
     private final int position;
 
     RentRevenue(int value, Player sender, int position) {
-        super("Rent Revenue", HIGHEST_PRIORITY, value, sender);
+        super(HIGHEST_PRIORITY, value, sender);
         this.position = position;
     }
 

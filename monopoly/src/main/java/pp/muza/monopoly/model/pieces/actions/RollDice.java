@@ -25,7 +25,7 @@ public final class RollDice extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(RollDice.class);
 
     RollDice() {
-        super("Roll Dice", Action.ROLL_DICE, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        super(Action.ROLL_DICE, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     public static ActionCard of() {

@@ -28,8 +28,8 @@ public class Debt extends BaseActionCard {
 
     protected final int value;
 
-    protected Debt(String name, ActionType type, int priority, int value) {
-        super(name, Action.DEBT, type, priority);
+    protected Debt(ActionType type, int priority, int value) {
+        super(Action.DEBT, type, priority);
         this.value = value;
     }
 

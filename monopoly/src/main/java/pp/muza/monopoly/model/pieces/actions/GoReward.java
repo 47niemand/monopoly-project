@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 
-
 /**
  * A player receives coins from the card.
  */
@@ -15,7 +14,7 @@ import pp.muza.monopoly.model.ActionCard;
 public final class GoReward extends Income {
 
     GoReward(int value) {
-        super("Go Reward", HIGHEST_PRIORITY, value);
+        super(HIGHEST_PRIORITY, value);
     }
 
     public static ActionCard of(int value) {

@@ -29,13 +29,13 @@ public class Move extends BaseActionCard {
 
     protected final int distance;
 
-    protected Move(String name, ActionType type, int priority, int distance) {
-        super(name, Action.MOVE, type, priority);
+    protected Move(ActionType type, int priority, int distance) {
+        super(Action.MOVE, type, priority);
         this.distance = distance;
     }
 
     Move(int distance) {
-        this("Move", ActionType.OBLIGATION, DEFAULT_PRIORITY, distance);
+        this(ActionType.OBLIGATION, DEFAULT_PRIORITY, distance);
     }
 
     public static ActionCard of(int distance) {

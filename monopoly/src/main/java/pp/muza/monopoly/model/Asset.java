@@ -6,34 +6,31 @@ import lombok.Getter;
  * properties for a game board
  */
 public enum Asset {
-    COFFEE_SHOP("Coffee Shop", 1, PropertyColor.RED),
-    DONUT_SHOP("Donut Shop", 1, PropertyColor.RED),
-    BAKERY("Bakery", 1, PropertyColor.ORANGE),
-    BURGER_JOINT("Burger Joint", 1, PropertyColor.ORANGE),
-    LIBRARY("Library", 2, PropertyColor.YELLOW),
-    MUSEUM("Museum", 2, PropertyColor.YELLOW),
-    SWIMMING_POOL("Swimming Pool", 2, PropertyColor.GREEN),
-    GO_KARTS("Go-Karts", 2, PropertyColor.GREEN),
-    CINEMA("Cinema", 3, PropertyColor.BLUE),
-    THEATRE("Theatre", 3, PropertyColor.BLUE),
-    PET_SHOP("Pet Shop", 3, PropertyColor.INDIGO),
-    TOY_SHOP("Toy Shop", 3, PropertyColor.INDIGO),
-    AQUARIUM("Aquarium", 4, PropertyColor.VIOLET),
-    THE_ZOO("The ZOO", 4, PropertyColor.VIOLET),
-    PARK_LANE("Park Lane", 5, PropertyColor.RAINBOW),
-    MAYFAIR("Mayfair", 5, PropertyColor.RAINBOW);
+    // TODO: add java doc
+    COFFEE_SHOP(1, PropertyColor.RED),
+    DONUT_SHOP(1, PropertyColor.RED),
+    BAKERY(1, PropertyColor.ORANGE),
+    BURGER_JOINT(1, PropertyColor.ORANGE),
+    LIBRARY(2, PropertyColor.YELLOW),
+    MUSEUM(2, PropertyColor.YELLOW),
+    SWIMMING_POOL(2, PropertyColor.GREEN),
+    GO_KARTS(2, PropertyColor.GREEN),
+    CINEMA(3, PropertyColor.BLUE),
+    THEATRE(3, PropertyColor.BLUE),
+    PET_SHOP(3, PropertyColor.INDIGO),
+    TOY_SHOP(3, PropertyColor.INDIGO),
+    AQUARIUM(4, PropertyColor.VIOLET),
+    THE_ZOO(4, PropertyColor.VIOLET),
+    PARK_LANE(5, PropertyColor.RAINBOW),
+    MAYFAIR(5, PropertyColor.RAINBOW);
 
 
-    @Getter
-    private final String name;
     @Getter
     private final int price;
     @Getter
     private final PropertyColor color;
 
-    Asset(String name, int price, PropertyColor color) {
-
-        this.name = name;
+    Asset(int price, PropertyColor color) {
         this.price = price;
         this.color = color;
     }

@@ -8,7 +8,7 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
 
 /**
- * A player has to pay coins to the property owner on which player is standing.
+ * A player sends a gift to another player.
  */
 @Getter
 @ToString(callSuper = true)
@@ -16,7 +16,7 @@ import pp.muza.monopoly.model.Player;
 public final class Gift extends Payment {
 
     Gift(Player recipient, int value) {
-        super("Gift", ActionType.OBLIGATION, HIGH_PRIORITY, recipient, value);
+        super("Gift", ActionType.OBLIGATION, HIGH_PRIORITY, value, recipient);
     }
 
     public static ActionCard of(int value, Player recipient) {

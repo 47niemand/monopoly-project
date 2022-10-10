@@ -74,15 +74,15 @@ public abstract class GameImpl implements Game {
     }
 
     @Override
-    public void buyProperty(Player player, int landId) throws GameException, BankException {
+    public void buyProperty(Player player, int position) throws GameException, BankException {
         checkPlayerInGame(player);
-        Property property = (Property) getLand(landId);
+        Property property = (Property) getLand(position);
         int price = property.getPrice();
-        if (getPropertyOwner(landId) != null) {
+        if (getPropertyOwner(position) != null) {
             throw new GameException("Land is already owned");
         }
         baseGame().getBank().withdraw(player, price);
-        baseGame().setPropertyOwner(landId, player);
+        baseGame().setPropertyOwner(position, player);
     }
 
     @Override
@@ -94,16 +94,16 @@ public abstract class GameImpl implements Game {
     }
 
     @Override
-    public void doContract(Player player, int landId) throws BankException, GameException {
+    public void doContract(Player player, int position) throws BankException, GameException {
         checkPlayerInGame(player);
-        Property property = (Property) getLand(landId);
-        if (getPropertyOwner(landId) != player) {
+        Property property = (Property) getLand(position);
+        if (getPropertyOwner(position) != player) {
             throw new GameException("Land is not owned by Player");
         }
-        LOG.info("Player {} is contracting property {} ({})", player.getName(), landId, property.getName());
+        LOG.info("Player {} is contracting property {} ({})", player.getName(), position, property.getName());
         int value = property.getPrice();
         baseGame().getBank().deposit(player, value);
-        baseGame().propertyOwnerRemove(landId);
+        baseGame().propertyOwnerRemove(position);
     }
 
     @Override
@@ -145,9 +145,9 @@ public abstract class GameImpl implements Game {
     }
 
     @Override
-    public void tradeProperty(Player buyer, Player seller, int landId) throws BankException, GameException {
-        Property property = (Property) baseGame().getBoard().getLand(landId);
-        if (getPropertyOwner(landId) != seller) {
+    public void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException {
+        Property property = (Property) baseGame().getBoard().getLand(position);
+        if (getPropertyOwner(position) != seller) {
             throw new GameException("Land is not owned by " + seller.getName());
         }
         if (seller == buyer) {
@@ -156,7 +156,7 @@ public abstract class GameImpl implements Game {
         int price = property.getPrice();
         baseGame().getBank().withdraw(buyer, price);
         baseGame().getBank().deposit(seller, price);
-        baseGame().setPropertyOwner(landId, buyer);
+        baseGame().setPropertyOwner(position, buyer);
     }
 
     @Override

@@ -124,7 +124,7 @@ public abstract class BaseTurn implements PlayTurn {
         boolean result = doPlayCard(card);
         LOG.debug("Card '{}' played: {}", card, result);
         if (usedCards.remove(card)) {
-            LOG.warn("{}: card '{}' was already played", player.getName(), card.getName());
+            LOG.debug("{}: card '{}' was already played", player.getName(), card.getName());
             // it is not an error if the card was already used.
         }
         if (result) {

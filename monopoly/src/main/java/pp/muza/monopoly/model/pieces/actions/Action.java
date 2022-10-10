@@ -59,18 +59,14 @@ public enum Action {
      */
     PARTY(ImmutableList.of(BirthdayParty.class)),
     /**
-     * Player pays the given number of coins to other players.
+     * Player pays the given number of coins to other players or the bank.
      */
-    PAY(ImmutableList.of(Payment.class, PayRent.class, Gift.class)),
+    DEBT(ImmutableList.of(PayRent.class, Gift.class,  JailFine.class, Tax.class)),
     /**
      * roll dice get random number.
      * this card can be added only before the {@link Action#END_TURN} card.
      */
-    ROLL_DICE(ImmutableList.of(RollDice.class)),
-    /**
-     * Pay tax or fine to the bank.
-     */
-    TAX(ImmutableList.of(Tax.class, JailFine.class));
+    ROLL_DICE(ImmutableList.of(RollDice.class));
 
     @Getter
     private final List<Class<? extends BaseActionCard>> classList;

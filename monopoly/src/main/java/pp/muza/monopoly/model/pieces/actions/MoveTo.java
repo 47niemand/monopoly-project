@@ -26,19 +26,19 @@ public class MoveTo extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(MoveTo.class);
 
-    protected final int landId;
+    protected final int position;
 
-    protected MoveTo(String name, ActionType type, int priority, int landId) {
+    protected MoveTo(String name, ActionType type, int priority, int position) {
         super(name, Action.MOVE_TO, type, priority);
-        this.landId = landId;
+        this.position = position;
     }
 
-    MoveTo(int landId) {
-        this("Move To", ActionType.OBLIGATION, DEFAULT_PRIORITY, landId);
+    MoveTo(int position) {
+        this("Move To", ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
     }
 
-    public static ActionCard of(int landId) {
-        return new MoveTo(landId);
+    public static ActionCard of(int position) {
+        return new MoveTo(position);
     }
 
     /**
@@ -49,15 +49,14 @@ public class MoveTo extends BaseActionCard {
      * @return the action cards to execute after the player arrives at the new location.
      */
     protected List<ActionCard> onArrival(Turn turn) {
-        return ImmutableList.of(new Arrival(landId));
+        return ImmutableList.of(new Arrival(position));
     }
 
     @Override
     protected final List<ActionCard> onExecute(Turn turn) {
-        LOG.info("{} moved to {} ({})", turn.getPlayer().getName(), landId, turn.getLand(landId).getName());
         List<Land> path;
         try {
-            path = turn.moveTo(landId);
+            path = turn.moveTo(position);
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);

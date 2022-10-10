@@ -8,4 +8,6 @@ public class Meta {
     public static final int DEFAULT_PLAYERS = 2;
     public static final int MAX_PLAYERS = 4;
     public static final int MIN_PLAYERS = 2;
+    public static final int PRIZE_AMOUNT = 2;
+    public static final int LUXURY_TAX_AMOUNT = 2;
 }

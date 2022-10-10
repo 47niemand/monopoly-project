@@ -75,15 +75,15 @@ public abstract class BaseGame {
                     .findFirst()
                     .orElseThrow();
             bank.set(player, playerInfo.getCoins());
-            for (Integer landId : playerInfo.getBelongings()) {
-                Land land = board.getLand(landId);
+            for (Integer position : playerInfo.getBelongings()) {
+                Land land = board.getLand(position);
                 if (land.getType() != LandType.PROPERTY) {
                     throw new IllegalStateException("Land is not a property");
                 }
                 assert land instanceof Property;
-                Player oldOwner = propertyOwners.put(landId, player);
+                Player oldOwner = propertyOwners.put(position, player);
                 if (oldOwner != null) {
-                    throw new IllegalStateException("Property " + landId + " is already owned by " + oldOwner);
+                    throw new IllegalStateException("Property " + position + " is already owned by " + oldOwner);
                 }
             }
             for (ActionCard actionCard : playerInfo.getActionCards()) {
@@ -197,12 +197,12 @@ public abstract class BaseGame {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public void propertyOwnerRemove(int landId) {
-        Property property = (Property) board.getLand(landId);
-        LOG.info("Property {} ({}) is now free", landId, property.getName());
-        Player oldOwner = propertyOwners.remove(landId);
+    public void propertyOwnerRemove(int position) {
+        Property property = (Property) board.getLand(position);
+        LOG.info("Property {} ({}) is now free", position, property.getName());
+        Player oldOwner = propertyOwners.remove(position);
         if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
+            LOG.info("{} lost property {} ({})", oldOwner.getName(), position, property.getName());
         }
     }
 
@@ -291,7 +291,6 @@ public abstract class BaseGame {
             throw new GameException("Game already started");
         }
         LOG.info("Starting game");
-        Collections.shuffle(fortuneCards);
         started = true;
     }
 
@@ -349,12 +348,12 @@ public abstract class BaseGame {
         return Collections.unmodifiableMap(propertyOwners);
     }
 
-    public void setPropertyOwner(int landId, Player player) {
-        Property property = (Property) getBoard().getLand(landId);
-        LOG.info("Property {} ({}) is now owned by {}", landId, property.getName(), player.getName());
-        Player oldOwner = propertyOwners.put(landId, player);
+    public void setPropertyOwner(int position, Player player) {
+        Property property = (Property) getBoard().getLand(position);
+        LOG.info("Property {} ({}) is now owned by {}", position, property.getName(), player.getName());
+        Player oldOwner = propertyOwners.put(position, player);
         if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), landId, property.getName());
+            LOG.info("{} lost property {} ({})", oldOwner.getName(), position, property.getName());
         }
     }
 

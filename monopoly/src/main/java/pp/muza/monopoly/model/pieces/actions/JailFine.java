@@ -2,9 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
@@ -24,10 +21,12 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public final class JailFine extends Tax {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JailFine.class);
+    JailFine(int value) {
+        super("Jail Fine", ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
+    }
 
-    JailFine(int number) {
-        super("Jail Fine", ActionType.OBLIGATION, DEFAULT_PRIORITY, number);
+    public static ActionCard of(int value) {
+        return new JailFine(value);
     }
 
     @Override

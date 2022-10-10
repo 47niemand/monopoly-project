@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This interface represents a turn in the game.
@@ -42,11 +42,11 @@ public interface Turn {
     /**
      * Buys a property at the given position.
      *
-     * @param landId the land id.
+     * @param position the land id.
      * @throws BankException if a player doesn't have enough coins.
      * @throws TurnException if operation fails.
      */
-    void buyProperty(int landId) throws BankException, TurnException;
+    void buyProperty(int position) throws BankException, TurnException;
 
     /**
      * The player leaves jail.
@@ -58,11 +58,11 @@ public interface Turn {
     /**
      * Executes the contract
      *
-     * @param landId the land id.
+     * @param position the land id.
      * @throws BankException if the player doesn't have enough coins.
      * @throws TurnException if the player is not in the game.
      */
-    void doContract(int landId) throws BankException, TurnException;
+    void doContract(int position) throws BankException, TurnException;
 
     /**
      * returns the position of land by the given name.
@@ -87,18 +87,21 @@ public interface Turn {
      *
      * @param to         the player.
      * @param actionCard the action card.
+     * @throws TurnException if the player is not in the game.
      */
     void sendCard(Player to, ActionCard actionCard) throws TurnException;
 
     /**
      * Birthday party.
+     *
+     * @throws TurnException if it is not currently a player's turn.
      */
     void doBirthdayParty() throws TurnException;
 
     /**
      * Holds current turn.
      *
-     * @throws TurnException
+     * @throws TurnException if it is not currently a player's turn.
      */
 
     void holdTurn() throws TurnException;
@@ -106,12 +109,12 @@ public interface Turn {
     /**
      * trades a property.
      *
-     * @param seller the player who is selling.
-     * @param landId the land id to sell.
+     * @param seller   the player who is selling.
+     * @param position the land id to sell.
      * @throws BankException if a player doesn't have enough coins.
      * @throws TurnException if the player is not in the game.
      */
-    void tradeProperty(Player seller, int landId) throws BankException, TurnException;
+    void tradeProperty(Player seller, int position) throws BankException, TurnException;
 
 
     /**

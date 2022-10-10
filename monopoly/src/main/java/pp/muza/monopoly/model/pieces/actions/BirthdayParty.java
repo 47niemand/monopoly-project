@@ -22,7 +22,7 @@ public final class BirthdayParty extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(BirthdayParty.class);
 
-    public BirthdayParty() {
+    BirthdayParty() {
         super("Birthday Party", Action.PARTY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 

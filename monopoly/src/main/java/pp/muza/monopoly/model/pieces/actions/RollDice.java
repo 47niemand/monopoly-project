@@ -28,6 +28,10 @@ public final class RollDice extends BaseActionCard {
         super("Roll Dice", Action.ROLL_DICE, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
+    public static ActionCard of() {
+        return new RollDice();
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int dice = (int) (Math.random() * 6) + 1;

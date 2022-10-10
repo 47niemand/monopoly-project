@@ -36,15 +36,15 @@ public final class Buy extends BaseActionCard {
     /**
      * the id of the land to be traded.
      */
-    private final int landId;
+    private final int position;
 
-    Buy(int landId) {
+    Buy(int position) {
         super("Buy", Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
-        this.landId = landId;
+        this.position = position;
     }
 
-    public static Buy of(int landId) {
-        return new Buy(landId);
+    public static ActionCard of(int position) {
+        return new Buy(position);
     }
 
     @Override
@@ -52,13 +52,13 @@ public final class Buy extends BaseActionCard {
         List<ActionCard> result = null;
         boolean finished = false;
         try {
-            Player salePlayer = turn.getPropertyOwner(landId);
+            Player salePlayer = turn.getPropertyOwner(position);
             if (salePlayer == null) {
-                LOG.debug("Buying property {} from the bank.", landId);
-                turn.buyProperty(landId);
+                LOG.debug("Buying property {} from the bank.", position);
+                turn.buyProperty(position);
             } else {
-                LOG.debug("Buying property {} from player {}.", landId, salePlayer.getName());
-                turn.tradeProperty(salePlayer, landId);
+                LOG.debug("Buying property {} from player {}.", position, salePlayer.getName());
+                turn.tradeProperty(salePlayer, position);
             }
         } catch (BankException e) {
             LOG.info("Player cannot trade property: {}", e.getMessage());

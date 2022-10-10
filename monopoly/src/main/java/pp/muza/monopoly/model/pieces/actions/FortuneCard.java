@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.consts.Meta;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -31,8 +32,6 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public final class FortuneCard extends BaseActionCard implements Fortune {
 
-    public static final int PRIZE_AMOUNT = 2;
-    public static final int LUXURY_TAX_AMOUNT = 2;
     private static final Logger LOG = LoggerFactory.getLogger(FortuneCard.class);
     private static final int PLAYER_1 = 0;
     private static final int PLAYER_2 = 1;
@@ -117,13 +116,13 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
                     break;
                 case PRIZE:
-                    result.add(Income.of(PRIZE_AMOUNT));
+                    result.add(Income.of(Meta.PRIZE_AMOUNT));
                     break;
                 case BIRTHDAY:
                     result.add(BirthdayParty.of());
                     break;
                 case LUXURY_TAX:
-                    result.add(new Tax(LUXURY_TAX_AMOUNT));
+                    result.add(new Tax(Meta.LUXURY_TAX_AMOUNT));
                     break;
                 case ADVANCE_TO_GO:
                     result.add(MoveTo.of(turn.getStartPos()));
@@ -167,15 +166,15 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     }
 
     private List<ActionCard> spawnGetOrPayByName(Turn turn, Asset asset) {
-        int landId = turn.foundProperty(asset);
-        return ImmutableList.of(new OptionMoveTo(landId));
+        int position = turn.foundProperty(asset);
+        return ImmutableList.of(new OptionMoveTo(position));
     }
 
     private List<ActionCard> spawnGetOrPayByColor(Turn turn, PropertyColor color) {
         ImmutableList.Builder<ActionCard> builder = ImmutableList.builder();
         List<Integer> list = turn.foundLandsByColor(color);
-        for (Integer landId : list) {
-            builder.add(new OptionMoveTo(landId));
+        for (Integer position : list) {
+            builder.add(new OptionMoveTo(position));
         }
         return builder.build();
     }

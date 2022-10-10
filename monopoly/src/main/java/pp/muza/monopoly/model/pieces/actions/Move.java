@@ -31,9 +31,6 @@ public class Move extends BaseActionCard {
 
     protected Move(String name, ActionType type, int priority, int distance) {
         super(name, Action.MOVE, type, priority);
-        if (distance <= 0) {
-            throw new IllegalArgumentException("Distance must be positive");
-        }
         this.distance = distance;
     }
 
@@ -53,26 +50,34 @@ public class Move extends BaseActionCard {
      * @param position the new location on the board.
      * @return the action cards to execute after the player arrives at the new location.
      */
+    @SuppressWarnings("unused")
     protected List<ActionCard> onArrival(Turn turn, int position) {
         return ImmutableList.of(new Arrival(position));
     }
 
     @Override
     protected final List<ActionCard> onExecute(Turn turn) {
-        int position = turn.nextPosition(distance);
-        LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
-                turn.getLand(position).getName());
-        List<Land> path;
-        try {
-            path = turn.moveTo(position);
-        } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+        List<ActionCard> result;
+        if (distance <= 0) {
+            LOG.warn("Distance must be positive");
+            result = ImmutableList.of();
+        } else {
+            int position = turn.nextPosition(distance);
+            LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
+                    turn.getLand(position).getName());
+            List<Land> path;
+            try {
+                path = turn.moveTo(position);
+            } catch (TurnException e) {
+                LOG.error("Error during executing the action: {}", this, e);
+                throw new RuntimeException(e);
+            }
+            assert path.size() == distance;
+            result = ImmutableList.<ActionCard>builder()
+                    .addAll(CardUtils.onPath(turn, path))
+                    .addAll(onArrival(turn, position))
+                    .build();
         }
-        assert path.size() == distance;
-        return ImmutableList.<ActionCard>builder()
-                .addAll(CardUtils.onPath(turn, path))
-                .addAll(onArrival(turn, position))
-                .build();
+        return result;
     }
 }

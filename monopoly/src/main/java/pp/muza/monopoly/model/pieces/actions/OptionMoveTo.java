@@ -1,11 +1,9 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 
 /**
@@ -16,10 +14,12 @@ import pp.muza.monopoly.model.ActionType;
 @EqualsAndHashCode(callSuper = true)
 public final class OptionMoveTo extends MoveTo {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OptionMoveTo.class);
+    OptionMoveTo(int position) {
+        super("Choice Move To", ActionType.CHOOSE, DEFAULT_PRIORITY, position);
+    }
 
-    OptionMoveTo(int landId) {
-        super("Choice Move To", ActionType.CHOOSE, DEFAULT_PRIORITY, landId);
+    public static ActionCard of(int position) {
+        return new OptionMoveTo(position);
     }
 
 }

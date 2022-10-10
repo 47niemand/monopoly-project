@@ -20,6 +20,10 @@ public final class TakeFortuneCard extends BaseActionCard {
         super("Take Fortune Card", Action.GIFT, ActionType.CHOOSE, DEFAULT_PRIORITY);
     }
 
+    public static ActionCard of() {
+        return new TakeFortuneCard();
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         return ImmutableList.of(turn.popFortuneCard());

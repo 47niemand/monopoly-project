@@ -26,18 +26,22 @@ public final class PayRent extends Payment {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
 
-    private final int landId;
+    private final int position;
 
-    PayRent(Player recipient, int value, int landId) {
-        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, recipient, value);
-        this.landId = landId;
+    PayRent(int value, Player recipient, int position) {
+        super("Pay Rent", ActionType.OBLIGATION, DEFAULT_PRIORITY, value, recipient);
+        this.position = position;
+    }
+
+    public static ActionCard of(int value, Player recipient, int position) {
+        return new PayRent(value, recipient, position);
     }
 
     @Override
     protected List<ActionCard> onSuccess(Turn turn) {
         // sent rent to the owner
         try {
-            turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), landId));
+            turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), position));
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
             throw new RuntimeException(e);

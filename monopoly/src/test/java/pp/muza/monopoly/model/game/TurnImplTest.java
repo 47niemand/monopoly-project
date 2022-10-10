@@ -125,7 +125,7 @@ class TurnImplTest {
         game.baseGame.getBank().set(player1, 0);
         int position = game.baseGame.getGame().findProperty(Asset.MAYFAIR);
         game.baseGame.playerData(player1).setPosition(position);
-        Buy buy = Buy.of(position);
+        ActionCard buy = Buy.of(position);
         assert buy.getType().isMandatory(); // buy is mandatory
         game.baseGame.playerData(player1).addCard(Buy.of(position));
 

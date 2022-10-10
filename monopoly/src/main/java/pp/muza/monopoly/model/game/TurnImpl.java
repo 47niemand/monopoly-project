@@ -58,9 +58,9 @@ public abstract class TurnImpl implements Turn {
     }
 
     @Override
-    public void buyProperty(int landId) throws BankException, TurnException {
+    public void buyProperty(int position) throws BankException, TurnException {
         try {
-            game().buyProperty(player(), landId);
+            game().buyProperty(player(), position);
         } catch (GameException e) {
             throw new TurnException(e);
         }
@@ -76,9 +76,9 @@ public abstract class TurnImpl implements Turn {
     }
 
     @Override
-    public void doContract(int landId) throws BankException, TurnException {
+    public void doContract(int position) throws BankException, TurnException {
         try {
-            game().doContract(player(), landId);
+            game().doContract(player(), position);
         } catch (GameException e) {
             throw new TurnException(e);
         }
@@ -106,6 +106,7 @@ public abstract class TurnImpl implements Turn {
     @Override
     public void doBirthdayParty() throws TurnException {
         LOG.info("Birthday party for {}", player());
+        holdTurn();
         Player player = getPlayer();
         for (Player guest : game().getPlayers()) {
             if (guest != player && !getPlayerStatus(guest).isFinal()) {
@@ -117,7 +118,7 @@ public abstract class TurnImpl implements Turn {
                 }
             }
         }
-        holdTurn();
+
     }
 
     @Override
@@ -130,9 +131,9 @@ public abstract class TurnImpl implements Turn {
     }
 
     @Override
-    public void tradeProperty(Player seller, int landId) throws BankException, TurnException {
+    public void tradeProperty(Player seller, int position) throws BankException, TurnException {
         try {
-            game().tradeProperty(this.player(), seller, landId);
+            game().tradeProperty(this.player(), seller, position);
         } catch (GameException e) {
             throw new TurnException(e);
         }

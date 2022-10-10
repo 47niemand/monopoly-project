@@ -9,12 +9,12 @@ public enum Chance {
     /**
      * all available chance cards
      */
-    ADVANCE_TO_MAYFAIR("Advance to Mayfair", "If one is available get it for free, otherwise pay rent to the owner.", false),
-    ADVANCE_TO_YELLOW_OR_RAINBOW("Advance to Yellow or Rainbow", "If one is available get it for free, otherwise pay rent to the owner.", false),
-    ADVANCE_TO_GREEN_OR_VIOLET("Advance to Green or Violet", "If one is available get it for free, otherwise pay rent to the owner.", false),
-    ADVANCE_TO_BLUE_OR_ORANGE("Advance to Blue or Orange", "Advance to Blue or Orange. If one is available get it for free, otherwise pay rent to the owner.", false),
-    ADVANCE_TO_INDIGO_OR_RED("Advance to Indigo or Red", "Advance to Indigo or Red. If one is available get it for free, otherwise pay rent to the owner.", false),
-    ADVANCE_TO_GO_KARTS("Advance to Go Kart", "Advance to Go Kart. If one is available get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_MAYFAIR("Advance to Mayfair", "If one is available, get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_YELLOW_OR_RAINBOW("Advance to Yellow or Rainbow", "Advance to Yellow or Rainbow. If one is available, get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_GREEN_OR_VIOLET("Advance to Green or Violet", "Advance to Green or Violet. If one is available, get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_BLUE_OR_ORANGE("Advance to Blue or Orange", "Advance to Blue or Orange. If one is available, get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_INDIGO_OR_RED("Advance to Indigo or Red", "Advance to Indigo or Red. If one is available, get it for free, otherwise pay rent to the owner.", false),
+    ADVANCE_TO_GO_KARTS("Advance to Go Kart", "Advance to Go Kart. If one is available, get it for free, otherwise pay rent to the owner.", false),
     PRIZE("Income", "You won a prize!", false),
     BIRTHDAY("Birthday", "Happy Birthday! Everyone gives you a present.", false),
     LUXURY_TAX("Luxury JailFine", "You have to pay a luxury tax.", false),

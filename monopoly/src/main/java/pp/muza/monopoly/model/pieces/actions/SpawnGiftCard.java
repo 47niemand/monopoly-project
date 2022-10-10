@@ -26,12 +26,16 @@ public final class SpawnGiftCard extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
 
     SpawnGiftCard() {
-        super("Gift: Move and trade", Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        super("Gift: Move and Takeover", Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+    }
+
+    public static ActionCard of() {
+        return new SpawnGiftCard();
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Spawning MoveAndTakeover cards");
+        LOG.debug("Spawning MoveAndTakeover cards");
         List<IndexedEntry<Property>> properties = turn.getFreeProperties();
         if (properties.isEmpty()) {
             // if there are no free properties, the player has to choose one of the

@@ -33,17 +33,21 @@ public final class Contract extends BaseActionCard {
     /**
      * the id of the land to be traded.
      */
-    private final int landId;
+    private final int position;
 
-    Contract(int landId) {
+    Contract(int position) {
         super("Contract", Action.CONTRACT, ActionType.CHOOSE, HIGHEST_PRIORITY);
-        this.landId = landId;
+        this.position = position;
+    }
+
+    public static ActionCard of(int position) {
+        return new Contract(position);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.doContract(landId);
+            turn.doContract(position);
         } catch (BankException e) {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
         } catch (TurnException e) {

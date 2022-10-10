@@ -1,12 +1,9 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 
 
@@ -18,19 +15,21 @@ import pp.muza.monopoly.model.Player;
 @EqualsAndHashCode(callSuper = true)
 public class ReceiveMoney extends Income {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReceiveMoney.class);
-
     /**
      * The sender of the coins.
      */
     private final Player sender;
 
-    protected ReceiveMoney(String name, ActionType actionType, int priority, int value, Player sender) {
+    protected ReceiveMoney(String name, int priority, int value, Player sender) {
         super(name, priority, value);
         this.sender = sender;
     }
 
     ReceiveMoney(int number, Player sender) {
-        this("Receive Money", ActionType.OBLIGATION, HIGHEST_PRIORITY, number, sender);
+        this("Receive Money", HIGHEST_PRIORITY, number, sender);
+    }
+
+    public static ActionCard of(int number, Player sender) {
+        return new ReceiveMoney(number, sender);
     }
 }

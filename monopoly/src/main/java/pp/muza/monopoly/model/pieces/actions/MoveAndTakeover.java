@@ -20,12 +20,16 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public final class MoveAndTakeover extends MoveTo {
 
-    MoveAndTakeover(int landId) {
-        super("Move and Takeover", ActionType.CHOOSE, HIGHEST_PRIORITY, landId);
+    MoveAndTakeover(int position) {
+        super("Move and Takeover", ActionType.CHOOSE, HIGHEST_PRIORITY, position);
+    }
+
+    public static ActionCard of(int position) {
+        return new MoveAndTakeover(position);
     }
 
     @Override
     protected List<ActionCard> onArrival(Turn turn) {
-        return ImmutableList.of(new Takeover(landId), new EndTurn());
+        return ImmutableList.of(new Takeover(position), new EndTurn());
     }
 }

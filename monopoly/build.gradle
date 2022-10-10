@@ -27,6 +27,8 @@ dependencies {
     implementation libs.logback
     compileOnly libs.lombok
     annotationProcessor libs.lombok
+
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
 }
 
 tasks.named('test') {

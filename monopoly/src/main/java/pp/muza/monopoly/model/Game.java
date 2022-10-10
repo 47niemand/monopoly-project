@@ -1,12 +1,12 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.game.TurnImpl;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Game API for engine.
@@ -49,13 +49,12 @@ public interface Game {
     /**
      * Buys the property at the given position for the player.
      *
-     * @param player the player.
-     * @param landId the property to buy.
-     * @throws GameException if there are some errors (e.g. someone already owns the
-     *                       landId).
+     * @param player   the player.
+     * @param position the property to buy.
+     * @throws GameException if there are some errors (e.g. someone already owns the property).
      * @throws BankException if the player doesn't have enough coins.
      */
-    void buyProperty(Player player, int landId) throws GameException, BankException;
+    void buyProperty(Player player, int position) throws GameException, BankException;
 
     /**
      * Leaves the jail.
@@ -68,13 +67,12 @@ public interface Game {
     /**
      * Sales a property at the given position to the bank.
      *
-     * @param player the player.
-     * @param landId the property.
-     * @throws GameException if there are some errors (e.g. the landId is not owned
-     *                       by the player).
+     * @param player   the player.
+     * @param position the property.
+     * @throws GameException if there are some errors (e.g. the player does not own the property).
      * @throws BankException if a player cannot receive the coins.
      */
-    void doContract(Player player, int landId) throws BankException, GameException;
+    void doContract(Player player, int position) throws BankException, GameException;
 
     /**
      * searches for the land's id with the given name.
@@ -107,15 +105,15 @@ public interface Game {
     /**
      * Trade a property between two players.
      *
-     * @param buyer  the player who is buying the property.
-     * @param seller the player who is selling the property.
-     * @param landId the property to trade.
-     * @throws GameException if there are some errors (e.g. the landId is not owned
+     * @param buyer    the player who is buying the property.
+     * @param seller   the player who is selling the property.
+     * @param position the property to trade.
+     * @throws GameException if there are some errors (e.g. the property is not owned
      *                       by the sale player).
      * @throws BankException if operation fails (e.g. if the player doesn't have
      *                       enough coins).
      */
-    void tradeProperty(Player buyer, Player seller, int landId) throws BankException, GameException;
+    void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException;
 
     /**
      * Get the number of coins needed to cover the rent.
@@ -239,5 +237,4 @@ public interface Game {
      */
     void holdTurn(TurnImpl turn) throws GameException;
 
-    ;
 }

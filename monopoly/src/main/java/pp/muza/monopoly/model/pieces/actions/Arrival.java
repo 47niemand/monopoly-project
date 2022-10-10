@@ -33,13 +33,17 @@ public class Arrival extends BaseActionCard {
 
     protected final int position;
 
-    protected Arrival(String name, int position) {
+     Arrival(String name, int position) {
         super(name, Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.position = position;
     }
 
     Arrival(int position) {
         this("Arrival", position);
+    }
+
+    public static ActionCard of(int position) {
+        return new Arrival(position);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class Arrival extends BaseActionCard {
                     result = ImmutableList.of(new Buy(position));
                 } else if (owner != turn.getPlayer()) {
                     LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer().getName(), owner.getName(), land.getName());
-                    result = ImmutableList.of(new PayRent(owner, turn.getRent(position), position));
+                    result = ImmutableList.of(new PayRent(turn.getRent(position), owner, position));
                 } else {
                     LOG.info("Property {} is owned by player, nothing to do", land.getName());
                     result = ImmutableList.of();

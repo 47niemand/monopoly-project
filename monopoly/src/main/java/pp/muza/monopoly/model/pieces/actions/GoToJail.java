@@ -29,6 +29,10 @@ public final class GoToJail extends BaseActionCard {
         super("Go to Jail", Action.GO_TO_JAIL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
+    public static ActionCard of() {
+        return new GoToJail();
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {

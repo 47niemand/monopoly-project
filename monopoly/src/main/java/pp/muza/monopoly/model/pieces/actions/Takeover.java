@@ -14,6 +14,7 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.lands.LandType;
 
 
 /**
@@ -34,24 +35,25 @@ public final class Takeover extends Arrival {
         super("Takeover", position);
     }
 
+    public static ActionCard of(int position) {
+        return new Takeover(position);
+    }
+
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         Land land = turn.getLand(position);
         List<ActionCard> result;
-        switch (land.getType()) {
-            case PROPERTY:
-                Player owner = turn.getPropertyOwner(position);
-                if (owner == null || owner != turn.getPlayer()) {
-                    LOG.info("No one owns the {}, {} can purchase it", land.getName(), turn.getPlayer().getName());
-                    result = ImmutableList.of(new Buy(position));
-                } else {
-                    LOG.info("Property {} is owned by player, nothing to do", land.getName());
-                    result = ImmutableList.of();
-                }
-                break;
-            default:
+        if (land.getType() == LandType.PROPERTY) {
+            Player owner = turn.getPropertyOwner(position);
+            if (owner != turn.getPlayer()) {
+                LOG.info("Player {} is buying property {}.", turn.getPlayer().getName(), land.getName());
+                result = ImmutableList.of(new Buy(position));
+            } else {
+                LOG.info("Property {} is owned by player, nothing to do", land.getName());
                 result = ImmutableList.of();
-                break;
+            }
+        } else {
+            result = ImmutableList.of();
         }
         return result;
     }

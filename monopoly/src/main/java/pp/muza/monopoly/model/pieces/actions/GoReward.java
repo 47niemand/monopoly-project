@@ -1,11 +1,9 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import pp.muza.monopoly.model.ActionCard;
 
 
 /**
@@ -16,9 +14,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public final class GoReward extends Income {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GoReward.class);
+    GoReward(int value) {
+        super("Go Reward", HIGHEST_PRIORITY, value);
+    }
 
-    GoReward(int number) {
-        super("Go Reward", HIGHEST_PRIORITY, number);
+    public static ActionCard of(int value) {
+        return new GoReward(value);
     }
 }

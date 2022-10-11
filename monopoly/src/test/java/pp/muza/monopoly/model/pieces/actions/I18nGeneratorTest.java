@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import org.apache.commons.text.WordUtils;
 import org.junit.jupiter.api.Test;
-
 import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.TurnError;
@@ -32,6 +31,10 @@ public class I18nGeneratorTest {
         LandType[] landTypes = LandType.values();
         for (LandType value : landTypes) {
             System.out.println(value.name() + "=" + normalizeValue(value.name()));
+        }
+        System.out.println("# Land names");
+        for (LandType value : LandType.values()) {
+            System.out.println(value.getAClass().getSimpleName() + "=" + normalizeValue(value.getAClass().getSimpleName()));
         }
         Action[] actions = Action.values();
         System.out.println("# Actions");

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -17,10 +19,12 @@ import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
 import pp.muza.monopoly.model.pieces.actions.Buy;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.EndTurn;
+import pp.muza.monopoly.model.pieces.actions.JailFine;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.actions.RentRevenue;
 import pp.muza.monopoly.strategy.ObedientStrategy;
@@ -29,7 +33,6 @@ class TurnImplTest {
 
     @Test
     void getOutOfJail() throws GameException, TurnException {
-        // test if the game starts
 
         // setup
         Player player1 = new Player("player1");
@@ -40,13 +43,17 @@ class TurnImplTest {
         assertFalse(game.isGameInProgress());
         game.start();
 
+        game.baseGame.getBank().set(player1, 0);
         game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
         game.baseGame.sendCard(player1, game.baseGame.pickFortuneCard(Chance.GET_OUT_OF_JAIL_FREE));
         PlayTurn turn1 = game.getTurn();
-        while (!turn1.isFinished()) {
-            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
-            turn1.playCard(card);
-        }
+        ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+        turn1.playCard(card);
+
+        // check if there is new_turn card in the player's hand
+        assertEquals(1, game.baseGame.playerData(player1).getCards().size());
+        assertEquals(Action.NEW_TURN, game.baseGame.playerData(player1).getCards().get(0).getAction());
+        // check if the player is out of jail
         assertEquals(PlayerStatus.IN_GAME, game.getPlayerInfo(player1).getStatus());
     }
 
@@ -65,13 +72,22 @@ class TurnImplTest {
         game.start();
 
         game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
+        game.baseGame.getBank().set(player1, game.baseGame.getGame().getJailFine());
 
         PlayTurn turn1 = game.getTurn();
-        while (!turn1.isFinished()) {
-            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
-            turn1.playCard(card);
-        }
+        ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+        turn1.playCard(card);
+
+        List<ActionCard> activeCards = game.baseGame.playerData(player1).getActiveCards();
+
+        assertEquals(1, activeCards.size());
+        assertEquals(Action.DEBT, activeCards.get(0).getAction());
+        assertTrue(activeCards.get(0) instanceof JailFine);
+
+        turn1.playCard(activeCards.get(0));
+
         assertEquals(PlayerStatus.IN_GAME, game.getPlayerInfo(player1).getStatus());
+        assertEquals(0, game.getBalance(player1));
     }
 
     @Test
@@ -109,8 +125,6 @@ class TurnImplTest {
         game.getTurn().endTurn();
         assertThrows(GameException.class, game::getTurn);
         assertFalse(game.isGameInProgress());
-
-
     }
 
     @Test

@@ -10,7 +10,7 @@ import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
-public class i18nGenerator {
+public class I18nGeneratorTest {
 
     static String normalizeValue(String s) {
         return WordUtils.capitalize(s.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase().replaceAll("_", " "));
@@ -36,9 +36,9 @@ public class i18nGenerator {
         Action[] actions = Action.values();
         System.out.println("# Actions");
         for (Action value : actions) {
-            value.getClassList().forEach(clazz -> {
+            for (Class<? extends BaseActionCard> clazz : value.getClassList()) {
                 System.out.println(clazz.getSimpleName() + "=" + normalizeValue(clazz.getSimpleName()));
-            });
+            }
         }
         System.out.println("# Chances");
         Chance[] chances = Chance.values();
@@ -58,6 +58,5 @@ public class i18nGenerator {
         for (GameError value : gameErrors) {
             System.out.println(value.name() + "=" + value.getMessage());
         }
-
     }
 }

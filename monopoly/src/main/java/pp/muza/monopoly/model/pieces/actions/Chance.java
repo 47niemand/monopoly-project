@@ -50,7 +50,7 @@ public enum Chance {
      * Move forward one space or take another chance card.
      */
     MOVE_FORWARD_ONE_SPACE(false),
-    /*
+    /**
      * Move forward up 5 spaces. Get ahead up to five spaces.
      */
     MOVE_FORWARD_UP_TO_5_SPACES(false),
@@ -76,7 +76,7 @@ public enum Chance {
     GIVE_THIS_CARD_TO_A_PLAYER_4(false);
 
     /**
-     * true if the card is obligatory, false otherwise
+     * true if the card is keepable, false otherwise
      */
     @Getter
     private final boolean isKeepable;

@@ -19,10 +19,13 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * This card spawns action cards for the player, when player arrives at a land.
- * - when player arrives at the property, depending on the property owner, player can buy it, or player should pay rent.
- * - when player arrives at the goto jail, player should move to jail.
- * - when player arrives at the chance, player should draw a card.
- * - etc.
+ * <p>For example:
+ * <ul>
+ * <li>when player arrives at the property, depending on the property owner, player can buy it, or player should pay rent.</li>
+ * <li>when player arrives at the goto jail, player should move to jail.</li>
+ * <li>when player arrives at the chance, player should draw a card.</li>
+ * <li>etc.</li>
+ * </ul>
  */
 @Getter
 @ToString(callSuper = true)
@@ -33,7 +36,7 @@ public class Arrival extends BaseActionCard {
 
     protected final int position;
 
-     Arrival(int position) {
+    Arrival(int position) {
         super(Action.ARRIVAL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
         this.position = position;
     }

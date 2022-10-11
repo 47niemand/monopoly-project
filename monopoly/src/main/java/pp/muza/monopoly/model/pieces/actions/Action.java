@@ -7,6 +7,9 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import pp.muza.monopoly.model.Fortune;
 
+/**
+ * This class represents an action that can be executed by a player.
+ */
 public enum Action {
     /**
      * Player arrives to a land and should use this action card.
@@ -17,9 +20,10 @@ public enum Action {
      */
     BUY(ImmutableList.of(Buy.class)),
     /**
-     * chance; this is a specific card that stores the chance pile of the game.
-     * It should be returned to the game when the card is used.
+     * This is a specific card that stores the chance pile of the game.
+     * <p>It should be returned to the game when the card is used.
      * A Card with this type must implement {@link Fortune} interface.
+     * </p>
      */
     CHANCE(ImmutableList.of(FortuneCard.class)),
     /**
@@ -43,7 +47,7 @@ public enum Action {
      */
     INCOME(ImmutableList.of(Income.class, GoReward.class, ReceiveMoney.class, RentRevenue.class)),
     /**
-     * Move by numbing of steps.
+     * Move forward by the number of steps.
      */
     MOVE(ImmutableList.of(Move.class, OptionMove.class)),
     /**
@@ -61,10 +65,9 @@ public enum Action {
     /**
      * Player pays the given number of coins to other players or the bank.
      */
-    DEBT(ImmutableList.of(PayRent.class, Gift.class,  JailFine.class, Tax.class)),
+    DEBT(ImmutableList.of(PayRent.class, Gift.class, JailFine.class, Tax.class)),
     /**
-     * roll dice get random number.
-     * this card can be added only before the {@link Action#END_TURN} card.
+     * Roll dice get random number.
      */
     ROLL_DICE(ImmutableList.of(RollDice.class));
 

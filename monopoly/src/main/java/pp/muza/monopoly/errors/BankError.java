@@ -1,7 +1,9 @@
 package pp.muza.monopoly.errors;
 
 public enum BankError {
-    // TODO: add java doc
+    /**
+     * Player has not enough money to pay.
+     */
     NOT_ENOUGH_COINS("Not enough coins");
 
     private final String message;

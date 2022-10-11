@@ -1,10 +1,10 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.Map;
-
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameException;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Game API for players.
@@ -82,7 +82,8 @@ public interface PlayGame {
     /**
      * Returns status of the player.
      *
-     * @return the player status.
+     * @param player the player.
+     * @return the player's status.
      */
     PlayerStatus getPlayerStatus(Player player);
 

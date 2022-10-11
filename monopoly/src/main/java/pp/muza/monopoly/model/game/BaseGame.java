@@ -315,9 +315,19 @@ public abstract class BaseGame {
         return game;
     }
 
+
     public List<ActionCard> getActiveCards(Player player) {
         PlayerData data = playerData.get(player);
 
+        /*
+          TODO: 11.10.2022
+           There is a scenario in which keepable cards with high priority are available for execution.
+           Actually, they can be executed depending on the player's state. For example,
+           if the player is not in jail, he can't use {@link Chance#GET_OUT_OF_JAIL_FREE}
+           to get out of jail. Currently, the player can try to use such cards only once a turn.
+           if cards cannot be used, they are moved to hold, until the next turn
+           - The solution is to check the player's state and filter out cards that can't be executed.
+         */
         return data.getActiveCards();
     }
 

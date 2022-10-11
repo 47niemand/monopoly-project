@@ -54,7 +54,7 @@ public class AppTexts {
     public static final String[] OTHER_INCOME_MSG = new String[]{resourceBundle.getString("OTHER_INCOME_MSG")};
     public static final String[] BUY_MSG = new String[]{resourceBundle.getString("BUY_MSG")};
 
-    public static String formatMessage(String[] array, Map<String, Object> params) {
+    public static String format(String[] array, Map<String, Object> params) {
         String text = array[(int) (Math.random() * array.length)];
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             text = text.replace("{" + entry.getKey() + "}", entry.getValue() == null ? "null" : entry.getValue().toString());

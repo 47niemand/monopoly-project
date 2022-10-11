@@ -50,14 +50,6 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         return new FortuneCard(chance);
     }
 
-    @Override
-    protected boolean canBeUsed(Turn turn) {
-        if (chance == Chance.GET_OUT_OF_JAIL_FREE) {
-            return turn.getPlayerStatus() == PlayerStatus.IN_JAIL;
-        }
-        return true;
-    }
-
     private static List<ActionCard> sendGiftCard(Turn turn, int playerId) throws TurnException {
         List<ActionCard> result = new ArrayList<>();
         List<Player> players = turn.getPlayers();

@@ -1,20 +1,23 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
-import java.util.List;
-
 /**
  * Base class for all action cards.
- * onExecute is a method that is executed when the card using.
+ * <p>
+ * {@link BaseActionCard#onExecute} is an abstract method that is executed when the card using.
  * It should be overridden by the subclasses.
+ * </p>
  */
 @Getter
 @ToString
@@ -49,11 +52,6 @@ public abstract class BaseActionCard implements ActionCard {
         this.action = action;
         this.type = type;
         this.priority = priority;
-    }
-
-    @SuppressWarnings("unused")
-    protected boolean canBeUsed(Turn turn) {
-        return true;
     }
 
     /**

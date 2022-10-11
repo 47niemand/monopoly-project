@@ -13,7 +13,7 @@ public final class Jail extends BaseLand {
     private final int fine;
 
     public Jail(int fine) {
-        super("Jail", LandType.JAIL);
+        super(Jail.class.getSimpleName(), LandType.JAIL);
         this.fine = fine;
     }
 }

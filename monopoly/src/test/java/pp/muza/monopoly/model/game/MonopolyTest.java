@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
@@ -29,7 +29,7 @@ class MonopolyTest {
 
     @Test
     void gameLoop() throws GameException, TurnException {
-        List<Player> players = IntStream.range(0, Meta.MAX_PLAYERS).mapToObj(i -> new Player("@Player" + (i + 1)))
+        List<Player> players = IntStream.range(0, Constants.MAX_PLAYERS).mapToObj(i -> new Player("@Player" + (i + 1)))
                 .collect(Collectors.toList());
         PlayGame game = new Monopoly(players);
         game.start();
@@ -41,7 +41,7 @@ class MonopolyTest {
             } else {
                 turn.endTurn();
             }
-            if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
+            if (game.getTurnNumber() > Constants.DEFAULT_MAX_TURNS) {
                 break;
             }
         }

@@ -16,7 +16,7 @@ import org.apache.commons.cli.ParseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import pp.muza.monopoly.app.stats.Statistics;
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
@@ -37,7 +37,7 @@ public class App {
     static final String OPT_VERBOSE = "verbose";
     static final String OPT_PLAYERS = "players";
     static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);
-    static int playerNumbers = Meta.DEFAULT_PLAYERS;
+    static int playerNumbers = Constants.DEFAULT_PLAYERS;
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
@@ -52,8 +52,8 @@ public class App {
             CommandLine cmd = parser.parse(options, args);
             if (cmd.hasOption(OPT_PLAYERS)) {
                 playerNumbers = Integer.parseInt(cmd.getOptionValue("players"));
-                if (playerNumbers < Meta.MIN_PLAYERS || playerNumbers > Meta.MAX_PLAYERS) {
-                    throw new IllegalArgumentException(String.format("Number of players must be between %s and %s", Meta.MIN_PLAYERS, Meta.MAX_PLAYERS));
+                if (playerNumbers < Constants.MIN_PLAYERS || playerNumbers > Constants.MAX_PLAYERS) {
+                    throw new IllegalArgumentException(String.format("Number of players must be between %s and %s", Constants.MIN_PLAYERS, Constants.MAX_PLAYERS));
                 }
                 System.out.println("Number of players: " + playerNumbers);
             }
@@ -109,7 +109,7 @@ public class App {
                 statistics.addTurnInfo(turnInfo);
                 Printer.printTurnInfo(game.getBoard(), turnInfo);
             }
-            if (game.getTurnNumber() > Meta.DEFAULT_MAX_TURNS) {
+            if (game.getTurnNumber() > Constants.DEFAULT_MAX_TURNS) {
                 break;
             }
         }

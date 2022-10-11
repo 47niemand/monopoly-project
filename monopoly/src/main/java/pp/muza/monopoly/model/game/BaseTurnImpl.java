@@ -5,7 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
@@ -113,7 +113,7 @@ public abstract class BaseTurnImpl implements Turn {
         for (Player guest : game().getPlayers()) {
             if (guest != player && !getPlayerStatus(guest).isFinal()) {
                 try {
-                    sendCard(guest, Gift.of(Meta.BIRTHDAY_GIFT_AMOUNT, player));
+                    sendCard(guest, Gift.of(Constants.BIRTHDAY_GIFT_AMOUNT, player));
                 } catch (TurnException e) {
                     LOG.error("Error while sending card to player {}", guest, e);
                     throw new RuntimeException(e);

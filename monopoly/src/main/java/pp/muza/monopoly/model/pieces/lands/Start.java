@@ -13,7 +13,7 @@ public final class Start extends BaseLand {
     private final int incomeTax;
 
     public Start(int incomeTax) {
-        super("Start", LandType.START);
+        super(Start.class.getSimpleName(), LandType.START);
         this.incomeTax = incomeTax;
     }
 }

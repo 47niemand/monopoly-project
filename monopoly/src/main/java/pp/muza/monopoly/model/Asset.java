@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model;
 
 import lombok.Getter;
+import pp.muza.monopoly.consts.Constants;
 
 /**
  * properties for a game board
@@ -11,67 +12,67 @@ public enum Asset {
     /**
      * Coffee Shop
      */
-    COFFEE_SHOP(1, PropertyColor.RED),
+    COFFEE_SHOP(Constants.PRICE_1, PropertyColor.RED),
     /**
      * Donut Shop
      */
-    DONUT_SHOP(1, PropertyColor.RED),
+    DONUT_SHOP(Constants.PRICE_1, PropertyColor.RED),
     /**
      * Bakery
      */
-    BAKERY(1, PropertyColor.ORANGE),
+    BAKERY(Constants.PRICE_1, PropertyColor.ORANGE),
     /**
      * Burger Joint
      */
-    BURGER_JOINT(1, PropertyColor.ORANGE),
+    BURGER_JOINT(Constants.PRICE_1, PropertyColor.ORANGE),
     /**
      * Library
      */
-    LIBRARY(2, PropertyColor.YELLOW),
+    LIBRARY(Constants.PRICE_2, PropertyColor.YELLOW),
     /**
      * Museum
      */
-    MUSEUM(2, PropertyColor.YELLOW),
+    MUSEUM(Constants.PRICE_2, PropertyColor.YELLOW),
     /**
      * Swimming Pool
      */
-    SWIMMING_POOL(2, PropertyColor.GREEN),
+    SWIMMING_POOL(Constants.PRICE_2, PropertyColor.GREEN),
     /**
      * Go-Karts Track
      */
-    GO_KARTS(2, PropertyColor.GREEN),
+    GO_KARTS(Constants.PRICE_2, PropertyColor.GREEN),
     /**
      * Movie Theater
      */
-    CINEMA(3, PropertyColor.BLUE),
+    CINEMA(Constants.PRICE_3, PropertyColor.BLUE),
     /**
      * Concert Hall
      */
-    THEATRE(3, PropertyColor.BLUE),
+    THEATRE(Constants.PRICE_3, PropertyColor.BLUE),
     /**
      * Pet Shop
      */
-    PET_SHOP(3, PropertyColor.INDIGO),
+    PET_SHOP(Constants.PRICE_3, PropertyColor.INDIGO),
     /**
      * Toy Store
      */
-    TOY_SHOP(3, PropertyColor.INDIGO),
+    TOY_SHOP(Constants.PRICE_3, PropertyColor.INDIGO),
     /**
      * Aquarium
      */
-    AQUARIUM(4, PropertyColor.VIOLET),
+    AQUARIUM(Constants.PRICE_4, PropertyColor.VIOLET),
     /**
      * Zoo
      */
-    THE_ZOO(4, PropertyColor.VIOLET),
+    THE_ZOO(Constants.PRICE_4, PropertyColor.VIOLET),
     /**
      * Park
      */
-    PARK_LANE(5, PropertyColor.RAINBOW),
+    PARK_LANE(Constants.PRICE_5, PropertyColor.RAINBOW),
     /**
      * Mayfair
      */
-    MAYFAIR(5, PropertyColor.RAINBOW);
+    MAYFAIR(Constants.PRICE_5, PropertyColor.RAINBOW);
 
     @Getter
     private final int price;

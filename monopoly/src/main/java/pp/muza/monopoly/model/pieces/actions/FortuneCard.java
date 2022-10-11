@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -108,13 +108,13 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
                     break;
                 case PRIZE:
-                    result.add(Income.of(Meta.PRIZE_AMOUNT));
+                    result.add(Income.of(Constants.PRIZE_AMOUNT));
                     break;
                 case BIRTHDAY:
                     result.add(BirthdayParty.of());
                     break;
                 case LUXURY_TAX:
-                    result.add(new Tax(Meta.LUXURY_TAX_AMOUNT));
+                    result.add(new Tax(Constants.LUXURY_TAX_AMOUNT));
                     break;
                 case ADVANCE_TO_GO:
                     result.add(MoveTo.of(turn.getStartPos()));

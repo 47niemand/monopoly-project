@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
@@ -19,14 +19,7 @@ import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
-import pp.muza.monopoly.model.pieces.actions.Buy;
-import pp.muza.monopoly.model.pieces.actions.Chance;
-import pp.muza.monopoly.model.pieces.actions.EndTurn;
-import pp.muza.monopoly.model.pieces.actions.JailFine;
-import pp.muza.monopoly.model.pieces.actions.NewTurn;
-import pp.muza.monopoly.model.pieces.actions.RentRevenue;
+import pp.muza.monopoly.model.pieces.actions.*;
 import pp.muza.monopoly.strategy.ObedientStrategy;
 
 class BaseTurnImplTest {
@@ -47,8 +40,7 @@ class BaseTurnImplTest {
         game.baseGame.playerData(player1).setStatus(PlayerStatus.IN_JAIL);
         game.baseGame.sendCard(player1, game.baseGame.pickFortuneCard(Chance.GET_OUT_OF_JAIL_FREE));
         PlayTurn turn1 = game.getTurn();
-        ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
-        turn1.playCard(card);
+        turn1.playCard(FortuneCard.of(Chance.GET_OUT_OF_JAIL_FREE));
 
         // check if there is new_turn card in the player's hand
         assertEquals(1, game.baseGame.playerData(player1).getCards().size());
@@ -193,7 +185,7 @@ class BaseTurnImplTest {
     void doBirthdayParty() throws GameException, TurnException {
 
         // Birthday party scenario:
-        // player1 has a birthday. Each player should pay him $1 (Meta.BIRTHDAY_GIFT_AMOUNT)
+        // player1 has a birthday. Each player should pay him $1 (Constants.BIRTHDAY_GIFT_AMOUNT)
 
         // setup
         Player player1 = new Player("player1");
@@ -258,6 +250,6 @@ class BaseTurnImplTest {
             assertTrue(turn5.isFinished());
         }
 
-        assertEquals(Meta.BIRTHDAY_GIFT_AMOUNT * 3, game.baseGame.getBank().getBalance(player1));
+        assertEquals(Constants.BIRTHDAY_GIFT_AMOUNT * 3, game.baseGame.getBank().getBalance(player1));
     }
 }

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
-import pp.muza.monopoly.consts.Meta;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameError;
@@ -63,7 +63,7 @@ public abstract class BaseGame {
     BaseTurn currentTurn;
     int currentPlayerIndex = -1;
     int turnNumber = 0;
-    int maxTurns = Meta.DEFAULT_MAX_TURNS;
+    int maxTurns = Constants.DEFAULT_MAX_TURNS;
     private boolean started = false;
 
     protected BaseGame(GameInfo gameInfo) {
@@ -121,7 +121,7 @@ public abstract class BaseGame {
             throw new IllegalArgumentException("Duplicate players");
         }
         for (Player player : playerData.keySet()) {
-            bank.set(player, Meta.STARTING_AMOUNT);
+            bank.set(player, Constants.STARTING_AMOUNT);
         }
     }
 
@@ -287,10 +287,10 @@ public abstract class BaseGame {
     }
 
     public void start() throws GameException {
-        if (players.size() < Meta.MIN_PLAYERS) {
+        if (players.size() < Constants.MIN_PLAYERS) {
             throw new GameException(GameError.NOT_ENOUGH_PLAYERS);
         }
-        if (players.size() > Meta.MAX_PLAYERS) {
+        if (players.size() > Constants.MAX_PLAYERS) {
             throw new GameException(GameError.TOO_MANY_PLAYERS);
         }
         if (started) {

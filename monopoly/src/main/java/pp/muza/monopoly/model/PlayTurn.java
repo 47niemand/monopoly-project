@@ -6,6 +6,8 @@ import pp.muza.monopoly.errors.TurnException;
 import java.util.List;
 
 /**
+ * Turn API for the player.
+ *
  * @author dmytromuza
  */
 public interface PlayTurn {

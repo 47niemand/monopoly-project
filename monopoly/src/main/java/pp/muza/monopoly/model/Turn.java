@@ -8,9 +8,9 @@ import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 
 /**
- * This interface represents a turn in the game.
- * There are methods to change the player status, move to position, to get the
- * land, to get the owner of a property etc.
+ * Turn API for the engine.
+ * <p>There are methods to change the player status, move to position, to get the
+ * land, to get the owner of a property etc.</p>
  *
  * @author dmytromuza
  */

@@ -3,6 +3,8 @@ package pp.muza.monopoly.model;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
+ * The Land interface.
+ *
  * @author dmytromuza
  */
 public interface Land {

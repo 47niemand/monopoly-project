@@ -2,6 +2,9 @@ package pp.muza.monopoly.model;
 
 import pp.muza.monopoly.model.pieces.actions.Chance;
 
+/**
+ * @author dmytromuza
+ */
 public interface Fortune extends ActionCard {
 
     /**

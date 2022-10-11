@@ -8,6 +8,8 @@ import pp.muza.monopoly.model.Player;
 
 /**
  * A player receives coins from this card due to a rent.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

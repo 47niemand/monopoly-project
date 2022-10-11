@@ -29,7 +29,7 @@ import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.actions.RentRevenue;
 import pp.muza.monopoly.strategy.ObedientStrategy;
 
-class TurnImplTest {
+class BaseTurnImplTest {
 
     @Test
     void getOutOfJail() throws GameException, TurnException {

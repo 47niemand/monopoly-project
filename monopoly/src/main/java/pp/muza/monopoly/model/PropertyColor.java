@@ -1,5 +1,9 @@
 package pp.muza.monopoly.model;
 
+/**
+ * @author dmytromuza
+ */
+
 public enum PropertyColor {
     /**
      * Blue color.

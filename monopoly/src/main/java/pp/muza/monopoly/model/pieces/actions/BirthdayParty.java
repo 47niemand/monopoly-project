@@ -17,6 +17,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * Everyone gives you a present.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

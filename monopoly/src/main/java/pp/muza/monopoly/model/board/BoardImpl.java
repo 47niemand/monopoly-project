@@ -8,6 +8,16 @@ import lombok.Value;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Land;
 
+/**
+ * Board implementation.
+ * <ul>
+ *     <li>The board is a list of lands.</li>
+ *     <li>The board is a cycle.</li>
+ *     <li>The start position is 0.</li>
+ * </ul>
+ *
+ * @author dmytromuza
+ */
 @Value
 public class BoardImpl implements Board {
 

@@ -20,6 +20,9 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.bank.BankImpl;
 
+/**
+ * @author dmytromuza
+ */
 public class Monopoly implements PlayGame {
 
     final BaseGame baseGame;

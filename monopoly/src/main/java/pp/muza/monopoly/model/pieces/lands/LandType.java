@@ -2,6 +2,10 @@ package pp.muza.monopoly.model.pieces.lands;
 
 import lombok.Getter;
 
+/**
+ * @author dmytromuza
+ */
+
 public enum LandType {
     /**
      * Chance card.

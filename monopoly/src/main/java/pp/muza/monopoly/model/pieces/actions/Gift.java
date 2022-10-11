@@ -9,6 +9,8 @@ import pp.muza.monopoly.model.Player;
 
 /**
  * A player sends a gift to another player.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

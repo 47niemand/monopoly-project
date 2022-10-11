@@ -18,6 +18,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A base class for paying coins to another player or bank.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

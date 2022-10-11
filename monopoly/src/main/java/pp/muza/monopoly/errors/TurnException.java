@@ -2,6 +2,8 @@ package pp.muza.monopoly.errors;
 
 /**
  * This exception is thrown when a player tries to do something that is not allowed during his turn.
+ *
+ * @author dmytromuza
  */
 public final class TurnException extends Exception {
 

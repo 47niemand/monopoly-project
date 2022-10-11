@@ -7,6 +7,8 @@ import pp.muza.monopoly.model.ActionCard;
 
 /**
  * A player receives coins from the card.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

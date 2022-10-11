@@ -4,6 +4,8 @@ import lombok.Getter;
 
 /**
  * properties for a game board
+ *
+ * @author dmytromuza
  */
 public enum Asset {
     /**

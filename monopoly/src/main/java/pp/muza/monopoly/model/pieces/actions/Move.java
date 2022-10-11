@@ -19,6 +19,8 @@ import pp.muza.monopoly.model.Turn;
 /**
  * A player specifies the distance to take to move to a new location on the
  * board.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

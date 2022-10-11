@@ -21,18 +21,20 @@ import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
 
+/**
+ * Base implementation of the {@link PlayTurn} interface.
+ * Marked as abstract because it is not intended to be used directly.
+ *
+ * @author dmytromuza
+ */
 public abstract class BaseTurn implements PlayTurn {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BaseTurn.class);
     public static final int MAX_STEPS_PER_TURN = 30;
-
+    private static final Logger LOG = LoggerFactory.getLogger(BaseTurn.class);
     private final Player player;
     private final int turnNumber;
-    private boolean finished = false;
     private final List<ActionCard> usedCards = new ArrayList<>();
-    private int steps = 0;
-
-    private final Turn turn = new TurnImpl() {
+    private final Turn turn = new BaseTurnImpl() {
 
         @Override
         protected Game game() {
@@ -44,6 +46,8 @@ public abstract class BaseTurn implements PlayTurn {
             return player;
         }
     };
+    private boolean finished = false;
+    private int steps = 0;
 
     BaseTurn(Player player, int turnNumber) {
         this.player = player;

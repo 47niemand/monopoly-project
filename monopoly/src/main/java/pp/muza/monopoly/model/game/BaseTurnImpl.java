@@ -23,11 +23,13 @@ import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Gift;
 
 /**
- * The Turn interface implementation.
+ * The Turn interface implementation. The class is not intended to be used directly.
+ *
+ * @author dmytromuza
  */
-public abstract class TurnImpl implements Turn {
+public abstract class BaseTurnImpl implements Turn {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TurnImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseTurnImpl.class);
 
 
     protected abstract Game game();

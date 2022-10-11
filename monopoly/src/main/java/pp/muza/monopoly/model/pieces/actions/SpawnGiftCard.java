@@ -17,7 +17,9 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * Buy a free property. If all are owned, purchase from any player.
- **/
+ *
+ * @author dmytromuza
+ */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

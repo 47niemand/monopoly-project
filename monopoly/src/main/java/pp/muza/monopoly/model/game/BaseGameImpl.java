@@ -27,12 +27,13 @@ import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
- * The Game interface implementation.
- * Marked as abstract to prevent instantiation of this class.
+ * The Game interface implementation. Marked as abstract to prevent instantiation of this class.
+ *
+ * @author dmytromuza
  */
-public abstract class GameImpl implements Game {
+public abstract class BaseGameImpl implements Game {
 
-    static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
+    static final Logger LOG = LoggerFactory.getLogger(BaseGameImpl.class);
 
     protected abstract BaseGame baseGame();
 
@@ -268,7 +269,7 @@ public abstract class GameImpl implements Game {
     }
 
     @Override
-    public void holdTurn(TurnImpl turn) throws GameException {
+    public void holdTurn(BaseTurnImpl turn) throws GameException {
         baseGame().holdTurn(turn);
     }
 

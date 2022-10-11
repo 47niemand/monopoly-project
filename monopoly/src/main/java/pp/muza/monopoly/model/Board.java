@@ -2,6 +2,11 @@ package pp.muza.monopoly.model;
 
 import java.util.List;
 
+/**
+ * The Board interface.
+ *
+ * @author dmytromuza
+ */
 public interface Board {
 
     /**

@@ -45,7 +45,7 @@ final class CardUtils {
         return properties.stream()
                 .peek(entry -> {
                     assert entry.getValue() == turn.getLand(entry.getIndex());
-                } )
+                })
                 .map(entry -> new Contract(entry.getIndex()))
                 .collect(Collectors.toList());
     }

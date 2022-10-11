@@ -18,6 +18,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A player has to pay coins to the property owner on which player is standing.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

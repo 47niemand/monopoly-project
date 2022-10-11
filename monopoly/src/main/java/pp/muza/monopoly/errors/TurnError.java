@@ -1,5 +1,9 @@
 package pp.muza.monopoly.errors;
 
+/**
+ * @author dmytromuza
+ */
+
 public enum TurnError {
     /**
      * Player is not in jail, cannot pay tax

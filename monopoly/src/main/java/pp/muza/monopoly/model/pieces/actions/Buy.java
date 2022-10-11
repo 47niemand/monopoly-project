@@ -25,6 +25,8 @@ import pp.muza.monopoly.model.Turn;
  * If a player hasn't enough coins, he can contract his property to earn coins.
  * Buying properties is compulsory, so if the player cannot buy the property,
  * he loses the game.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

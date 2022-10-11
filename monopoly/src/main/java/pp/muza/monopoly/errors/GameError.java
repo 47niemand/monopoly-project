@@ -1,5 +1,9 @@
 package pp.muza.monopoly.errors;
 
+/**
+ * @author dmytromuza
+ */
+
 public enum GameError {
     /**
      * Game already started

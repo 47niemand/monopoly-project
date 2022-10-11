@@ -22,6 +22,8 @@ import pp.muza.monopoly.model.Turn;
  * A player who owns the property can sale it to get a profit.
  * This card spawns when the player has no enough coins to pay obligations.
  * </p>
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

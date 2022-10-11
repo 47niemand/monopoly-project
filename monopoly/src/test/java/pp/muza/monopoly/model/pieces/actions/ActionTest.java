@@ -30,7 +30,6 @@ class ActionTest {
     final int THREE = 3;
 
 
-
     @Test
     @SuppressWarnings("unchecked")
     public void testRules() throws JsonProcessingException {

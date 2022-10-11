@@ -2,6 +2,12 @@ package pp.muza.monopoly.model;
 
 import lombok.Getter;
 
+/**
+ * The ActionType enum.
+ *
+ * @author dmytromuza
+ */
+
 public enum ActionType {
     /**
      * The CHOOSE is type of cards can be used only once.

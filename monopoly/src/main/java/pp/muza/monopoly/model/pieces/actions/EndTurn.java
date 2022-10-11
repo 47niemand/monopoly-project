@@ -18,6 +18,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * This card finishes the turn.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

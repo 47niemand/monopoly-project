@@ -14,6 +14,8 @@ import pp.muza.monopoly.model.ActionCard;
  * The player can currently choose from the active action cards {@link TurnInfo#activeCards} that are shown to them.
  * Player can see their own data {@link TurnInfo#playerInfo}.
  * </p>
+ *
+ * @author dmytromuza
  */
 
 @Value

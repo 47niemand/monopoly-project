@@ -17,6 +17,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A player receives coins from this card.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

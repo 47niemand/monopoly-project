@@ -26,6 +26,8 @@ import pp.muza.monopoly.model.Turn;
 /**
  * This is a specific card that stores the chance pile of the game.
  * It should be returned to the game when the card is used.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

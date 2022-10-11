@@ -11,6 +11,8 @@ import pp.muza.monopoly.model.Player;
 
 /**
  * This class represents the state of the game.
+ *
+ * @author dmytromuza
  */
 @Value
 @Builder

@@ -7,6 +7,8 @@ import pp.muza.monopoly.model.pieces.actions.Action;
  * The action card has a name, an action  {@link Action} (like buying a property, paying rent, etc.),
  * a type of card {@link ActionType} (like optional, obligation, keepable etc.),
  * and a priority.
+ *
+ * @author dmytromuza
  */
 public interface ActionCard {
 

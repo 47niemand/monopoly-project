@@ -1,16 +1,18 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * This interface represents a turn in the game.
  * There are methods to change the player status, move to position, to get the
  * land, to get the owner of a property etc.
+ *
+ * @author dmytromuza
  */
 public interface Turn {
 

@@ -9,6 +9,8 @@ import pp.muza.monopoly.model.Fortune;
 
 /**
  * This class represents an action that can be executed by a player.
+ *
+ * @author dmitro.muza
  */
 public enum Action {
     /**

@@ -1,6 +1,9 @@
 package pp.muza.monopoly.model;
 
 
+/**
+ * @author dmytromuza
+ */
 public interface Property extends Land {
 
     /**

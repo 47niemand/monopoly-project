@@ -4,6 +4,8 @@ import lombok.Getter;
 
 /**
  * There are chances cards in the game.
+ *
+ * @author dmytromuza
  */
 public enum Chance {
     /**

@@ -8,6 +8,8 @@ import pp.muza.monopoly.model.ActionType;
 
 /**
  * A base class for all actions that are related to payment to the bank.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

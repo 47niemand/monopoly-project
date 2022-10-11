@@ -14,6 +14,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * This card starts the new turn.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

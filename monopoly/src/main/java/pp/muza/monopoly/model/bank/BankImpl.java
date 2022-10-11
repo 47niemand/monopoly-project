@@ -11,6 +11,9 @@ import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
 
+/**
+ * @author dmytromuza
+ */
 public class BankImpl implements Bank {
 
     private static final Logger LOG = LoggerFactory.getLogger(BankImpl.class);
@@ -31,7 +34,7 @@ public class BankImpl implements Bank {
 
     @Override
     public void withdraw(Player player, int value) throws BankException {
-        LOG.info("Withdrawing {} coin(s) from player {}", value,  player.getName());
+        LOG.info("Withdrawing {} coin(s) from player {}", value, player.getName());
         if (playerCoins.get(player).compareTo(value) < 0) {
             LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), value, playerCoins.get(player));
             throw new BankException(BankError.NOT_ENOUGH_COINS);

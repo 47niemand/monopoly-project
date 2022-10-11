@@ -29,6 +29,8 @@ import pp.muza.monopoly.strategy.DefaultStrategy;
 
 /**
  * This is a simple Monopoly game simulator
+ *
+ * @author dmytromuza
  */
 public class App {
 

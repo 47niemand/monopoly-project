@@ -16,15 +16,18 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
+/**
+ * @author dmytromuza
+ */
 public final class PlayerData {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerData.class);
 
     final Player player;
-    PlayerStatus status;
-    int position;
     private final List<ActionCard> cards = new ArrayList<>();
     private final List<ActionCard> hold = new ArrayList<>();
+    PlayerStatus status;
+    int position;
 
     public PlayerData(Player player) {
         this.player = player;
@@ -38,8 +41,26 @@ public final class PlayerData {
         return this.status;
     }
 
+    public void setStatus(PlayerStatus status) {
+        if (this.status == null) {
+            LOG.debug("{}: set status to {}", player.getName(), status);
+        } else {
+            LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
+        }
+        this.status = status;
+    }
+
     public int getPosition() {
         return this.position;
+    }
+
+    public void setPosition(int position) {
+        if (this.position != position) {
+            LOG.info("{} is moving from position {} to position {}", this.player.getName(), this.position, position);
+            this.position = position;
+        } else {
+            LOG.info("{} at position {}", this.player.getName(), this.position);
+        }
     }
 
     public List<ActionCard> getCards() {
@@ -95,7 +116,6 @@ public final class PlayerData {
         return result;
     }
 
-
     /**
      * Adds the card to the player's hand. card can be added only if the player does not have it already.
      *
@@ -132,24 +152,6 @@ public final class PlayerData {
         cards.removeAll(removed);
         hold.removeAll(removed);
         return result;
-    }
-
-    public void setStatus(PlayerStatus status) {
-        if (this.status == null) {
-            LOG.debug("{}: set status to {}", player.getName(), status);
-        } else {
-            LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
-        }
-        this.status = status;
-    }
-
-    public void setPosition(int position) {
-        if (this.position != position) {
-            LOG.info("{} is moving from position {} to position {}", this.player.getName(), this.position, position);
-            this.position = position;
-        } else {
-            LOG.info("{} at position {}", this.player.getName(), this.position);
-        }
     }
 
     @Override

@@ -3,6 +3,9 @@ package pp.muza.monopoly.app;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * @author dmytromuza
+ */
 public class AppTexts {
 
     public static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);

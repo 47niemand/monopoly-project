@@ -10,6 +10,9 @@ import java.util.Set;
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.model.Player;
 
+/**
+ * @author dmytromuza
+ */
 public class Statistics {
 
     private final List<TurnInfo> turns = new ArrayList<>();

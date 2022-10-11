@@ -2,6 +2,8 @@ package pp.muza.monopoly.model;
 
 /**
  * Players can be in one of these states.
+ *
+ * @author dmytromuza
  */
 public enum PlayerStatus {
     /**

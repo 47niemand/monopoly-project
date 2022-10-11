@@ -12,6 +12,9 @@ import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Strategy;
 
+/**
+ * @author dmytromuza
+ */
 public class DefaultStrategy implements Strategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultStrategy.class);

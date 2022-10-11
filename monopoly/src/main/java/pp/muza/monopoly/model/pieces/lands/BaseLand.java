@@ -8,6 +8,9 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import pp.muza.monopoly.model.Land;
 
+/**
+ * @author dmytromuza
+ */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString

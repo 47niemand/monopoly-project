@@ -1,5 +1,9 @@
 package pp.muza.monopoly.errors;
 
+/**
+ * @author dmytromuza
+ */
+
 public enum BankError {
     /**
      * Player has not enough money to pay.

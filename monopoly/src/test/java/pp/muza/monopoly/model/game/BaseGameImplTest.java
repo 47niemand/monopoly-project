@@ -12,7 +12,7 @@ import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Player;
 
-class GameImplTest {
+class BaseGameImplTest {
 
     @Test
     void moveTo() throws GameException {

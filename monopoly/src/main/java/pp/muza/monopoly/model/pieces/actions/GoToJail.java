@@ -17,6 +17,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * This card lets a player go to jail.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

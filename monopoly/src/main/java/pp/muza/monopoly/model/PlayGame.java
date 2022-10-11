@@ -8,6 +8,8 @@ import java.util.Map;
 
 /**
  * Game API for players.
+ *
+ * @author dmytromuza
  */
 public interface PlayGame {
 

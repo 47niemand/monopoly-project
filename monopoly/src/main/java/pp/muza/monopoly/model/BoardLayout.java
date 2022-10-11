@@ -28,6 +28,11 @@ import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.Parking;
 import pp.muza.monopoly.model.pieces.lands.Start;
 
+/**
+ * The Board layout.
+ *
+ * @author dmytromuza
+ */
 public final class BoardLayout {
 
     /*@formatter:off

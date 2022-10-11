@@ -7,6 +7,9 @@ import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.PropertyColor;
 
+/**
+ * @author dmytromuza
+ */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)

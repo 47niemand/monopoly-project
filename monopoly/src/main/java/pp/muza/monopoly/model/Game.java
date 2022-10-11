@@ -1,15 +1,17 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.game.TurnImpl;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.model.game.BaseTurnImpl;
+
 /**
  * Game API for engine.
+ *
+ * @author dmytromuza
  */
 public interface Game {
 
@@ -235,6 +237,6 @@ public interface Game {
      * @param turn the turn to hold
      * @throws GameException if the turn is not the current turn
      */
-    void holdTurn(TurnImpl turn) throws GameException;
+    void holdTurn(BaseTurnImpl turn) throws GameException;
 
 }

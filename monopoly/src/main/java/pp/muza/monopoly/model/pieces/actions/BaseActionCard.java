@@ -18,6 +18,8 @@ import pp.muza.monopoly.model.Turn;
  * {@link BaseActionCard#onExecute} is an abstract method that is executed when the card using.
  * It should be overridden by the subclasses.
  * </p>
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString

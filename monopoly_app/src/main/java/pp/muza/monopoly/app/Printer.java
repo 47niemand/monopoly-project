@@ -1,11 +1,5 @@
 package pp.muza.monopoly.app;
 
-import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.data.TurnInfo;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.pieces.actions.*;
-import pp.muza.monopoly.model.pieces.lands.LandType;
-
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +9,28 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import pp.muza.monopoly.data.PlayerInfo;
+import pp.muza.monopoly.data.TurnInfo;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.PlayGame;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.pieces.actions.Action;
+import pp.muza.monopoly.model.pieces.actions.Buy;
+import pp.muza.monopoly.model.pieces.actions.Contract;
+import pp.muza.monopoly.model.pieces.actions.Debt;
+import pp.muza.monopoly.model.pieces.actions.Income;
+import pp.muza.monopoly.model.pieces.actions.PayRent;
+import pp.muza.monopoly.model.pieces.actions.RentRevenue;
+import pp.muza.monopoly.model.pieces.lands.LandType;
+
+/**
+ * @author dmytromuza
+ */
 public class Printer {
     public static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);
 

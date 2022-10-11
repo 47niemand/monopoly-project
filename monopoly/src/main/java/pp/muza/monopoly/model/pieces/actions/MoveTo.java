@@ -18,6 +18,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A player moves to a new position on the board.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)
@@ -45,7 +47,7 @@ public class MoveTo extends BaseActionCard {
      * A method called when the player arrives at a new location on the board.
      * <p>can be overridden by subclasses to perform additional actions.</p>
      *
-     * @param turn     the current turn
+     * @param turn the current turn
      * @return the action cards to execute after the player arrives at the new location.
      */
     protected List<ActionCard> onArrival(Turn turn) {

@@ -37,6 +37,11 @@ import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
+/**
+ * The base implementation of the game.
+ *
+ * @author dmytromuza
+ */
 public abstract class BaseGame {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseGame.class);
@@ -49,7 +54,7 @@ public abstract class BaseGame {
     private final Board board;
     private final BaseGame thisGame = this;
 
-    private final Game game = new GameImpl() {
+    private final Game game = new BaseGameImpl() {
         @Override
         protected BaseGame baseGame() {
             return thisGame;

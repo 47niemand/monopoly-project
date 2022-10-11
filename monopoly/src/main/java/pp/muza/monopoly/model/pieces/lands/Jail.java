@@ -3,6 +3,9 @@ package pp.muza.monopoly.model.pieces.lands;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * @author dmytromuza
+ */
 @Getter
 @ToString(callSuper = true)
 public final class Jail extends BaseLand {

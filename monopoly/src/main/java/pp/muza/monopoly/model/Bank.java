@@ -5,6 +5,8 @@ import pp.muza.monopoly.errors.BankException;
 /**
  * This interface represents a bank in the game.
  * There are methods to get the balance of a player, to deposit coins, to withdraw
+ *
+ * @author dmytromuza
  */
 public interface Bank {
 

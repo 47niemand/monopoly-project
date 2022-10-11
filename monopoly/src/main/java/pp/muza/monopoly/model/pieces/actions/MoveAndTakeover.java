@@ -14,6 +14,8 @@ import pp.muza.monopoly.model.Turn;
 /**
  * This card allows a player to buy property from the game.
  * On next turn, go forward to any free space and buy it, if all are owned, buy one from any player.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

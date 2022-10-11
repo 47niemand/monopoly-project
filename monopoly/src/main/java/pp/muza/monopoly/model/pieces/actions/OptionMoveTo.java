@@ -8,6 +8,8 @@ import pp.muza.monopoly.model.ActionType;
 
 /**
  * A player can decide to move on a specific land.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

@@ -2,6 +2,9 @@ package pp.muza.monopoly.app;
 
 import java.util.Locale;
 
+/**
+ * @author dmytromuza
+ */
 public class I18nOptions {
 
     public static String language = "en";

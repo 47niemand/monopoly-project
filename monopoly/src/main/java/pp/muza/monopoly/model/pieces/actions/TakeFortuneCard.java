@@ -13,6 +13,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A Player can use this card to take the top fortune card from the deck.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

@@ -1,5 +1,8 @@
 package pp.muza.monopoly.errors;
 
+/**
+ * @author dmytromuza
+ */
 public final class GameException extends Exception {
 
     public GameException(GameError error) {

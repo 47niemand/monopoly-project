@@ -22,6 +22,8 @@ import pp.muza.monopoly.model.pieces.lands.LandType;
  * If the property is owned by other player, the player must buy that property by paying the owner.
  * If the player owns the property, nothing happens.
  * If anyone does not own the property, the player can buy it from the bank.
+ *
+ * @author dmytromuza
  */
 
 @Getter

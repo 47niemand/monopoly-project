@@ -16,6 +16,8 @@ import pp.muza.monopoly.model.Turn;
 
 /**
  * A player must roll dice by using this card.
+ *
+ * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)

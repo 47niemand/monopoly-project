@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,12 +27,12 @@ import pp.muza.monopoly.model.pieces.actions.PayRent;
 import pp.muza.monopoly.model.pieces.actions.RentRevenue;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
+import static pp.muza.monopoly.app.I18n.resourceBundle;
+
 /**
  * @author dmytromuza
  */
 public class Printer {
-    public static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);
-
 
     static void printResults(PlayGame game) {
         List<String> freeProperties = IntStream.range(0, game.getBoard().getLands().size())

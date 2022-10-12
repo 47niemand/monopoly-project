@@ -1,7 +1,6 @@
 package pp.muza.monopoly.app;
 
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,6 +26,8 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.game.Monopoly;
 import pp.muza.monopoly.strategy.DefaultStrategy;
 
+import static pp.muza.monopoly.app.I18n.resourceBundle;
+
 /**
  * This is a simple Monopoly game simulator
  *
@@ -36,7 +37,6 @@ public class App {
 
     static final String OPT_VERBOSE = "verbose";
     static final String OPT_PLAYERS = "players";
-    static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);
     static int playerNumbers = Constants.DEFAULT_PLAYERS;
 
     public static void main(String[] args) {

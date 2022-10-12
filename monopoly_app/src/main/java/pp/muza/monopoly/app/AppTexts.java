@@ -1,14 +1,13 @@
 package pp.muza.monopoly.app;
 
 import java.util.Map;
-import java.util.ResourceBundle;
+
+import static pp.muza.monopoly.app.I18n.resourceBundle;
 
 /**
  * @author dmytromuza
  */
 public class AppTexts {
-
-    public static ResourceBundle resourceBundle = ResourceBundle.getBundle("MessagesBundle", I18nOptions.currentLocale);
 
     public static final String[] PLAYER_INFO = {
             resourceBundle.getString("PLAYER_INFO_1"),

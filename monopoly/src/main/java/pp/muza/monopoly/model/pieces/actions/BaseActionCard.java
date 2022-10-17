@@ -40,14 +40,6 @@ public abstract class BaseActionCard implements ActionCard {
     @EqualsAndHashCode.Exclude
     private final int priority;
 
-    protected BaseActionCard(String name, Action action, ActionType type, int priority) {
-        assert action.getClassList().contains(this.getClass());
-        this.name = name;
-        this.action = action;
-        this.type = type;
-        this.priority = priority;
-    }
-
     protected BaseActionCard(Action action, ActionType type, int priority) {
         assert action.getClassList().contains(this.getClass());
         this.name = this.getClass().getSimpleName();
@@ -78,5 +70,4 @@ public abstract class BaseActionCard implements ActionCard {
         LOG.debug("Resulting: {}", result);
         return result;
     }
-
 }

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -44,7 +45,7 @@ public final class JailFine extends Tax {
         try {
             turn.leaveJail();
         } catch (TurnException e) {
-            throw new IllegalStateException(e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

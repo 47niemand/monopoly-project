@@ -2,11 +2,15 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
+
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
@@ -32,21 +36,41 @@ final class CardUtils {
         return res;
     }
 
-    /**
-     * creates contracts for player's possession
-     */
-    static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
+    static List<ActionCard> createContract(Turn turn) {
+        List<ActionCard> result;
+        // typically, if a player has no money, he must sell his properties to pay the debt
+        // depends on rules; the player can sell to the bank or to other players (auction)
+        if (Constants.allowAuction) {
+            result = contract(turn, auctionFn());
+        } else {
+            result = contract(turn, contractFn());
+        }
+        return result;
+    }
+
+    private static List<ActionCard> contract(Turn turn, Function<IndexedEntry<Property>, ActionCard> function) {
+        List<ActionCard> result;
         List<IndexedEntry<Property>> properties = turn.getProperties();
         if (properties.isEmpty()) {
             LOG.info("Player {} has no properties", turn.getPlayer().getName());
+            result = ImmutableList.of();
         } else {
-            LOG.info("Creating contracts for player's possession");
+            LOG.info("Creating auction for player's possession");
+            result = properties.stream()
+                    .peek(entry -> {
+                        assert entry.getValue() == turn.getLand(entry.getIndex());
+                    })
+                    .map(function)
+                    .collect(Collectors.toList());
         }
-        return properties.stream()
-                .peek(entry -> {
-                    assert entry.getValue() == turn.getLand(entry.getIndex());
-                })
-                .map(entry -> new Contract(entry.getIndex()))
-                .collect(Collectors.toList());
+        return result;
+    }
+
+    private static Function<IndexedEntry<Property>, ActionCard> auctionFn() {
+        return entry -> new PromoteAuction(entry.getIndex(), Constants.MIN_BID);
+    }
+
+    private static Function<IndexedEntry<Property>, ActionCard> contractFn() {
+        return entry -> new Contract(entry.getIndex());
     }
 }

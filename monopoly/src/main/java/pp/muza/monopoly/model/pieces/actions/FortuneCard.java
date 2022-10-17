@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Asset;
@@ -42,7 +43,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     private final Chance chance;
 
     FortuneCard(Chance chance) {
-        super(Action.CHANCE.name(), Action.CHANCE
+        super(Action.CHANCE
                 , chance.isKeepable() ? ActionType.KEEPABLE : ActionType.OBLIGATION
                 , chance.isKeepable() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
         this.chance = chance;
@@ -52,7 +53,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         return new FortuneCard(chance);
     }
 
-    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) throws TurnException {
+    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) {
         List<ActionCard> result = new ArrayList<>();
         List<Player> players = turn.getPlayers();
         Player recipient;
@@ -72,7 +73,12 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             LOG.warn("{} is out of the game, get another chance card", recipient.getName());
             result.add(turn.popFortuneCard());
         } else {
-            turn.sendCard(recipient, new SpawnGiftCard());
+            try {
+                turn.sendCard(recipient, SpawnGiftCard.of());
+            } catch (TurnException e) {
+                LOG.error("Error sending gift card to {}", recipient.getName(), e);
+                throw new UnexpectedErrorException(e);
+            }
             result.add(turn.popFortuneCard());
         }
         return result;
@@ -83,76 +89,78 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         LOG.info("Chance: " + chance.name());
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
         List<ActionCard> result = new ArrayList<>();
-        try {
-            switch (chance) {
-                case ADVANCE_TO_MAYFAIR:
-                    result.addAll(spawnGetOrPayByName(turn, Asset.MAYFAIR));
-                    break;
-                case ADVANCE_TO_YELLOW_OR_RAINBOW:
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.YELLOW));
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RAINBOW));
-                    break;
-                case ADVANCE_TO_GREEN_OR_VIOLET:
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.GREEN));
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.VIOLET));
-                    break;
-                case ADVANCE_TO_BLUE_OR_ORANGE:
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.BLUE));
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.ORANGE));
-                    break;
-                case ADVANCE_TO_INDIGO_OR_RED:
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RED));
-                    result.addAll(spawnGetOrPayByColor(turn, PropertyColor.INDIGO));
-                    break;
-                case ADVANCE_TO_GO_KARTS:
-                    result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
-                    break;
-                case PRIZE:
-                    result.add(Income.of(Constants.PRIZE_AMOUNT));
-                    break;
-                case BIRTHDAY:
-                    result.add(BirthdayParty.of());
-                    break;
-                case LUXURY_TAX:
-                    result.add(new Tax(Constants.LUXURY_TAX_AMOUNT));
-                    break;
-                case ADVANCE_TO_GO:
-                    result.add(MoveTo.of(turn.getStartPos()));
-                    break;
-                case MOVE_FORWARD_ONE_SPACE:
-                    result.add(new OptionMove(1));
-                    result.add(new TakeFortuneCard());
-                    break;
-                case MOVE_FORWARD_UP_TO_5_SPACES:
-                    IntStream.rangeClosed(1, 5).forEach(i -> result.add(new OptionMove(i)));
-                    break;
-                case GET_OUT_OF_JAIL_FREE:
-                    if (turn.getPlayerStatus() == PlayerStatus.IN_JAIL) {
+
+        switch (chance) {
+            case ADVANCE_TO_MAYFAIR:
+                result.addAll(spawnGetOrPayByName(turn, Asset.MAYFAIR));
+                break;
+            case ADVANCE_TO_YELLOW_OR_RAINBOW:
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.YELLOW));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RAINBOW));
+                break;
+            case ADVANCE_TO_GREEN_OR_VIOLET:
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.GREEN));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.VIOLET));
+                break;
+            case ADVANCE_TO_BLUE_OR_ORANGE:
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.BLUE));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.ORANGE));
+                break;
+            case ADVANCE_TO_INDIGO_OR_RED:
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.RED));
+                result.addAll(spawnGetOrPayByColor(turn, PropertyColor.INDIGO));
+                break;
+            case ADVANCE_TO_GO_KARTS:
+                result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
+                break;
+            case PRIZE:
+                result.add(Income.of(Constants.PRIZE_AMOUNT));
+                break;
+            case BIRTHDAY:
+                result.add(BirthdayParty.of());
+                break;
+            case LUXURY_TAX:
+                result.add(new Tax(Constants.LUXURY_TAX_AMOUNT));
+                break;
+            case ADVANCE_TO_GO:
+                result.add(MoveTo.of(turn.getStartPos()));
+                break;
+            case MOVE_FORWARD_ONE_SPACE:
+                result.add(new OptionMove(1));
+                result.add(new TakeFortuneCard());
+                break;
+            case MOVE_FORWARD_UP_TO_5_SPACES:
+                IntStream.rangeClosed(1, 5).forEach(i -> result.add(new OptionMove(i)));
+                break;
+            case GET_OUT_OF_JAIL_FREE:
+                if (turn.getPlayerStatus() == PlayerStatus.IN_JAIL) {
+                    try {
                         turn.leaveJail();
-                    } else {
-                        LOG.warn("Player {} is not in jail", turn.getPlayer().getName());
-                        result.add(this);
+                    } catch (TurnException e) {
+                        LOG.error("Error leaving jail: {}", this, e);
+                        throw new UnexpectedErrorException(e);
                     }
-                    break;
-                case GIVE_THIS_CARD_TO_A_PLAYER_1:
-                    result.addAll(sendGiftCard(turn, PLAYER_1));
-                    break;
-                case GIVE_THIS_CARD_TO_A_PLAYER_2:
-                    result.addAll(sendGiftCard(turn, PLAYER_2));
-                    break;
-                case GIVE_THIS_CARD_TO_A_PLAYER_3:
-                    result.addAll(sendGiftCard(turn, PLAYER_3));
-                    break;
-                case GIVE_THIS_CARD_TO_A_PLAYER_4:
-                    result.addAll(sendGiftCard(turn, PLAYER_4));
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown chance card: " + chance);
-            }
-        } catch (TurnException e) {
-            LOG.error("Error executing chance card {}", this, e);
-            throw new IllegalStateException(e);
+                } else {
+                    LOG.warn("Player {} is not in jail", turn.getPlayer().getName());
+                    result.add(this);
+                }
+                break;
+            case GIVE_THIS_CARD_TO_A_PLAYER_1:
+                result.addAll(sendGiftCard(turn, PLAYER_1));
+                break;
+            case GIVE_THIS_CARD_TO_A_PLAYER_2:
+                result.addAll(sendGiftCard(turn, PLAYER_2));
+                break;
+            case GIVE_THIS_CARD_TO_A_PLAYER_3:
+                result.addAll(sendGiftCard(turn, PLAYER_3));
+                break;
+            case GIVE_THIS_CARD_TO_A_PLAYER_4:
+                result.addAll(sendGiftCard(turn, PLAYER_4));
+                break;
+            default:
+                throw new IllegalStateException("Unknown chance card: " + chance);
         }
+
         LOG.debug("Fortune: resulting cards: {}", result);
         return result;
     }

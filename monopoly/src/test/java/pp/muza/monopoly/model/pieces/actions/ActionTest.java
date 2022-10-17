@@ -29,7 +29,6 @@ class ActionTest {
     final int TWO = 2;
     final int THREE = 3;
 
-
     @Test
     @SuppressWarnings("unchecked")
     public void testRules() throws JsonProcessingException {
@@ -91,6 +90,8 @@ class ActionTest {
                                     o = method.invoke(null, new Player(String.valueOf(ONE)), TWO, THREE);
                                 } else if (types[1] == Player.class) {
                                     o = method.invoke(null, ONE, new Player(String.valueOf(TWO)), THREE);
+                                } else if (types[2] == Player.class) {
+                                    o = method.invoke(null, ONE, TWO, new Player(String.valueOf(THREE)));
                                 } else {
                                     o = method.invoke(null, ONE, TWO, THREE);
                                 }
@@ -127,6 +128,7 @@ class ActionTest {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         System.out.println(mapper.writeValueAsString(map));
+        System.out.println(mapper.writeValueAsString(classHierarchy));
     }
 
 

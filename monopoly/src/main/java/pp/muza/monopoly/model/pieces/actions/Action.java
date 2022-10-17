@@ -31,7 +31,7 @@ public enum Action {
     /**
      * Contract, any property-related activity in which the player can sale a property.
      */
-    CONTRACT(ImmutableList.of(Contract.class)),
+    CONTRACT(ImmutableList.of(Contract.class, Sale.class)),
     /**
      * End turn.
      */
@@ -71,7 +71,19 @@ public enum Action {
     /**
      * Roll dice get random number.
      */
-    ROLL_DICE(ImmutableList.of(RollDice.class));
+    ROLL_DICE(ImmutableList.of(RollDice.class)),
+    /**
+     * Start the auction.
+     */
+    AUCTION(ImmutableList.of(StartAuction.class)),
+    /**
+     * Bid for the property.
+     */
+    BID(ImmutableList.of(Bid.class)),
+    /**
+     * PromoteAuction for the property on the auction.
+     */
+    OFFER(ImmutableList.of(PromoteAuction.class));
 
     @Getter
     private final List<Class<? extends BaseActionCard>> classList;

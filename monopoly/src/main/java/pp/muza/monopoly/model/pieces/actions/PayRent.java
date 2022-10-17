@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -45,8 +46,8 @@ public final class PayRent extends Payment {
         try {
             turn.sendCard(recipient, new RentRevenue(value, turn.getPlayer(), position));
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            LOG.error("Error sending rent revenue", e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

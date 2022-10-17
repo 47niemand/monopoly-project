@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game;
+package pp.muza.monopoly.model.game.impl;
 
 import java.util.List;
 
@@ -10,16 +10,20 @@ import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
 import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Offer;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.Bid;
 import pp.muza.monopoly.model.pieces.actions.Gift;
 
 /**
@@ -27,14 +31,25 @@ import pp.muza.monopoly.model.pieces.actions.Gift;
  *
  * @author dmytromuza
  */
-public abstract class BaseTurnImpl implements Turn {
+public class TurnImpl implements Turn {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BaseTurnImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TurnImpl.class);
 
+    private final Game game;
+    private final Player player;
 
-    protected abstract Game game();
+    protected TurnImpl(Game game, Player player) {
+        this.game = game;
+        this.player = player;
+    }
 
-    protected abstract Player player();
+    protected Game game() {
+        return game;
+    };
+
+    protected Player player() {
+        return player;
+    };
 
     @Override
     public Fortune popFortuneCard() {
@@ -108,25 +123,29 @@ public abstract class BaseTurnImpl implements Turn {
     @Override
     public void doBirthdayParty() throws TurnException {
         LOG.info("Birthday party for {}", player());
-        holdTurn();
+        try {
+            game().holdTurn(this);
+        } catch (GameException e) {
+            throw new TurnException(e);
+        }
         Player player = getPlayer();
         for (Player guest : game().getPlayers()) {
             if (guest != player && !getPlayerStatus(guest).isFinal()) {
                 try {
-                    sendCard(guest, Gift.of(Constants.BIRTHDAY_GIFT_AMOUNT, player));
-                } catch (TurnException e) {
-                    LOG.error("Error while sending card to player {}", guest, e);
-                    throw new RuntimeException(e);
+                    game().sendCard(this.player(), guest, Gift.of(Constants.BIRTHDAY_GIFT_AMOUNT, player));
+                } catch (GameException e) {
+                    LOG.error("Error sending birthday invitation to {}", player, e);
+                    throw new UnexpectedErrorException(e);
                 }
             }
         }
-
     }
 
     @Override
-    public void holdTurn() throws TurnException {
+    public void auction(int position, int price) throws TurnException {
         try {
             game().holdTurn(this);
+            game().auction(this.player(), position, price);
         } catch (GameException e) {
             throw new TurnException(e);
         }
@@ -224,5 +243,58 @@ public abstract class BaseTurnImpl implements Turn {
     @Override
     public List<Player> getPlayers() {
         return game().getPlayers();
+    }
+
+    @Override
+    public void doBid(int position, int value) throws TurnException {
+        try {
+            game().doBid(player(), position, value);
+        } catch (GameException | BankException e) {
+            throw new TurnException(e);
+        }
+    }
+
+    @Override
+    public int getBalance() {
+        return game().getBalance(player());
+    }
+
+    @Override
+    public void doSale(int position, int price, Player buyer) throws TurnException, BankException {
+        try {
+            game().doSale(player(), position, price, buyer);
+        } catch (GameException e) {
+            throw new TurnException(e);
+        }
+    }
+
+    @Override
+    public void sendOfferToAll(Offer offer) throws TurnException {
+        LOG.info("Promote an auction for property {} with price {}", offer.getPosition(), offer.getPrice());
+        auction(offer.getPosition(), offer.getPrice());
+        Player seller = getPlayer();
+        for (Player bidder : game().getPlayers()) {
+            // sends invitations to the players
+            if (bidder != seller && !getPlayerStatus(bidder).isFinal()) {
+                try {
+                    game().sendCard(this.player(), bidder, Bid.of(offer.getPosition(), offer.getPrice()));
+                } catch (GameException e) {
+                    LOG.error("Error while sending invitation to player {}", bidder, e);
+                    throw new UnexpectedErrorException(e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Biding endAuction() throws TurnException {
+        LOG.info("Finishing auction for {}", player());
+        Biding result;
+        try {
+            result = game().endAuction(this.player());
+        } catch (GameException e) {
+            throw new TurnException(e);
+        }
+        return result;
     }
 }

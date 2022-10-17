@@ -24,13 +24,13 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Debt extends BaseActionCard {
+public abstract class BaseDebt extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Debt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseDebt.class);
 
     protected final int value;
 
-    protected Debt(ActionType type, int priority, int value) {
+    BaseDebt(ActionType type, int priority, int value) {
         super(Action.DEBT, type, priority);
         this.value = value;
     }
@@ -53,7 +53,7 @@ public class Debt extends BaseActionCard {
      * @return cards if the player cannot pay the tax.
      */
     protected final List<ActionCard> onFailure(Turn turn) {
-        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContractsForPlayerPossession(turn))
+        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContract(turn))
                 .build();
     }
 

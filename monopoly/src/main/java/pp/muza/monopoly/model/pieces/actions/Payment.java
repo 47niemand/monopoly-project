@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -24,7 +25,7 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Payment extends Debt {
+public class Payment extends BaseDebt {
 
     private static final Logger LOG = LoggerFactory.getLogger(Payment.class);
 
@@ -47,8 +48,8 @@ public class Payment extends Debt {
         try {
             turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            LOG.error("Error sending money to recipient {}", recipient, e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

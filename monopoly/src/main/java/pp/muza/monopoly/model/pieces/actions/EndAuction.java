@@ -14,36 +14,43 @@ import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * This card lets a player go to jail.
- *
  * @author dmytromuza
  */
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class GoToJail extends BaseActionCard {
+public final class EndAuction extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GoToJail.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
-    GoToJail() {
-        super(Action.GO_TO_JAIL, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+    EndAuction() {
+        super(Action.AUCTION, ActionType.OBLIGATION, HIGHEST_PRIORITY);
     }
 
-    public static ActionCard of() {
-        return new GoToJail();
+    public static ActionCard of(int position, int price) {
+        return new EndAuction();
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
+        List<ActionCard> result = ImmutableList.of();
         try {
-            turn.setPlayerInJail();
+            Biding biding = turn.endAuction();
+            if (biding != null) {
+                result = ImmutableList.of(Sale.of(biding.getPosition(), biding.getPrice(), biding.getBidder()));
+                LOG.info("Auction is ended. The winner is {}", biding.getBidder().getName());
+            } else {
+                LOG.info("No biding was made");
+            }
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
             throw new UnexpectedErrorException(e);
         }
-        return ImmutableList.of(new EndTurn());
+        return result;
     }
 }
+

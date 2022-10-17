@@ -26,6 +26,7 @@ import pp.muza.monopoly.model.Turn;
  * <li>when player arrives at the chance, player should draw a card.</li>
  * <li>etc.</li>
  * </ul>
+ *
  * @author dmytromuza
  */
 @Getter

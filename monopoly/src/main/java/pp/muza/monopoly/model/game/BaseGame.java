@@ -2,6 +2,7 @@ package pp.muza.monopoly.model.game;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Value;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
@@ -22,6 +28,7 @@ import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Bank;
+import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
@@ -32,6 +39,7 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
+import pp.muza.monopoly.model.game.impl.GameImpl;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
@@ -39,6 +47,7 @@ import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
  * The base implementation of the game.
+ * The class is not intended to be used directly.
  *
  * @author dmytromuza
  */
@@ -52,15 +61,12 @@ public abstract class BaseGame {
     private final ImmutableList<Player> players;
     private final Map<Player, PlayerData> playerData = new HashMap<>();
     private final Board board;
+    private final Game game = new GameImpl(this) {
+    };
     private final BaseGame thisGame = this;
 
-    private final Game game = new BaseGameImpl() {
-        @Override
-        protected BaseGame baseGame() {
-            return thisGame;
-        }
-    };
-    BaseTurn currentTurn;
+    BasePlayTurn currentTurn;
+    Auction auction;
     int currentPlayerIndex = -1;
     int turnNumber = 0;
     int maxTurns = Constants.DEFAULT_MAX_TURNS;
@@ -106,7 +112,7 @@ public abstract class BaseGame {
         }
     }
 
-    public BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
+    protected BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
         this.bank = bank;
         this.board = board;
         this.fortuneCards = new LinkedList<>(fortuneCards);
@@ -143,7 +149,7 @@ public abstract class BaseGame {
         }
         Player currentPlayer = players.get(currentPlayerIndex);
         turnNumber++;
-        currentTurn = new BaseTurn(currentPlayer, turnNumber) {
+        currentTurn = new BasePlayTurn(currentPlayer, turnNumber) {
             @Override
             protected BaseGame baseGame() {
                 return thisGame;
@@ -165,9 +171,11 @@ public abstract class BaseGame {
     private void nextPlayer() throws GameException {
         int nextPlayerIndex = getNextPlayerIndex();
         if (nextPlayerIndex == currentPlayerIndex) {
+            LOG.error("No more players in the game.");
             throw new GameException(GameError.NO_MORE_PLAYERS_IN_GAME);
         }
         if (currentTurn != null && !currentTurn.isFinished()) {
+            LOG.error("Current turn is not finished.");
             throw new GameException(GameError.TURN_NOT_FINISHED);
         }
         currentPlayerIndex = nextPlayerIndex;
@@ -320,7 +328,6 @@ public abstract class BaseGame {
         return game;
     }
 
-
     public List<ActionCard> getActiveCards(Player player) {
         PlayerData data = playerData.get(player);
 
@@ -393,14 +400,28 @@ public abstract class BaseGame {
                 .build();
     }
 
-    //================================================================================================
+    public void auction(Player player, int position, int price) throws GameException {
+        Property property = (Property) board.getLand(position);
+        if (auction != null) {
+            throw new GameException(GameError.AUCTION_IS_ALREADY_IN_PROGRESS);
+        }
+        LOG.info("Player {} is auctioning property {} ({})", player.getName(), position, property.getName());
+        auction = new Auction(player, position, price);
+    }
 
-    /**
-     * for testing
-     */
-    void bringFortuneCardToTop(Chance card) {
-        Fortune fortune = pickFortuneCard(card);
-        fortuneCards.addFirst(fortune);
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public Biding endAuction(Player player) throws GameException {
+        if (auction == null) {
+            throw new GameException(GameError.AUCTION_IS_NOT_IN_PROGRESS);
+        }
+        if (auction.seller != player) {
+            throw new GameException(GameError.ONLY_SELLER_CAN_END_AUCTION);
+        }
+        Player winner = auction.winner();
+        return auction.bids.get(winner);
     }
 
     /**
@@ -423,9 +444,52 @@ public abstract class BaseGame {
     /**
      * for testing
      */
-    void sendCard(Player to, ActionCard actionCard) {
+    void sendCardTest(Player to, ActionCard actionCard) {
         LOG.info("Sending card '{}' to {}", actionCard.getName(), to.getName());
         playerData.get(to).addCard(actionCard);
     }
+
+    @Value
+    @AllArgsConstructor(staticName = "of")
+    private static class BidingImpl implements Biding {
+        int position;
+        int price;
+        Player bidder;
+    }
+
+    /**
+     * Represents an auction
+     */
+    @Data
+    public class Auction {
+        private final Player seller;
+        private final int position;
+        private final int price;
+        @Getter(AccessLevel.NONE)
+        private final Map<Player, Biding> bids = new LinkedHashMap<>();
+
+        public Player winner() {
+            boolean seen = false;
+            Map.Entry<Player, Biding> best = null;
+            for (Map.Entry<Player, Biding> entry : bids.entrySet()) {
+                if (!seen || (entry.getValue().getPrice() > best.getValue().getPrice())) {
+                    seen = true;
+                    best = entry;
+                }
+            }
+
+            return seen ? best.getKey() : null;
+        }
+
+        public void doBid(Player player, int postion, int price) {
+            LOG.info("{} bids {} for property {} ({})", player.getName(), price, position, board.getLand(position).getName());
+            // put to the map at the end
+            bids.remove(player);
+            Biding biding = new BidingImpl(postion, price, player);
+            bids.put(player, biding);
+
+        }
+    }
+
 
 }

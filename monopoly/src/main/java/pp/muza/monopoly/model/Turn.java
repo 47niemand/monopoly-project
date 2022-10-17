@@ -101,12 +101,13 @@ public interface Turn {
     void doBirthdayParty() throws TurnException;
 
     /**
-     * Holds current turn.
+     * Holds current turn and starts the auction.
      *
+     * @param position the opening price and the land id.
+     * @param price    the opening price.
      * @throws TurnException if it is not currently a player's turn.
      */
-
-    void holdTurn() throws TurnException;
+    void auction(int position, int price) throws TurnException;
 
     /**
      * trades a property.
@@ -240,4 +241,48 @@ public interface Turn {
      */
     List<Player> getPlayers();
 
+
+    /**
+     * Sends an auction invitation to all players.
+     *
+     * @param offer the offer.
+     * @throws TurnException if operation fails (offered land is not belonging to the player, etc).
+     */
+    void sendOfferToAll(Offer offer) throws TurnException;
+
+    /**
+     * Do bid.
+     *
+     * @param position the position.
+     * @param price    the price.
+     * @throws TurnException if operation fails (wrong position, wrong price, auction is not guaranteed to be available for sale on the market at the moment).
+     */
+    void doBid(int position, int price) throws TurnException;
+
+    /**
+     * Returns the balance of the player.
+     *
+     * @return the player's balance.
+     */
+    int getBalance();
+
+    /**
+     * Sale of a property to the buyer.
+     * The buyer pays the seller the price.
+     * Then the buyer receives the property.
+     *
+     * @param position the position of the property.
+     * @param price    the price of the property.
+     * @param buyer    the buyer.
+     */
+    void doSale(int position, int price, Player buyer) throws TurnException, BankException;
+
+
+    /**
+     * Ends the auction.
+     *
+     * @return the winner of the auction, or null if there is no winner.
+     * @throws TurnException if the auction is not started, or the current player is not the auctioneer.
+     */
+    Biding endAuction() throws TurnException;
 }

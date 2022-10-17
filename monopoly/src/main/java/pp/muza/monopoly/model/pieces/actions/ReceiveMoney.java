@@ -27,11 +27,11 @@ public class ReceiveMoney extends Income {
         this.sender = sender;
     }
 
-    ReceiveMoney(int number, Player sender) {
-        this(HIGHEST_PRIORITY, number, sender);
+    ReceiveMoney(int value, Player sender) {
+        this(HIGHEST_PRIORITY, value, sender);
     }
 
-    public static ActionCard of(int number, Player sender) {
-        return new ReceiveMoney(number, sender);
+    public static ActionCard of(int value, Player sender) {
+        return new ReceiveMoney(value, sender);
     }
 }

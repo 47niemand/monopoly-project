@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -31,18 +32,22 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Buy extends BaseActionCard {
+public class Buy extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
 
     /**
      * the id of the land to be traded.
      */
-    private final int position;
+    protected final int position;
+
+    protected Buy(ActionType type, int priority, int position) {
+        super(Action.BUY, type, priority);
+        this.position = position;
+    }
 
     Buy(int position) {
-        super(Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
-        this.position = position;
+        this(ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
     }
 
     public static ActionCard of(int position) {
@@ -65,11 +70,11 @@ public final class Buy extends BaseActionCard {
         } catch (BankException e) {
             LOG.info("Player cannot trade property: {}", e.getMessage());
             result = ImmutableList.<ActionCard>builder().add(this)
-                    .addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
+                    .addAll(CardUtils.createContract(turn)).build();
             finished = true;
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException(e);
         }
         if (!finished) {
             result = ImmutableList.of();

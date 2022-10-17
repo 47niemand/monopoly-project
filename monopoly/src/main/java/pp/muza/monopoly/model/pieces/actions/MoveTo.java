@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
@@ -61,7 +62,7 @@ public class MoveTo extends BaseActionCard {
             path = turn.moveTo(position);
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException(e);
         }
         if (path.size() == 0) {
             LOG.warn("Staying on the same land");

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
@@ -28,18 +29,22 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Contract extends BaseActionCard {
+public class Contract extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
     /**
      * the id of the land to be traded.
      */
-    private final int position;
+    protected final int position;
+
+    protected Contract(ActionType type, int priority, int position) {
+        super(Action.CONTRACT, type, priority);
+        this.position = position;
+    }
 
     Contract(int position) {
-        super(Action.CONTRACT, ActionType.CHOOSE, HIGHEST_PRIORITY);
-        this.position = position;
+        this(ActionType.CHOOSE, HIGHEST_PRIORITY, position);
     }
 
     public static ActionCard of(int position) {
@@ -54,7 +59,7 @@ public final class Contract extends BaseActionCard {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

@@ -14,7 +14,7 @@ import pp.muza.monopoly.model.ActionType;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Tax extends Debt {
+public class Tax extends BaseDebt {
 
     protected Tax(ActionType type, int priority, int value) {
         super(type, priority, value);

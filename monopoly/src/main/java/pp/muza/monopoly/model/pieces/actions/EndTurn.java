@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
@@ -41,8 +42,8 @@ public final class EndTurn extends BaseActionCard {
         try {
             turn.endTurn();
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this);
-            throw new RuntimeException(e);
+            LOG.error("Error during executing the action: {}", this, e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

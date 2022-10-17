@@ -60,7 +60,35 @@ public enum GameError {
     /**
      * You can't trade with yourself
      */
-    YOU_CAN_T_TRADE_WITH_YOURSELF("You can't trade with yourself");
+    YOU_CAN_T_TRADE_WITH_YOURSELF("You can't trade with yourself"),
+    /**
+     * Land is not owned
+     */
+    LAND_IS_NOT_OWNED("Land is not owned"),
+    /**
+     * Seller can't bid
+     */
+    SELLER_CANT_BID("Seller can't bid"),
+    /**
+     * A Bid must be greater than the current price
+     */
+    BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE("Bid must be greater than the current price"),
+    /**
+     * Property position doesn't match the offer
+     */
+    POSITION_DOESNT_MATCH_THE_OFFER("Property position doesn't match the offer"),
+    /**
+     * Auction is not in progress
+     */
+    AUCTION_IS_NOT_IN_PROGRESS("Auction is not in progress"),
+    /**
+     * Only seller can end auction
+     */
+    ONLY_SELLER_CAN_END_AUCTION("Only seller can end auction"),
+    /**
+     * Auction is already in progress
+     */
+    AUCTION_IS_ALREADY_IN_PROGRESS("Auction is already in progress");
 
     private final String message;
 

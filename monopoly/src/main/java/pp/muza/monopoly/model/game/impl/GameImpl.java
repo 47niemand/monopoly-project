@@ -1,4 +1,4 @@
-package pp.muza.monopoly.model.game;
+package pp.muza.monopoly.model.game.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
 import pp.muza.monopoly.model.Land;
@@ -23,22 +26,30 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.game.BaseEngine;
+import pp.muza.monopoly.model.game.BaseGame;
+import pp.muza.monopoly.model.game.PlayerData;
 import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
- * The Game interface implementation. Marked as abstract to prevent instantiation of this class.
+ * The Game interface implementation.
  *
  * @author dmytromuza
  */
-public abstract class BaseGameImpl implements Game {
+public class GameImpl implements Game {
 
-    static final Logger LOG = LoggerFactory.getLogger(BaseGameImpl.class);
+    static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
 
-    protected abstract BaseGame baseGame();
+    private final BaseGame baseGame;
+
+    protected GameImpl(BaseGame baseGame) {
+        this.baseGame = baseGame;
+    }
+
 
     private void checkPlayerInGame(Player player) throws GameException {
-        if (baseGame().playerData(player).getStatus().isFinal()) {
+        if (baseGame.playerData(player).getStatus().isFinal()) {
             LOG.error("Player {} is not in game", player);
             throw new GameException(GameError.PLAYER_IS_NOT_IN_GAME);
         }
@@ -46,21 +57,21 @@ public abstract class BaseGameImpl implements Game {
 
     @Override
     public int getJailPosition() {
-        return IntStream.range(0, baseGame().getBoard().getLands().size())
-                .filter(i -> baseGame().getBoard().getLands().get(i).getType() == LandType.JAIL)
+        return IntStream.range(0, baseGame.getBoard().getLands().size())
+                .filter(i -> baseGame.getBoard().getLands().get(i).getType() == LandType.JAIL)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No jail found"));
     }
 
     @Override
     public Fortune takeFortuneCard() {
-        return baseGame().takeFortuneCard();
+        return baseGame.takeFortuneCard();
     }
 
     @Override
     public void setPlayerInJail(Player player) throws GameException {
         checkPlayerInGame(player);
-        PlayerData playerData = baseGame().playerData(player);
+        PlayerData playerData = baseGame.playerData(player);
         playerData.setStatus(PlayerStatus.IN_JAIL);
         playerData.setPosition(getJailPosition());
     }
@@ -68,9 +79,9 @@ public abstract class BaseGameImpl implements Game {
     @Override
     public List<Land> moveTo(Player player, int position) throws GameException {
         checkPlayerInGame(player);
-        PlayerData playerData = baseGame().playerData(player);
-        List<Integer> path = baseGame().getBoard().getPathTo(playerData.getPosition(), position);
-        List<Land> lands = baseGame().getBoard().getLands(path);
+        PlayerData playerData = baseGame.playerData(player);
+        List<Integer> path = baseGame.getBoard().getPathTo(playerData.getPosition(), position);
+        List<Land> lands = baseGame.getBoard().getLands(path);
         playerData.setPosition(position);
         return lands;
     }
@@ -83,8 +94,8 @@ public abstract class BaseGameImpl implements Game {
         if (getPropertyOwner(position) != null) {
             throw new GameException(GameError.LAND_IS_ALREADY_OWNED);
         }
-        baseGame().getBank().withdraw(player, price);
-        baseGame().setPropertyOwner(position, player);
+        baseGame.getBank().withdraw(player, price);
+        baseGame.setPropertyOwner(position, player);
     }
 
     @Override
@@ -92,7 +103,7 @@ public abstract class BaseGameImpl implements Game {
         if (getPlayerStatus(player) != PlayerStatus.IN_JAIL) {
             throw new GameException(GameError.PLAYER_IS_NOT_IN_JAIL);
         }
-        baseGame().playerData(player).setStatus(PlayerStatus.IN_GAME);
+        baseGame.playerData(player).setStatus(PlayerStatus.IN_GAME);
     }
 
     @Override
@@ -104,14 +115,14 @@ public abstract class BaseGameImpl implements Game {
         }
         LOG.info("Player {} is contracting property {} ({})", player.getName(), position, property.getName());
         int value = property.getPrice();
-        baseGame().getBank().deposit(player, value);
-        baseGame().propertyOwnerRemove(position);
+        baseGame.getBank().deposit(player, value);
+        baseGame.propertyOwnerRemove(position);
     }
 
     @Override
     public int findProperty(Asset asset) {
-        for (int i = 0; i < baseGame().getBoard().getLands().size(); i++) {
-            Land land = baseGame().getBoard().getLands().get(i);
+        for (int i = 0; i < baseGame.getBoard().getLands().size(); i++) {
+            Land land = baseGame.getBoard().getLands().get(i);
             if (land.getType() == LandType.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
@@ -126,8 +137,8 @@ public abstract class BaseGameImpl implements Game {
     @Override
     public List<Integer> findLandsByColor(PropertyColor color) {
         List<Integer> lands = new ArrayList<>();
-        for (int i = 0; i < baseGame().getBoard().getLands().size(); i++) {
-            Land land = baseGame().getBoard().getLands().get(i);
+        for (int i = 0; i < baseGame.getBoard().getLands().size(); i++) {
+            Land land = baseGame.getBoard().getLands().get(i);
             if (land.getType() == LandType.PROPERTY) {
                 assert land instanceof Property;
                 Property property = (Property) land;
@@ -143,12 +154,12 @@ public abstract class BaseGameImpl implements Game {
     public void sendCard(Player sender, Player to, ActionCard actionCard) throws GameException {
         LOG.info("Player {} is sending card '{}' to {}", sender.getName(), actionCard.getName(), to.getName());
         checkPlayerInGame(to);
-        baseGame().playerData(to).addCard(actionCard);
+        baseGame.playerData(to).addCard(actionCard);
     }
 
     @Override
     public void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException {
-        Property property = (Property) baseGame().getBoard().getLand(position);
+        Property property = (Property) baseGame.getBoard().getLand(position);
         if (getPropertyOwner(position) != seller) {
             throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_SELLER);
         }
@@ -156,9 +167,14 @@ public abstract class BaseGameImpl implements Game {
             throw new GameException(GameError.YOU_CAN_T_TRADE_WITH_YOURSELF);
         }
         int price = property.getPrice();
-        baseGame().getBank().withdraw(buyer, price);
-        baseGame().getBank().deposit(seller, price);
-        baseGame().setPropertyOwner(position, buyer);
+        baseGame.getBank().withdraw(buyer, price);
+        try {
+            baseGame.getBank().deposit(seller, price);
+        } catch (BankException e) {
+            LOG.error("Error while depositing money to seller {}", seller, e);
+            throw new UnexpectedErrorException(e);
+        }
+        baseGame.setPropertyOwner(position, buyer);
     }
 
     @Override
@@ -188,32 +204,32 @@ public abstract class BaseGameImpl implements Game {
 
     @Override
     public void income(Player player, int value) throws BankException {
-        baseGame().getBank().deposit(player, value);
+        baseGame.getBank().deposit(player, value);
     }
 
     @Override
     public PlayerStatus getPlayerStatus(Player player) {
-        return baseGame().playerData(player).getStatus();
+        return baseGame.playerData(player).getStatus();
     }
 
     @Override
     public int nextPosition(Player player, int distance) {
-        return baseGame().getBoard().getDestination(baseGame().playerData(player).getPosition(), distance);
+        return baseGame.getBoard().getDestination(baseGame.playerData(player).getPosition(), distance);
     }
 
     @Override
     public Land getLand(int position) {
-        return baseGame().getBoard().getLand(position);
+        return baseGame.getBoard().getLand(position);
     }
 
     @Override
     public Player getPropertyOwner(int position) {
-        return baseGame().getPropertyOwner(position);
+        return baseGame.getPropertyOwner(position);
     }
 
     @Override
     public int getJailFine() {
-        return baseGame().getBoard().getLands().stream()
+        return baseGame.getBoard().getLands().stream()
                 .filter(land -> land.getType() == LandType.JAIL)
                 .map(x -> ((Jail) x).getFine())
                 .findFirst()
@@ -222,19 +238,19 @@ public abstract class BaseGameImpl implements Game {
 
     @Override
     public List<IndexedEntry<Property>> getProperties(Player player) {
-        return baseGame().belongings(player).stream()
-                .map(x -> new IndexedEntry<>(x, (Property) baseGame().getBoard().getLand(x)))
+        return baseGame.belongings(player).stream()
+                .map(x -> new IndexedEntry<>(x, (Property) baseGame.getBoard().getLand(x)))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public int getStartPosition() {
-        return baseGame().getBoard().getStartPosition();
+        return baseGame.getBoard().getStartPosition();
     }
 
     @Override
     public List<IndexedEntry<Property>> getAllProperties() {
-        List<Land> lands = baseGame().getBoard().getLands();
+        List<Land> lands = baseGame.getBoard().getLands();
         List<IndexedEntry<Property>> properties = new ArrayList<>();
         for (int i = 0; i < lands.size(); i++) {
             Land land = lands.get(i);
@@ -255,23 +271,86 @@ public abstract class BaseGameImpl implements Game {
 
     @Override
     public void withdraw(Player player, int value) throws BankException {
-        baseGame().getBank().withdraw(player, value);
+        baseGame.getBank().withdraw(player, value);
     }
 
     @Override
     public List<Player> getPlayers() {
-        return baseGame().getPlayers();
+        return baseGame.getPlayers();
     }
 
     @Override
     public void endTurn(Turn turn) throws GameException {
-        baseGame().finishTurn(turn);
+        baseGame.finishTurn(turn);
     }
 
     @Override
-    public void holdTurn(BaseTurnImpl turn) throws GameException {
-        baseGame().holdTurn(turn);
+    public void holdTurn(Turn turn) throws GameException {
+        baseGame.holdTurn(turn);
     }
 
+    @Override
+    public void auction(Player player, int postion, int price) throws GameException {
+        baseGame.auction(player, postion, price);
+    }
 
+    @Override
+    public Biding endAuction(Player player) throws GameException {
+        return baseGame.endAuction(player);
+    }
+
+    @Override
+    public void doBid(Player player, int position, int price) throws GameException, BankException {
+        Player owner = getPropertyOwner(position);
+        if (owner == null) {
+            throw new GameException(GameError.LAND_IS_NOT_OWNED);
+        }
+        BaseGame.Auction auction = baseGame.getAuction();
+        if (player.equals(auction.getSeller())) {
+            LOG.error("Player {} is trying to bid on his own property", player.getName());
+            throw new GameException(GameError.SELLER_CANT_BID);
+        }
+        if (price < auction.getPrice()) {
+            LOG.warn("Player {} is trying to bid with price {} less than current price {}", player.getName(), price, auction.getPrice());
+            throw new GameException(GameError.BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE);
+        }
+        if (position != auction.getPosition()) {
+            LOG.error("Player {} is trying to bid on wrong property", player.getName());
+            throw new GameException(GameError.POSITION_DOESNT_MATCH_THE_OFFER);
+        }
+        if (price > getBalance(player)) {
+            LOG.error("Player {} doesn't have enough money to bid", player.getName());
+            throw new BankException(BankError.NOT_ENOUGH_COINS);
+        }
+        baseGame.getAuction().doBid(player, position, price);
+    }
+
+    @Override
+    public void doSale(Player seller, int position, int price, Player buyer) throws GameException, BankException {
+        checkPlayerInGame(seller);
+        checkPlayerInGame(buyer);
+        if (getPropertyOwner(position) != seller) {
+            LOG.error("Seller {} doesn't own property {}", seller.getName(), position);
+            throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_PLAYER);
+        }
+        if (buyer == seller) {
+            LOG.error("Seller {} can't buy his own property {}", seller.getName(), position);
+            throw new GameException(GameError.YOU_CAN_T_TRADE_WITH_YOURSELF);
+        }
+        Property property = (Property) baseGame.getBoard().getLand(position);
+        assert property != null;
+        baseGame.getBank().withdraw(buyer, price);
+        baseGame.setPropertyOwner(position, seller);
+        try {
+            baseGame.getBank().deposit(seller, price);
+        } catch (BankException e) {
+            LOG.error("Can't deposit money to seller {}", seller, e);
+            throw new UnexpectedErrorException(e);
+        }
+    }
+
+    @Override
+    public int getBalance(Player player) {
+        return baseGame.getBank().getBalance(player);
+    }
 }

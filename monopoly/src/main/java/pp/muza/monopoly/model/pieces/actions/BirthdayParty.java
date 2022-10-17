@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
@@ -41,7 +42,7 @@ public final class BirthdayParty extends BaseActionCard {
             turn.doBirthdayParty();
         } catch (TurnException e) {
             LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException(e);
         }
         return ImmutableList.of();
     }

@@ -1,5 +1,7 @@
 package pp.muza.monopoly.app;
 
+import static pp.muza.monopoly.app.I18n.resourceBundle;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -14,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import pp.muza.monopoly.app.print.Printer;
 import pp.muza.monopoly.app.stats.Statistics;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.TurnInfo;
@@ -25,8 +28,6 @@ import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.game.Monopoly;
 import pp.muza.monopoly.strategy.DefaultStrategy;
-
-import static pp.muza.monopoly.app.I18n.resourceBundle;
 
 /**
  * This is a simple Monopoly game simulator

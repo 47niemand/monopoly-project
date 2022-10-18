@@ -6,9 +6,9 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -20,7 +20,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class JailFine extends Tax {
 
@@ -28,7 +27,7 @@ public final class JailFine extends Tax {
         super(ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
     }
 
-    public static ActionCard of(int value) {
+    public static ActionCard create(int value) {
         return new JailFine(value);
     }
 
@@ -44,7 +43,7 @@ public final class JailFine extends Tax {
         try {
             turn.leaveJail();
         } catch (TurnException e) {
-            throw new IllegalStateException(e);
+            throw new UnexpectedErrorException("Error while leaving jail on " + turn, e);
         }
         return ImmutableList.of();
     }

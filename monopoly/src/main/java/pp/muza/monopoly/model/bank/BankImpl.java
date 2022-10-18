@@ -12,6 +12,8 @@ import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
 
 /**
+ * Stores the bank state.
+ *
  * @author dmytromuza
  */
 public class BankImpl implements Bank {
@@ -20,6 +22,12 @@ public class BankImpl implements Bank {
 
     private final Map<Player, Integer> playerCoins = new HashMap<>();
 
+    private void checkCoins(int coins) {
+        if (coins < 0) {
+            throw new IllegalArgumentException(BankError.NEGATIVE_VALUE.getMessage());
+        }
+    }
+
     @Override
     public int getBalance(Player player) {
         return playerCoins.getOrDefault(player, 0);
@@ -27,25 +35,27 @@ public class BankImpl implements Bank {
 
     @Override
     public void deposit(Player player, int value) throws BankException {
-        LOG.info("Adding {} coins to {}", value, player.getName());
+        checkCoins(value);
+        LOG.info("Adding {} coins to {}", value, player);
         playerCoins.put(player, playerCoins.getOrDefault(player, 0) + value);
-        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
+        LOG.info("{} has {} coin(s)", player, playerCoins.get(player));
     }
 
     @Override
     public void withdraw(Player player, int value) throws BankException {
-        LOG.info("Withdrawing {} coin(s) from player {}", value, player.getName());
+        checkCoins(value);
+        LOG.info("Withdrawing {} coin(s) from player {}", value, player);
         if (playerCoins.get(player).compareTo(value) < 0) {
-            LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), value, playerCoins.get(player));
+            LOG.warn("{} has not enough coins {}, current balance: {}", player, value, playerCoins.get(player));
             throw new BankException(BankError.NOT_ENOUGH_COINS);
         }
         playerCoins.put(player, playerCoins.getOrDefault(player, 0) - value);
-        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
+        LOG.info("{} has {} coin(s)", player, playerCoins.get(player));
     }
 
     @Override
     public void set(Player player, int value) {
-        LOG.info("Putting {} coin(s) in {}'s account", value, player.getName());
+        LOG.info("Putting {} coin(s) in {}'s account", value, player);
         playerCoins.put(player, value);
     }
 }

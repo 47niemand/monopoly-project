@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.PlayerStatus;
@@ -18,7 +17,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class NewTurn extends BaseActionCard {
 
@@ -26,7 +24,7 @@ public final class NewTurn extends BaseActionCard {
         super(Action.NEW_TURN, ActionType.OBLIGATION, NEW_TURN_PRIORITY);
     }
 
-    public static NewTurn of() {
+    public static ActionCard create() {
         return new NewTurn();
     }
 

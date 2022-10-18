@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -22,9 +23,8 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Payment extends Debt {
+public class Payment extends BaseDebt {
 
     private static final Logger LOG = LoggerFactory.getLogger(Payment.class);
 
@@ -47,9 +47,16 @@ public class Payment extends Debt {
         try {
             turn.sendCard(recipient, new ReceiveMoney(value, turn.getPlayer()));
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException("Error sending money to recipient " + recipient, e);
         }
         return ImmutableList.of();
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("recipient", recipient)
+        );
     }
 }

@@ -35,8 +35,8 @@ public class TurnInfo {
         return "TurnInfo{" +
                 "turnNumber=" + turnNumber +
                 ", playerInfo=" + playerInfo +
-                ", activeCards=" + activeCards.stream().map(ActionCard::toString).collect(Collectors.toList()) +
-                (usedCards != null ? ", usedCards=" + usedCards.stream().map(ActionCard::toString).collect(Collectors.toList()) : "") +
+                ", activeCards=" + activeCards.stream().map(ActionCard::getName).collect(Collectors.toList()) +
+                (usedCards != null ? ", usedCards=" + usedCards.stream().map(ActionCard::getName).collect(Collectors.toList()) : "") +
                 ", isFinished=" + isFinished +
                 '}';
     }

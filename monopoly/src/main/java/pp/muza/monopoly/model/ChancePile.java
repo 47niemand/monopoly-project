@@ -22,7 +22,7 @@ public final class ChancePile {
     public static List<Fortune> defaultPile() {
         return Arrays
                 .stream(Chance.values())
-                .map(FortuneCard::of)
+                .map(FortuneCard::create)
                 .collect(Collectors.toList());
     }
 

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -21,17 +20,16 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class SpawnGiftCard extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class);
 
     SpawnGiftCard() {
         super(Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new SpawnGiftCard();
     }
 

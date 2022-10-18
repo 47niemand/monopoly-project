@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +10,9 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -29,23 +30,26 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public final class Buy extends BaseActionCard {
+public class Buy extends BaseActionCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
 
     /**
      * the id of the land to be traded.
      */
-    private final int position;
+    protected final int position;
 
-    Buy(int position) {
-        super(Action.BUY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+    protected Buy(ActionType type, int priority, int position) {
+        super(Action.BUY, type, priority);
         this.position = position;
     }
 
-    public static ActionCard of(int position) {
+    Buy(int position) {
+        this(ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
+    }
+
+    public static ActionCard create(int position) {
         return new Buy(position);
     }
 
@@ -59,21 +63,28 @@ public final class Buy extends BaseActionCard {
                 LOG.debug("Buying property {} from the bank.", position);
                 turn.buyProperty(position);
             } else {
-                LOG.debug("Buying property {} from player {}.", position, salePlayer.getName());
+                LOG.debug("Buying property {} from player {}.", position, salePlayer);
                 turn.tradeProperty(salePlayer, position);
             }
         } catch (BankException e) {
             LOG.info("Player cannot trade property: {}", e.getMessage());
             result = ImmutableList.<ActionCard>builder().add(this)
-                    .addAll(CardUtils.createContractsForPlayerPossession(turn)).build();
+                    .addAll(CardUtils.sellDebts(turn)).build();
             finished = true;
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException("Error during executing the action:  " + this, e);
         }
         if (!finished) {
             result = ImmutableList.of();
         }
         return result;
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("position", position)
+        );
     }
 }

@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
@@ -23,7 +24,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Move extends BaseActionCard {
 
@@ -40,7 +40,7 @@ public class Move extends BaseActionCard {
         this(ActionType.OBLIGATION, DEFAULT_PRIORITY, distance);
     }
 
-    public static ActionCard of(int distance) {
+    public static ActionCard create(int distance) {
         return new Move(distance);
     }
 
@@ -65,14 +65,13 @@ public class Move extends BaseActionCard {
             result = ImmutableList.of();
         } else {
             int position = turn.nextPosition(distance);
-            LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer().getName(), distance, position,
-                    turn.getLand(position).getName());
+            LOG.info("{}: advancing by {} steps to {} ({})", turn.getPlayer(), distance, position,
+                    turn.getLand(position));
             List<Land> path;
             try {
                 path = turn.moveTo(position);
             } catch (TurnException e) {
-                LOG.error("Error during executing the action: {}", this, e);
-                throw new RuntimeException(e);
+                throw new UnexpectedErrorException("Error during executing the action: " + this, e);
             }
             assert path.size() == distance;
             result = ImmutableList.<ActionCard>builder()
@@ -82,4 +81,13 @@ public class Move extends BaseActionCard {
         }
         return result;
     }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("distance", distance)
+        );
+    }
+
 }

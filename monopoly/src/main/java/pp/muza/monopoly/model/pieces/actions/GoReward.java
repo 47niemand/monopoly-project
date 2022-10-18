@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 
 /**
@@ -11,7 +10,6 @@ import pp.muza.monopoly.model.ActionCard;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class GoReward extends Income {
 
@@ -19,7 +17,7 @@ public final class GoReward extends Income {
         super(HIGHEST_PRIORITY, value);
     }
 
-    public static ActionCard of(int value) {
+    public static ActionCard create(int value) {
         return new GoReward(value);
     }
 }

@@ -9,10 +9,12 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
 /**
@@ -21,7 +23,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class BirthdayParty extends BaseActionCard {
 
@@ -31,19 +32,33 @@ public final class BirthdayParty extends BaseActionCard {
         super(Action.PARTY, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new BirthdayParty();
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.doBirthdayParty();
+            doBirthdayParty(turn);
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new RuntimeException(e);
+            throw new UnexpectedErrorException("Error during executing the action: " + this, e);
         }
         return ImmutableList.of();
+    }
+
+    private void doBirthdayParty(Turn turn) throws TurnException {
+        Player player = turn.getPlayer();
+        LOG.info("Birthday party for {}", player);
+        turn.holdTurn();
+        for (Player guest : turn.getPlayers()) {
+            if (guest != player && !turn.getPlayerStatus(guest).isFinal()) {
+                try {
+                    turn.sendCard(guest, new Gift(Constants.BIRTHDAY_GIFT_AMOUNT, player));
+                } catch (TurnException e) {
+                    throw new UnexpectedErrorException("Error sending birthday invitation to " + player, e);
+                }
+            }
+        }
     }
 }
 

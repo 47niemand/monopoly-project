@@ -26,7 +26,7 @@ class FortuneCardTest {
 
         List<Fortune> fortunes = Arrays
                 .stream(Chance.values())
-                .map(FortuneCard::of)
+                .map(FortuneCard::create)
                 .collect(Collectors.toList());
 
         Player player1 = new Player("test1");

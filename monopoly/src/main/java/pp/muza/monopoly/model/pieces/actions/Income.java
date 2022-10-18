@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
@@ -21,7 +21,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Income extends BaseActionCard {
 
@@ -41,7 +40,7 @@ public class Income extends BaseActionCard {
         this(HIGHEST_PRIORITY, value);
     }
 
-    public static ActionCard of(int value) {
+    public static ActionCard create(int value) {
         return new Income(value);
     }
 
@@ -53,5 +52,13 @@ public class Income extends BaseActionCard {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
         }
         return ImmutableList.of();
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("value", value)
+        );
     }
 }

@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Player;
@@ -13,16 +12,15 @@ import pp.muza.monopoly.model.Player;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class Gift extends Payment {
 
-    Gift(Player recipient, int value) {
+    Gift(int value, Player recipient) {
         super(ActionType.OBLIGATION, HIGH_PRIORITY, value, recipient);
     }
 
-    public static ActionCard of(int value, Player recipient) {
-        return new Gift(recipient, value);
+    public static ActionCard create(int value, Player recipient) {
+        return new Gift(value, recipient);
     }
 
 }

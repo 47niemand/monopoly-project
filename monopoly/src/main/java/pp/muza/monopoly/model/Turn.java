@@ -1,11 +1,12 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Turn API for the engine.
@@ -61,10 +62,11 @@ public interface Turn {
      * Executes the contract
      *
      * @param position the land id.
+     * @param price    the price.
      * @throws BankException if the player doesn't have enough coins.
      * @throws TurnException if the player is not in the game.
      */
-    void doContract(int position) throws BankException, TurnException;
+    void doContract(int position, int price) throws BankException, TurnException;
 
     /**
      * returns the position of land by the given name.
@@ -94,19 +96,13 @@ public interface Turn {
     void sendCard(Player to, ActionCard actionCard) throws TurnException;
 
     /**
-     * Birthday party.
+     * Holds current turn and starts the auction.
      *
+     * @param position the opening price and the land id.
+     * @param price    the opening price.
      * @throws TurnException if it is not currently a player's turn.
      */
-    void doBirthdayParty() throws TurnException;
-
-    /**
-     * Holds current turn.
-     *
-     * @throws TurnException if it is not currently a player's turn.
-     */
-
-    void holdTurn() throws TurnException;
+    void auction(int position, int price) throws TurnException;
 
     /**
      * trades a property.
@@ -240,4 +236,59 @@ public interface Turn {
      */
     List<Player> getPlayers();
 
+    /**
+     * Do bid.
+     *
+     * @param position the position.
+     * @param price    the price.
+     * @throws TurnException if operation fails (wrong position, wrong price, auction is not guaranteed to be available for sale on the market at the moment).
+     */
+    void doBid(int position, int price) throws TurnException;
+
+    /**
+     * Returns the balance of the player.
+     *
+     * @return the player's balance.
+     */
+    int getBalance();
+
+    /**
+     * Sale of a property to the buyer.
+     * The buyer pays the seller the price.
+     * Then the buyer receives the property.
+     *
+     * @param position the position of the property.
+     * @param price    the price of the property.
+     * @param buyer    the buyer.
+     * @throws BankException if a buyer doesn't have enough coins.
+     * @throws TurnException if operation fails.
+     */
+    void doSale(int position, int price, Player buyer) throws TurnException, BankException;
+
+
+    /**
+     * Ends the auction.
+     *
+     * @return the winner of the auction, or null if there is no winner.
+     * @throws TurnException if the auction is not started, or the current player is not the auctioneer.
+     */
+    Biding endAuction() throws TurnException;
+
+    /**
+     * Holds current turn.
+     * <p>
+     * Other players should player their cards.
+     * </p>
+     *
+     * @throws TurnException if the player cannot hold the turn.
+     */
+    void holdTurn() throws TurnException;
+
+    /**
+     * Returns the game's rules options.
+     *
+     * @param option the option.
+     * @return the list of cards.
+     */
+    String getRule(RuleOption option);
 }

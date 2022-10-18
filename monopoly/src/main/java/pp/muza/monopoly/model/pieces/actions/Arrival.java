@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
@@ -26,10 +25,10 @@ import pp.muza.monopoly.model.Turn;
  * <li>when player arrives at the chance, player should draw a card.</li>
  * <li>etc.</li>
  * </ul>
+ *
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Arrival extends BaseActionCard {
 
@@ -42,7 +41,7 @@ public class Arrival extends BaseActionCard {
         this.position = position;
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new Arrival(position);
     }
 
@@ -54,13 +53,13 @@ public class Arrival extends BaseActionCard {
             case PROPERTY:
                 Player owner = turn.getPropertyOwner(position);
                 if (owner == null) {
-                    LOG.info("No one owns the {}, {} can purchase it", land.getName(), turn.getPlayer().getName());
+                    LOG.info("No one owns the {}, {} can purchase it", land, turn.getPlayer());
                     result = ImmutableList.of(new Buy(position));
                 } else if (owner != turn.getPlayer()) {
-                    LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer().getName(), owner.getName(), land.getName());
+                    LOG.info("Player {} is obligated to pay rent to {} for {}", turn.getPlayer(), owner, land);
                     result = ImmutableList.of(new PayRent(turn.getRent(position), owner, position));
                 } else {
-                    LOG.info("Property {} is owned by player, nothing to do", land.getName());
+                    LOG.info("Property {} is owned by player, nothing to do", land);
                     result = ImmutableList.of();
                 }
                 break;

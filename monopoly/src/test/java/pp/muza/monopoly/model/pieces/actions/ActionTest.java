@@ -29,12 +29,11 @@ class ActionTest {
     final int TWO = 2;
     final int THREE = 3;
 
-
     @Test
     @SuppressWarnings("unchecked")
     public void testRules() throws JsonProcessingException {
-        // rule: all actions in the package should have a static method of() with 0, 1, 2 or 3 parameters
-        // rule: invocation of the method of() should return an instance of the class
+        // rule: all actions in the package should have a static method create() with 0, 1, 2 or 3 parameters
+        // rule: invocation of the method create() should return an instance of the class
         // rule: all constructors should be protected or package-private
         // rule: all accessors should have the same action type as the parent class
 
@@ -65,7 +64,7 @@ class ActionTest {
                 List<Constructor<?>> publicConstructors = Arrays.stream(clazz.getDeclaredConstructors()).filter(c -> Modifier.isPublic(c.getModifiers())).collect(Collectors.toList());
                 assertEquals(0, publicConstructors.size(), "Class " + clazz + " : all constructors should be protected or package-private, but found " + publicConstructors);
 
-                List<Method> methods = Arrays.stream(clazz.getMethods()).filter(m -> m.getName().equals("of") && m.getDeclaringClass() == clazz).collect(Collectors.toList());
+                List<Method> methods = Arrays.stream(clazz.getMethods()).filter(m -> m.getName().equals("create") && m.getDeclaringClass() == clazz).collect(Collectors.toList());
                 try {
                     if (methods.size() == 1) {
                         Object o = null;
@@ -91,6 +90,8 @@ class ActionTest {
                                     o = method.invoke(null, new Player(String.valueOf(ONE)), TWO, THREE);
                                 } else if (types[1] == Player.class) {
                                     o = method.invoke(null, ONE, new Player(String.valueOf(TWO)), THREE);
+                                } else if (types[2] == Player.class) {
+                                    o = method.invoke(null, ONE, TWO, new Player(String.valueOf(THREE)));
                                 } else {
                                     o = method.invoke(null, ONE, TWO, THREE);
                                 }
@@ -106,7 +107,7 @@ class ActionTest {
                     } else if (methods.size() > 1) {
                         throw new RuntimeException("More than one method with name of(): " + clazz.getName());
                     } else {
-                        throw new RuntimeException("No method with name of(): " + clazz.getName());
+                        throw new RuntimeException("No method with name create(): " + clazz.getName());
                     }
                 } catch (Exception e) {
                     fail(e.getMessage());
@@ -127,8 +128,11 @@ class ActionTest {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         System.out.println(mapper.writeValueAsString(map));
+        System.out.println(mapper.writeValueAsString(classHierarchy));
+        // check parameters
+        for (Object value : map.values()) {
+            System.out.println("" + value.getClass().getSimpleName() + ((BaseActionCard) value).params());
+        }
     }
-
-
 }
 

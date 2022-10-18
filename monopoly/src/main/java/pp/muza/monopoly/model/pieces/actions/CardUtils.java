@@ -2,11 +2,17 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
+
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.consts.RuleOption;
+import pp.muza.monopoly.consts.RuleOptionValue;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
@@ -26,27 +32,59 @@ final class CardUtils {
         List<ActionCard> res;
         res = new ArrayList<>();
         path.stream().filter(land -> land.getType() == LandType.START).findFirst().ifPresent(land -> {
-            LOG.info("Player {} has to get income due to start", turn.getPlayer().getName());
+            LOG.info("Player {} has to get income due to start", turn.getPlayer());
             res.add(new GoReward(((Start) land).getIncomeTax()));
         });
         return res;
     }
 
-    /**
-     * creates contracts for player's possession
-     */
-    static List<ActionCard> createContractsForPlayerPossession(Turn turn) {
+    static List<ActionCard> sellDebts(Turn turn) {
+        if (isEquals(turn, RuleOption.AUCTION)) {
+            return ImmutableList.of(new ChoiceAuction(), new ChoiceContract());
+        } else {
+            return createContract(turn);
+        }
+    }
+
+    static boolean isEquals(Turn turn, RuleOption option) {
+        return RuleOptionValue.ON.name().equals(turn.getRule(option));
+    }
+
+    static List<ActionCard> createAuction(Turn turn) {
+        List<ActionCard> result;
+        result = contract(turn, auctionFn());
+        return result;
+    }
+
+    static List<ActionCard> createContract(Turn turn) {
+        List<ActionCard> result;
+        result = contract(turn, contractFn());
+        return result;
+    }
+
+    private static List<ActionCard> contract(Turn turn, Function<IndexedEntry<Property>, ActionCard> function) {
+        List<ActionCard> result;
         List<IndexedEntry<Property>> properties = turn.getProperties();
         if (properties.isEmpty()) {
-            LOG.info("Player {} has no properties", turn.getPlayer().getName());
+            LOG.info("Player {} has no properties", turn.getPlayer());
+            result = ImmutableList.of();
         } else {
-            LOG.info("Creating contracts for player's possession");
+            LOG.info("Creating auction for player's possession");
+            result = properties.stream()
+                    .peek(entry -> {
+                        assert entry.getValue() == turn.getLand(entry.getIndex());
+                    })
+                    .map(function)
+                    .collect(Collectors.toList());
         }
-        return properties.stream()
-                .peek(entry -> {
-                    assert entry.getValue() == turn.getLand(entry.getIndex());
-                })
-                .map(entry -> new Contract(entry.getIndex()))
-                .collect(Collectors.toList());
+        return result;
+    }
+
+    private static Function<IndexedEntry<Property>, ActionCard> auctionFn() {
+        return entry -> new PromoteAuction(entry.getIndex(), Constants.MIN_BID);
+    }
+
+    private static Function<IndexedEntry<Property>, ActionCard> contractFn() {
+        return entry -> new Contract(entry.getIndex(), entry.getValue().getPrice());
     }
 }

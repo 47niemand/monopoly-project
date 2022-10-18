@@ -1,12 +1,12 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.game.BaseTurnImpl;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Game API for engine.
@@ -232,11 +232,70 @@ public interface Game {
     void endTurn(Turn turn) throws GameException;
 
     /**
-     * holds the current turn
+     * holds the current player's turn
      *
      * @param turn the turn to hold
      * @throws GameException if the turn is not the current turn
      */
-    void holdTurn(BaseTurnImpl turn) throws GameException;
+    void holdTurn(Turn turn) throws GameException;
 
+    /**
+     * Do bid.
+     *
+     * @param player   the bidder
+     * @param position the position of the property
+     * @param value    the value of the bid
+     * @throws GameException if the bid is not valid
+     * @throws BankException if the player doesn't have enough coins
+     */
+    void doBid(Player player, int position, int value) throws GameException, BankException;
+
+    /**
+     * Returns the balance of the player.
+     *
+     * @param player the player.
+     * @return the balance of the player.
+     */
+    int getBalance(Player player);
+
+    /**
+     * Seller sales a property to the buyer.
+     * The buyer pays the seller the price.
+     * Then the buyer receives the property.
+     *
+     * @param seller   the seller.
+     * @param position the position of the property.
+     * @param price    the price of the property.
+     * @param buyer    the buyer.
+     * @throws GameException if there are some errors (e.g. the property is not owned)
+     * @throws BankException if operation fails (e.g. if the buyer doesn't have enough coins).
+     */
+    void doSale(Player seller, int position, int price, Player buyer) throws GameException, BankException;
+
+    /**
+     * Starts an auction for the property at the given position.
+     *
+     * @param player  the player who starts the auction.
+     * @param postion the position of the property.
+     * @param price   the starting price.
+     * @throws GameException if there are some errors (e.g. the property is not owned but the player, wrong position, etc.)
+     */
+    void auction(Player player, int postion, int price) throws GameException;
+
+    /**
+     * Ends the auction.
+     *
+     * @param player the player who ends the auction.
+     * @return the winner of the auction, or null if there is no winner.
+     * @throws GameException if the auction is not started, or the player is not the auctioneer.
+     */
+    Biding endAuction(Player player) throws GameException;
+
+    /**
+     * Returns the game's rule values.
+     *
+     * @param options the options.
+     * @return the game's rule value.
+     */
+    String getRuleOptions(RuleOption options);
 }

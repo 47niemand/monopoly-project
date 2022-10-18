@@ -24,7 +24,11 @@ public enum TurnError {
     /**
      * The turn is finished
      */
-    THE_TURN_IS_FINISHED("The turn is finished.");
+    THE_TURN_IS_FINISHED("The turn is finished."),
+    /**
+     * Player must set price for auction
+     */
+    PLAYER_MUST_SET_PRICE_FOR_AUCTION("Player must set price for auction");
 
     private final String message;
 

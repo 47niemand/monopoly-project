@@ -1,12 +1,12 @@
 package pp.muza.monopoly.strategy;
 
+import java.util.List;
+
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Strategy;
-
-import java.util.List;
 
 /**
  * @author dmytromuza

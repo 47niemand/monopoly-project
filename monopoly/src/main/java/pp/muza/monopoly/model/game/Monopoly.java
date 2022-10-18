@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameException;
@@ -21,6 +19,8 @@ import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.bank.BankImpl;
 
 /**
+ * Monopoly game implementation. Implements the {@link PlayGame} interface.
+ *
  * @author dmytromuza
  */
 public class Monopoly implements PlayGame {
@@ -38,7 +38,8 @@ public class Monopoly implements PlayGame {
         baseGame = new BaseGame(
                 new BankImpl(),
                 BoardLayout.defaultBoard(),
-                fortunes, ImmutableList.copyOf(players)) {
+                fortunes,
+                players) {
         };
     }
 

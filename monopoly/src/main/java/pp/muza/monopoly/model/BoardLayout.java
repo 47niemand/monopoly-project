@@ -20,6 +20,7 @@ import static pp.muza.monopoly.model.Asset.TOY_SHOP;
 import java.util.ArrayList;
 import java.util.List;
 
+import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.model.board.BoardImpl;
 import pp.muza.monopoly.model.pieces.lands.BaseProperty;
 import pp.muza.monopoly.model.pieces.lands.ChanceLand;
@@ -55,13 +56,13 @@ public final class BoardLayout {
     public static Board defaultBoard() {
         List<Land> lands = new ArrayList<>();
         // the Start field should be the first one in the list
-        lands.add(new Start(2));
+        lands.add(new Start(Constants.START_BONUS));
         lands.add(propertyOf(COFFEE_SHOP));
         lands.add(propertyOf(DONUT_SHOP));
         lands.add(new ChanceLand());
         lands.add(propertyOf(BAKERY));
         lands.add(propertyOf(BURGER_JOINT));
-        lands.add(new Jail(1));
+        lands.add(new Jail(Constants.JAIL_FINE));
         lands.add(propertyOf(LIBRARY));
         lands.add(propertyOf(MUSEUM));
         lands.add(new ChanceLand());

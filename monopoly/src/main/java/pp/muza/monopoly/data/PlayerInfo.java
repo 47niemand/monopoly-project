@@ -29,7 +29,7 @@ public class PlayerInfo {
     @SuppressWarnings("all")
     @Override
     public String toString() {
-        return "Player: " + player.getName()
+        return "Player: " + player
                 + " at position: " + position
                 + ", with coins: " + coins
                 + ", with status: " + status

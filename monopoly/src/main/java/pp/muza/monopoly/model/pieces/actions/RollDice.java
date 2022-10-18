@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
@@ -20,7 +19,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public final class RollDice extends BaseActionCard {
 
@@ -30,14 +28,14 @@ public final class RollDice extends BaseActionCard {
         super(Action.ROLL_DICE, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new RollDice();
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         int dice = (int) (Math.random() * 6) + 1;
-        LOG.info("{} rolled {}", turn.getPlayer().getName(), dice);
+        LOG.info("{} rolled {}", turn.getPlayer(), dice);
         return ImmutableList.of(new Move(dice));
     }
 }

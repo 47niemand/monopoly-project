@@ -48,6 +48,18 @@ public abstract class BaseTurn {
         this.playTurn = new PlayTurnImpl(this);
     }
 
+    private static void markNotPlayed(ActionCard card, PlayerData playerData) {
+        if (card.getType() == ActionType.PROFIT) {
+            // Profit cards can be played only once
+            LOG.debug("Profit card {} can be played only once", card);
+            playerData.removeCard(card);
+        } else {
+            // hold card to prevent using it again
+            LOG.debug("Card not played, holding it: {}", card);
+            playerData.holdCard(card);
+        }
+    }
+
     /**
      * Returns the game. should be implemented by the subclass.
      *
@@ -170,18 +182,6 @@ public abstract class BaseTurn {
             markPlayed(playedCard, playerData, currentPriority);
         } else {
             markNotPlayed(card, playerData);
-        }
-    }
-
-    private static void markNotPlayed(ActionCard card, PlayerData playerData) {
-        if (card.getType() == ActionType.PROFIT) {
-            // Profit cards can be played only once
-            LOG.debug("Profit card {} can be played only once", card);
-            playerData.removeCard(card);
-        } else {
-            // hold card to prevent using it again
-            LOG.debug("Card not played, holding it: {}", card);
-            playerData.holdCard(card);
         }
     }
 

@@ -70,15 +70,18 @@ final class PlayerData {
     public int getCurrentPriority() {
         boolean seen1 = false, seen2 = false;
         int best1 = 0, best2 = 0;
-        for (ActionCard actionCard1 : cards) {
-            if (actionCard1.getType().isMandatory()) {
-                int actionCardPriority = actionCard1.getPriority();
+        for (ActionCard card : cards) {
+            if (hold.contains(card)) {
+                continue;
+            }
+            if (card.getType().isMandatory()) {
+                int actionCardPriority = card.getPriority();
                 if (!seen1 || actionCardPriority < best1) {
                     seen1 = true;
                     best1 = actionCardPriority;
                 }
             } else {
-                int actionCardPriority = actionCard1.getPriority();
+                int actionCardPriority = card.getPriority();
                 if (!seen2 || actionCardPriority < best2) {
                     seen2 = true;
                     best2 = actionCardPriority;

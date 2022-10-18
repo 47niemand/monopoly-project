@@ -298,4 +298,13 @@ public interface Game {
      * @return the game's rule value.
      */
     String getRuleOptions(RuleOption options);
+
+    /**
+     * Takes a property at the given position.
+     *
+     * @param player   the player.
+     * @param position the land id.
+     * @throws GameException if operation fails (e.g. the property is not free).
+     */
+    void takeProperty(Player player, int position) throws GameException;
 }

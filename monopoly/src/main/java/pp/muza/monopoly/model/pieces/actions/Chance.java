@@ -63,19 +63,19 @@ public enum Chance {
     /**
      * Give this card to the Player 1, Player 1, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.
      */
-    GIVE_THIS_CARD_TO_A_PLAYER_1(false, "Give this card to the Player 1, Player 1, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
+    GIVE_THIS_CARD_TO_A_PLAYER_1(false, "Give this card to Player 1, Player 1, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
     /**
      * Give this card to the Player 2, Player 2, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.
      */
-    GIVE_THIS_CARD_TO_A_PLAYER_2(false, "* Give this card to the Player 2, Player 2, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
+    GIVE_THIS_CARD_TO_A_PLAYER_2(false, "Give this card to Player 2, Player 2, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
     /**
      * Give this card to the Player 3, Player 3, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.
      */
-    GIVE_THIS_CARD_TO_A_PLAYER_3(false, "Give this card to the Player 3, Player 3, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
+    GIVE_THIS_CARD_TO_A_PLAYER_3(false, "Give this card to Player 3, Player 3, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player."),
     /**
      * Give this card to the Player 4, Player 4, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.
      */
-    GIVE_THIS_CARD_TO_A_PLAYER_4(false, "Give this card to the Player 4, Player 4, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.");
+    GIVE_THIS_CARD_TO_A_PLAYER_4(false, "Give this card to Player 4, Player 4, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.");
 
     /**
      * true if the card is keepable, false otherwise

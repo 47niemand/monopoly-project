@@ -9,6 +9,8 @@ import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 
 /**
+ * Implementation of the {@link PlayTurn} interface.
+ *
  * @author dmytromuza
  */
 public class PlayTurnImpl implements PlayTurn {

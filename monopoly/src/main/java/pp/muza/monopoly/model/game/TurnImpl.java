@@ -220,6 +220,15 @@ public class TurnImpl implements Turn {
     }
 
     @Override
+    public void takeProperty(int position) throws TurnException {
+        try {
+            game().takeProperty(player(), position);
+        } catch (GameException e) {
+            throw new TurnException(e);
+        }
+    }
+
+    @Override
     public void endTurn() throws TurnException {
         try {
             game().endTurn(this);

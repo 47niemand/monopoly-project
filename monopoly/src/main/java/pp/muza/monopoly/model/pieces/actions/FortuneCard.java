@@ -164,14 +164,14 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
 
     private List<ActionCard> spawnGetOrPayByName(Turn turn, Asset asset) {
         int position = turn.foundProperty(asset);
-        return ImmutableList.of(new OptionMoveTo(position));
+        return ImmutableList.of(new MoveGetOrPay(position));
     }
 
     private List<ActionCard> spawnGetOrPayByColor(Turn turn, PropertyColor color) {
         ImmutableList.Builder<ActionCard> builder = ImmutableList.builder();
         List<Integer> list = turn.foundLandsByColor(color);
         for (Integer position : list) {
-            builder.add(new OptionMoveTo(position));
+            builder.add(new MoveGetOrPay(position));
         }
         return builder.build();
     }

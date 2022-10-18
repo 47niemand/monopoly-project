@@ -291,4 +291,12 @@ public interface Turn {
      * @return the list of cards.
      */
     String getRule(RuleOption option);
+
+    /**
+     * takes a property at the given position.
+     *
+     * @param position the land id.
+     * @throws TurnException if operation fails (wrong position, the property is not free).
+     */
+    void takeProperty(int position) throws TurnException;
 }

@@ -22,8 +22,7 @@ import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.SyncCard;
 
 /**
- * Base implementation of the {@link PlayTurn} interface.
- * Marked as abstract because it is not intended to be used directly.
+ * The base implementation of the game. Marked as abstract because it is not intended to be used directly.
  *
  * @author dmytromuza
  */

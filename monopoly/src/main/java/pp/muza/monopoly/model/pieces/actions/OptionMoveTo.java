@@ -12,6 +12,7 @@ import pp.muza.monopoly.model.ActionType;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
+@Deprecated
 public final class OptionMoveTo extends MoveTo {
 
     OptionMoveTo(int position) {

@@ -52,6 +52,13 @@ public class GameImpl implements Game {
         }
     }
 
+    private void checkLandIsProperty(int position) throws GameException {
+        if (baseGame.getBoard().getLand(position).getType() != LandType.PROPERTY) {
+            LOG.error("Land at position {} is not property", position);
+            throw new GameException(GameError.LAND_IS_NOT_PROPERTY);
+        }
+    }
+
     @Override
     public int getJailPosition() {
         return IntStream.range(0, baseGame.getBoard().getLands().size())
@@ -86,6 +93,7 @@ public class GameImpl implements Game {
     @Override
     public void buyProperty(Player player, int position) throws GameException, BankException {
         checkPlayerInGame(player);
+        checkLandIsProperty(position);
         Property property = (Property) getLand(position);
         int price = property.getPrice();
         if (getPropertyOwner(position) != null) {
@@ -156,6 +164,7 @@ public class GameImpl implements Game {
 
     @Override
     public void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException {
+        checkLandIsProperty(position);
         Property property = (Property) baseGame.getBoard().getLand(position);
         if (getPropertyOwner(position) != seller) {
             throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_SELLER);
@@ -298,6 +307,16 @@ public class GameImpl implements Game {
     @Override
     public String getRuleOptions(RuleOption option) {
         return baseGame.getRuleOptions(option);
+    }
+
+    @Override
+    public void takeProperty(Player player, int position) throws GameException {
+        checkPlayerInGame(player);
+        checkLandIsProperty(position);
+        if (getPropertyOwner(position) != null && getPropertyOwner(position) != player) {
+            throw new GameException(GameError.LAND_IS_ALREADY_OWNED);
+        }
+        baseGame.setPropertyOwner(position, player);
     }
 
     @Override

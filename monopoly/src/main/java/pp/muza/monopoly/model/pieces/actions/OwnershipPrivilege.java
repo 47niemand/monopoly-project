@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
@@ -21,22 +23,12 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class OwnershipPrivilege extends BaseActionCard {
+public final class OwnershipPrivilege extends Buy {
 
     private static final Logger LOG = LoggerFactory.getLogger(OwnershipPrivilege.class);
 
-    /**
-     * the id of the land that the player took ownership of
-     */
-    protected final int position;
-
-    protected OwnershipPrivilege(ActionType type, int priority, int position) {
-        super(Action.BUY, type, priority);
-        this.position = position;
-    }
-
     OwnershipPrivilege(int position) {
-        this(ActionType.OBLIGATION, HIGH_PRIORITY, position);
+        super(ActionType.OBLIGATION, HIGH_PRIORITY, position);
     }
 
     public static ActionCard create(int position) {
@@ -45,7 +37,11 @@ public class OwnershipPrivilege extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        // nothing to do
+        try {
+            turn.takeProperty(position);
+        } catch (TurnException e) {
+            throw new UnexpectedErrorException("Unexpected error", e);
+        }
         return ImmutableList.of();
     }
 

@@ -88,7 +88,11 @@ public enum GameError {
     /**
      * Auction is already in progress
      */
-    AUCTION_IS_ALREADY_IN_PROGRESS("Auction is already in progress");
+    AUCTION_IS_ALREADY_IN_PROGRESS("Auction is already in progress"),
+    /**
+     * Land is not property
+     */
+    LAND_IS_NOT_PROPERTY("Land is not property");
 
     private final String message;
 

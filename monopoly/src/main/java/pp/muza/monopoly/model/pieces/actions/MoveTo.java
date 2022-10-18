@@ -1,15 +1,10 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
@@ -17,13 +12,16 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Turn;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * A player moves to a new position on the board.
  *
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public class MoveTo extends BaseActionCard {
 
@@ -40,7 +38,7 @@ public class MoveTo extends BaseActionCard {
         this(ActionType.OBLIGATION, DEFAULT_PRIORITY, position);
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new MoveTo(position);
     }
 
@@ -61,8 +59,7 @@ public class MoveTo extends BaseActionCard {
         try {
             path = turn.moveTo(position);
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Error during executing the action: " + this, e);
         }
         if (path.size() == 0) {
             LOG.warn("Staying on the same land");
@@ -73,4 +70,11 @@ public class MoveTo extends BaseActionCard {
                 .build();
     }
 
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("position", position)
+        );
+    }
 }

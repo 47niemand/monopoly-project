@@ -1,12 +1,8 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
@@ -15,13 +11,15 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Turn;
 
+import java.util.List;
+
 /**
  * If the player is in jail, successfully pay the bill will allow ending the turn.
  *
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class JailFine extends Tax {
 
@@ -29,7 +27,7 @@ public final class JailFine extends Tax {
         super(ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
     }
 
-    public static ActionCard of(int value) {
+    public static ActionCard create(int value) {
         return new JailFine(value);
     }
 
@@ -45,7 +43,7 @@ public final class JailFine extends Tax {
         try {
             turn.leaveJail();
         } catch (TurnException e) {
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Error while leaving jail on " + turn, e);
         }
         return ImmutableList.of();
     }

@@ -1,36 +1,18 @@
-package pp.muza.monopoly.model.game.impl;
+package pp.muza.monopoly.model.game;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.*;
+import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.LandType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.BankError;
-import pp.muza.monopoly.errors.BankException;
-import pp.muza.monopoly.errors.GameError;
-import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.Biding;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Game;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.PropertyColor;
-import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.model.game.BaseEngine;
-import pp.muza.monopoly.model.game.BaseGame;
-import pp.muza.monopoly.model.game.PlayerData;
-import pp.muza.monopoly.model.pieces.lands.Jail;
-import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
  * The Game interface implementation.
@@ -46,7 +28,6 @@ public class GameImpl implements Game {
     protected GameImpl(BaseGame baseGame) {
         this.baseGame = baseGame;
     }
-
 
     private void checkPlayerInGame(Player player) throws GameException {
         if (baseGame.playerData(player).getStatus().isFinal()) {
@@ -113,7 +94,7 @@ public class GameImpl implements Game {
         if (getPropertyOwner(position) != player) {
             throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_PLAYER);
         }
-        LOG.info("Player {} is contracting property {} ({})", player.getName(), position, property.getName());
+        LOG.info("Player {} is contracting property {} ({})", player, position, property);
         int value = property.getPrice();
         baseGame.getBank().deposit(player, value);
         baseGame.propertyOwnerRemove(position);
@@ -152,7 +133,7 @@ public class GameImpl implements Game {
 
     @Override
     public void sendCard(Player sender, Player to, ActionCard actionCard) throws GameException {
-        LOG.info("Player {} is sending card '{}' to {}", sender.getName(), actionCard.getName(), to.getName());
+        LOG.info("Player {} is sending card '{}' to {}", sender, actionCard, to);
         checkPlayerInGame(to);
         baseGame.playerData(to).addCard(actionCard);
     }
@@ -171,8 +152,7 @@ public class GameImpl implements Game {
         try {
             baseGame.getBank().deposit(seller, price);
         } catch (BankException e) {
-            LOG.error("Error while depositing money to seller {}", seller, e);
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Error while depositing money to seller " + seller, e);
         }
         baseGame.setPropertyOwner(position, buyer);
     }
@@ -193,10 +173,10 @@ public class GameImpl implements Game {
             if (sameColor) {
                 // double rent if the player owns all properties of the same color
                 rent = property.getPrice() * 2;
-                LOG.info("Player {} owns all properties of the same color {}, so the owner gets double rent: {}", owner.getName(), property.getColor(), rent);
+                LOG.info("Player {} owns all properties of the same color {}, so the owner gets double rent: {}", owner, property.getColor(), rent);
             } else {
                 rent = property.getPrice();
-                LOG.info("Player {} owns property {}, so the owner gets rent: {}", owner.getName(), property.getName(), rent);
+                LOG.info("Player {} owns property {}, so the owner gets rent: {}", owner, property, rent);
             }
         }
         return rent;
@@ -307,19 +287,19 @@ public class GameImpl implements Game {
         }
         BaseGame.Auction auction = baseGame.getAuction();
         if (player.equals(auction.getSeller())) {
-            LOG.error("Player {} is trying to bid on his own property", player.getName());
+            LOG.error("Player {} is trying to bid on his own property", player);
             throw new GameException(GameError.SELLER_CANT_BID);
         }
         if (price < auction.getPrice()) {
-            LOG.warn("Player {} is trying to bid with price {} less than current price {}", player.getName(), price, auction.getPrice());
+            LOG.warn("Player {} is trying to bid with price {} less than current price {}", player, price, auction.getPrice());
             throw new GameException(GameError.BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE);
         }
         if (position != auction.getPosition()) {
-            LOG.error("Player {} is trying to bid on wrong property", player.getName());
+            LOG.error("Player {} is trying to bid on wrong property", player);
             throw new GameException(GameError.POSITION_DOESNT_MATCH_THE_OFFER);
         }
         if (price > getBalance(player)) {
-            LOG.error("Player {} doesn't have enough money to bid", player.getName());
+            LOG.error("Player {} doesn't have enough money to bid", player);
             throw new BankException(BankError.NOT_ENOUGH_COINS);
         }
         baseGame.getAuction().doBid(player, position, price);
@@ -330,11 +310,11 @@ public class GameImpl implements Game {
         checkPlayerInGame(seller);
         checkPlayerInGame(buyer);
         if (getPropertyOwner(position) != seller) {
-            LOG.error("Seller {} doesn't own property {}", seller.getName(), position);
+            LOG.error("Seller {} doesn't own property {}", seller, position);
             throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_PLAYER);
         }
         if (buyer == seller) {
-            LOG.error("Seller {} can't buy his own property {}", seller.getName(), position);
+            LOG.error("Seller {} can't buy his own property {}", seller, position);
             throw new GameException(GameError.YOU_CAN_T_TRADE_WITH_YOURSELF);
         }
         Property property = (Property) baseGame.getBoard().getLand(position);
@@ -344,8 +324,7 @@ public class GameImpl implements Game {
         try {
             baseGame.getBank().deposit(seller, price);
         } catch (BankException e) {
-            LOG.error("Can't deposit money to seller {}", seller, e);
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Can't deposit money to seller " + seller, e);
         }
     }
 

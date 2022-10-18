@@ -1,21 +1,19 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A contract for a property.
@@ -27,7 +25,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public class Contract extends BaseActionCard {
 
@@ -37,30 +35,39 @@ public class Contract extends BaseActionCard {
      * the id of the land to be traded.
      */
     protected final int position;
+    protected final int price;
 
-    protected Contract(ActionType type, int priority, int position) {
+    protected Contract(ActionType type, int priority, int position, int price) {
         super(Action.CONTRACT, type, priority);
         this.position = position;
+        this.price = price;
     }
 
-    Contract(int position) {
-        this(ActionType.CHOOSE, HIGHEST_PRIORITY, position);
+    Contract(int position, int price) {
+        this(ActionType.CHOOSE, HIGHEST_PRIORITY, position, price);
     }
 
-    public static ActionCard of(int position) {
-        return new Contract(position);
+    public static ActionCard create(int position, int price) {
+        return new Contract(position, price);
     }
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         try {
-            turn.doContract(position);
+            turn.doContract(position, price);
         } catch (BankException e) {
             LOG.warn("Player cannot receive coins: {}", e.getMessage());
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Error during executing the action: " + this, e);
         }
         return ImmutableList.of();
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("position", position, "price", price)
+        );
     }
 }

@@ -1,15 +1,13 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
 
 /**
  * This card allows a player to buy property from the game.
@@ -18,7 +16,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class MoveAndTakeover extends MoveTo {
 
@@ -26,7 +24,7 @@ public final class MoveAndTakeover extends MoveTo {
         super(ActionType.CHOOSE, HIGHEST_PRIORITY, position);
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new MoveAndTakeover(position);
     }
 

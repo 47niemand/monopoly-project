@@ -1,15 +1,13 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
 
 /**
  * A Player can use this card to take the top fortune card from the deck.
@@ -17,7 +15,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class TakeFortuneCard extends BaseActionCard {
 
@@ -25,7 +23,7 @@ public final class TakeFortuneCard extends BaseActionCard {
         super(Action.GIFT, ActionType.CHOOSE, DEFAULT_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new TakeFortuneCard();
     }
 

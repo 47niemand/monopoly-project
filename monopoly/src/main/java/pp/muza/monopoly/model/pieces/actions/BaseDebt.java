@@ -1,20 +1,18 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A base class for paying coins to another player or bank.
@@ -22,7 +20,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public abstract class BaseDebt extends BaseActionCard {
 
@@ -53,7 +51,7 @@ public abstract class BaseDebt extends BaseActionCard {
      * @return cards if the player cannot pay the tax.
      */
     protected final List<ActionCard> onFailure(Turn turn) {
-        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.createContract(turn))
+        return ImmutableList.<ActionCard>builder().add(this).addAll(CardUtils.sellDebts(turn))
                 .build();
     }
 
@@ -84,5 +82,13 @@ public abstract class BaseDebt extends BaseActionCard {
             result = ImmutableList.of();
         }
         return result;
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("value", value)
+        );
     }
 }

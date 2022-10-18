@@ -1,18 +1,16 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * It is a notification that the player took ownership of the property.
@@ -20,7 +18,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public class OwnershipPrivilege extends BaseActionCard {
 
@@ -43,7 +41,7 @@ public class OwnershipPrivilege extends BaseActionCard {
     /**
      * this should be package-private
      **/
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new OwnershipPrivilege(position);
     }
 
@@ -51,5 +49,13 @@ public class OwnershipPrivilege extends BaseActionCard {
     protected List<ActionCard> onExecute(Turn turn) {
         // nothing to do
         return ImmutableList.of();
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("position", position)
+        );
     }
 }

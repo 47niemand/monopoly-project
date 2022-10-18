@@ -1,11 +1,10 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.Getter;
 import pp.muza.monopoly.model.Fortune;
+
+import java.util.List;
 
 /**
  * This class represents an action that can be executed by a player.
@@ -20,7 +19,7 @@ public enum Action {
     /**
      * Any property-related action in which the player can buy a property.
      */
-    BUY(ImmutableList.of(Buy.class)),
+    BUY(ImmutableList.of(Buy.class, OwnershipPrivilege.class)),
     /**
      * This is a specific card that stores the chance pile of the game.
      * <p>It should be returned to the game when the card is used.
@@ -75,7 +74,7 @@ public enum Action {
     /**
      * Start the auction.
      */
-    AUCTION(ImmutableList.of(StartAuction.class)),
+    AUCTION(ImmutableList.of(StartAuction.class, EndAuction.class)),
     /**
      * Bid for the property.
      */
@@ -83,7 +82,9 @@ public enum Action {
     /**
      * PromoteAuction for the property on the auction.
      */
-    OFFER(ImmutableList.of(PromoteAuction.class));
+    OFFER(ImmutableList.of(PromoteAuction.class)),
+
+    CHOICE(ImmutableList.of(ChoiceContract.class, ChoiceAuction.class));
 
     @Getter
     private final List<Class<? extends BaseActionCard>> classList;

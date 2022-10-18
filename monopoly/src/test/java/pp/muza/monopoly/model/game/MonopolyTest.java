@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -27,7 +26,6 @@ class MonopolyTest {
 
     @Test
     void contractingTest() throws GameException, TurnException {
-
         Constants.allowAuction = true;
         // setup
         Player player1 = new Player("player1");
@@ -40,29 +38,64 @@ class MonopolyTest {
         monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.BURGER_JOINT), player2);
         // no money
         monopoly.baseGame.getBank().set(player1, 0);
-        monopoly.baseGame.getBank().set(player2, 0);
-
-        // add some obligations to players
-        monopoly.baseGame.playerData(player1).addCard(Tax.of(5));
-        monopoly.baseGame.playerData(player2).addCard(Tax.of(5));
+        // some money
+        monopoly.baseGame.getBank().set(player2, 10);
+        // add some obligations to player1
+        monopoly.baseGame.playerData(player1).addCard(Tax.create(5));
 
         // act
         assertFalse(monopoly.isGameInProgress());
         monopoly.start();
+        // player obligates to pay 5
         PlayTurn turn = monopoly.getTurn();
-        turn.playCard(Tax.of(5));
+        assertTrue(turn.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
+        turn.playCard(Tax.create(5));
         System.out.println("Turn: " + turn.getTurnInfo());
+        // player has no money to pay, so player has to choose between auction and contract
+        // player chooses auction
+        turn.playCard(ChoiceAuction.create());
+        // there are two offers to auction
         List<Offer> offers = turn.getTurnInfo().getActiveCards().stream().filter(c -> c.getAction() == Action.OFFER).map(c -> (Offer) c).collect(Collectors.toList());
         assertEquals(2, offers.size());
-        Offer offer = offers.get(0).openingBid(100);
+        // player chooses the first offer with price 10
+        Offer offer = offers.get(0).openingBid(10);
         turn.playCard(offer);
         assertTrue(turn.isFinished());
+        assertThrows(TurnException.class, () -> turn.playCard(EndAuction.create()));
+
+        // auction started; other players have to make the bid
 
         PlayTurn turn2 = monopoly.getTurn();
-        System.out.println("Turn: " + turn2.getTurnInfo());
-        List<ActionCard> c = turn2.getTurnInfo().getActiveCards();
-        System.out.println("Cards: " + c);
-        turn2.playCard(Bid.of(4, 10));
+        assertEquals(player2, turn2.getPlayer());
+        List<ActionCard> c1 = turn2.getTurnInfo().getActiveCards();
+        assertEquals(1, c1.size());
+        ActionCard b1 = c1.get(0);
+        assertEquals(Action.BID, b1.getAction());
+        Bid bid = (Bid) b1;
+        // player try to bid 11, which is more than his balance
+        turn2.playCard(bid.bid(11));
+        // player try to bid 5, which is less than the minimum bid
+        turn2.playCard(bid.bid(5));
+        // player try to bid 10
+        turn2.playCard(bid.bid(10));
+        turn2.endTurn();
+
+        // incidentally, player2 has only 9 money, so he can't pay for the property
+        monopoly.baseGame.getBank().set(player2, 9);
+
+        // player1 has to finish the auction and contract the property
+        PlayTurn turn3 = monopoly.getTurn();
+        assertEquals(player1, turn3.getPlayer());
+        // finish auction
+        turn3.playCard(EndAuction.create());
+        // contract property
+        turn3.playCard(turn3.getTurnInfo().getActiveCards().get(0));
+        // Since player2 lacks the funds to purchase the property, the card cannot be considered played
+        // Sale is a specific case (ActionType.PROFIT) it is not obligated to be played
+        // so player2 can play tax again and choose another option
+        assertTrue(turn3.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
+
+
 
     }
 
@@ -75,7 +108,7 @@ class MonopolyTest {
         assertTrue(game.isGameInProgress());
         PlayTurn turn = game.getTurn();
         // wrong card
-        assertThrows(TurnException.class, () -> turn.playCard(EndTurn.of()));
+        assertThrows(TurnException.class, () -> turn.playCard(EndTurn.create()));
         // play turn for player 1
         while (!turn.isFinished()) {
             turn.playCard(ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn.getTurnInfo()));
@@ -83,7 +116,7 @@ class MonopolyTest {
         // play turn for player 2
         PlayTurn turn2 = game.getTurn();
         // wrong turn
-        assertThrows(TurnException.class, () -> turn.playCard(Takeover.of(1)));
+        assertThrows(TurnException.class, () -> turn.playCard(Takeover.create(1)));
         turn2.endTurn();
     }
 
@@ -182,7 +215,7 @@ class MonopolyTest {
         assertFalse(game.isGameInProgress());
         game.start();
         PlayTurn turn1 = game.getTurn();
-        turn1.playCard(FortuneCard.of(Chance.GET_OUT_OF_JAIL_FREE));
+        turn1.playCard(FortuneCard.create(Chance.GET_OUT_OF_JAIL_FREE));
 
         // check if there is new_turn card in the player's hand
         assertEquals(1, game.baseGame.playerData(player1).getCards().size());
@@ -256,10 +289,10 @@ class MonopolyTest {
         game.baseGame.getBank().set(player1, 0);
         int position = game.baseGame.getGame().findProperty(Asset.MAYFAIR);
         game.baseGame.playerData(player1).setPosition(position);
-        ActionCard buy = Buy.of(position);
+        ActionCard buy = Buy.create(position);
         assert buy.getType().isMandatory(); // buy is mandatory
-        game.baseGame.playerData(player1).addCard(Buy.of(position));
-        game.baseGame.playerData(player1).addCard(EndTurn.of());
+        game.baseGame.playerData(player1).addCard(Buy.create(position));
+        game.baseGame.playerData(player1).addCard(EndTurn.create());
         // player 1 owns some properties
         game.baseGame.setPropertyOwner(game.baseGame.getGame().findProperty(Asset.THE_ZOO), player1);
         assert Asset.THE_ZOO.getPrice() < Asset.MAYFAIR.getPrice(); // the zoo is cheaper than mayfair
@@ -289,7 +322,7 @@ class MonopolyTest {
         game.start();
         int land = game.baseGame.getGame().findProperty(Asset.THE_ZOO);
         game.baseGame.getBank().set(player1, 0);
-        game.baseGame.playerData(player1).addCard(RentRevenue.of(Asset.THE_ZOO.getPrice(), player2, land));
+        game.baseGame.playerData(player1).addCard(RentRevenue.create(Asset.THE_ZOO.getPrice(), player2, land));
 
         // act
         PlayTurn turn1 = game.getTurn();
@@ -320,8 +353,8 @@ class MonopolyTest {
 
 
         game.baseGame.getBank().set(player1, 0); // player1 has no money
-        game.baseGame.sendCardTest(player1, BirthdayParty.of());
-        game.baseGame.sendCardTest(player1, EndTurn.of());
+        game.baseGame.sendCardTest(player1, BirthdayParty.create());
+        game.baseGame.sendCardTest(player1, EndTurn.create());
 
         {
             PlayTurn turn1 = game.getTurn();

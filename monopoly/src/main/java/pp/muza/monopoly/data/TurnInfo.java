@@ -1,11 +1,11 @@
 package pp.muza.monopoly.data;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Builder;
 import lombok.Value;
 import pp.muza.monopoly.model.ActionCard;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The information about the turn is stored in this class.

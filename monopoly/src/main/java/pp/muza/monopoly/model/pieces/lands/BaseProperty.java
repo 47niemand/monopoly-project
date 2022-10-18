@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.lands;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.PropertyColor;
@@ -11,7 +10,6 @@ import pp.muza.monopoly.model.PropertyColor;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public final class BaseProperty extends BaseLand implements Property {
 
@@ -30,4 +28,10 @@ public final class BaseProperty extends BaseLand implements Property {
     public int getPrice() {
         return price;
     }
+
+    @Override
+    public String toString() {
+        return this.asset.name();
+    }
+
 }

@@ -1,9 +1,9 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.TurnException;
+
+import java.util.List;
 
 /**
  * Turn API for the player.

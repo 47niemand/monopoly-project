@@ -1,16 +1,17 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base class for all action cards.
@@ -22,7 +23,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString
 @EqualsAndHashCode
 public abstract class BaseActionCard implements ActionCard {
 
@@ -48,6 +48,12 @@ public abstract class BaseActionCard implements ActionCard {
         this.priority = priority;
     }
 
+    static Map<String, Object> mergeMaps(Map<String, Object> map1, Map<String, Object> map2) {
+        Map<String, Object> result = new LinkedHashMap<>(map1);
+        map2.forEach((key, value) -> result.merge(key, value, (v1, v2) -> v2));
+        return Collections.unmodifiableMap(result);
+    }
+
     /**
      * Execute the action card.
      * This method is called when the card is playing.
@@ -65,9 +71,23 @@ public abstract class BaseActionCard implements ActionCard {
      * @return list of action cards spawned by the action card.
      */
     public final List<ActionCard> play(Turn turn) {
-        LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
+        LOG.debug("Executing card {} for player {}", this, turn.getPlayer());
         List<ActionCard> result = this.onExecute(turn);
         LOG.debug("Resulting: {}", result);
         return result;
+    }
+
+    /**
+     * Get parameters of the action card.
+     *
+     * @return
+     */
+    protected Map<String, Object> params() {
+        return Map.of("action", action, "type", type, "priority", priority);
+    }
+
+    @Override
+    public String toString() {
+        return "" + this.name + params();
     }
 }

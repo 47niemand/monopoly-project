@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 
@@ -12,7 +11,7 @@ import pp.muza.monopoly.model.ActionType;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class OptionMoveTo extends MoveTo {
 
@@ -20,7 +19,7 @@ public final class OptionMoveTo extends MoveTo {
         super(ActionType.CHOOSE, DEFAULT_PRIORITY, position);
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new OptionMoveTo(position);
     }
 

@@ -1,13 +1,13 @@
 package pp.muza.monopoly.data;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Builder;
 import lombok.Value;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the player's information in the game.
@@ -29,7 +29,7 @@ public class PlayerInfo {
     @SuppressWarnings("all")
     @Override
     public String toString() {
-        return "Player: " + player.getName()
+        return "Player: " + player
                 + " at position: " + position
                 + ", with coins: " + coins
                 + ", with status: " + status

@@ -2,9 +2,10 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
+
+import java.util.Map;
 
 
 /**
@@ -13,7 +14,7 @@ import pp.muza.monopoly.model.Player;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public class ReceiveMoney extends Income {
 
@@ -31,7 +32,15 @@ public class ReceiveMoney extends Income {
         this(HIGHEST_PRIORITY, value, sender);
     }
 
-    public static ActionCard of(int value, Player sender) {
+    public static ActionCard create(int value, Player sender) {
         return new ReceiveMoney(value, sender);
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("sender", sender)
+        );
     }
 }

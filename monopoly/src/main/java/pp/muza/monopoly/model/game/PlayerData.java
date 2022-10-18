@@ -1,35 +1,35 @@
 package pp.muza.monopoly.model.game;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author dmytromuza
  */
-public final class PlayerData {
+final class PlayerData {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerData.class);
 
-    final Player player;
+    private final Player player;
+
     private final List<ActionCard> cards = new ArrayList<>();
     private final List<ActionCard> hold = new ArrayList<>();
-    PlayerStatus status;
-    int position;
 
-    public PlayerData(Player player) {
+    private PlayerStatus status;
+    private int position;
+
+    PlayerData(Player player) {
         this.player = player;
     }
 
@@ -43,9 +43,9 @@ public final class PlayerData {
 
     public void setStatus(PlayerStatus status) {
         if (this.status == null) {
-            LOG.debug("{}: set status to {}", player.getName(), status);
+            LOG.debug("{}: set status to {}", player, status);
         } else {
-            LOG.info("{}: changing status from {} to {}", this.player.getName(), this.status, status);
+            LOG.info("{}: changing status from {} to {}", this.player, this.status, status);
         }
         this.status = status;
     }
@@ -56,15 +56,15 @@ public final class PlayerData {
 
     public void setPosition(int position) {
         if (this.position != position) {
-            LOG.info("{} is moving from position {} to position {}", this.player.getName(), this.position, position);
+            LOG.info("{} is moving from position {} to position {}", this.player, this.position, position);
             this.position = position;
         } else {
-            LOG.info("{} at position {}", this.player.getName(), this.position);
+            LOG.info("{} at position {}", this.player, this.position);
         }
     }
 
     public List<ActionCard> getCards() {
-        return Stream.of(cards, hold).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
+        return Collections.unmodifiableList(cards);
     }
 
     public int getCurrentPriority() {
@@ -89,21 +89,29 @@ public final class PlayerData {
     }
 
     public void holdCard(ActionCard actionCard) {
-        ActionCard card = removeCard(actionCard);
-        if (card != null) {
-            LOG.debug("Holding card: {}", card);
-            hold.add(card);
+        LOG.info("{}: holding card {}", this.player, actionCard);
+        if (cards.contains(actionCard)) {
+            if (hold.contains(actionCard)) {
+                LOG.warn("{}: card {} is already held", this.player, actionCard);
+            } else {
+                int i = cards.indexOf(actionCard);
+                hold.add(cards.get(i));
+            }
         } else {
-            LOG.warn("Cannot hold card: {}", actionCard);
+            LOG.warn("{}: card {} is not in the player's hand", this.player, actionCard);
         }
     }
 
     public void releaseAll() {
-        for (ActionCard holdCard : hold) {
-            LOG.debug("Releasing card: {}", holdCard);
-            addCard(holdCard);
+        if (!hold.isEmpty()) {
+            LOG.debug("Releasing all cards: {}", hold);
+            hold.clear();
         }
-        hold.clear();
+    }
+
+    public boolean canUseCard(ActionCard actionCard) {
+        int priority = getCurrentPriority();
+        return cards.contains(actionCard) && actionCard.getPriority() <= priority;
     }
 
     public List<ActionCard> getActiveCards() {
@@ -111,6 +119,7 @@ public final class PlayerData {
         int currentPriority = getCurrentPriority();
         result = cards.stream()
                 .filter(actionCard -> actionCard.getPriority() <= currentPriority)
+                .filter(actionCard -> !hold.contains(actionCard))
                 .sorted(Comparator.comparing(ActionCard::getPriority))
                 .collect(Collectors.toUnmodifiableList());
         return result;
@@ -123,12 +132,26 @@ public final class PlayerData {
      * @return true if the card was added and false if the card was not added
      */
     public boolean addCard(ActionCard card) {
+        boolean result;
         if (cards.contains(card)) {
-            LOG.debug("Card {} already on player's hand", card);
-            return false;
+            if (hold.contains(card)) {
+                LOG.debug("Releasing card {} from hold for {}", card, player);
+                result = hold.removeAll(cards);
+            } else {
+                LOG.debug("Card {} already in hand for {}", card, player);
+                result = false;
+            }
+        } else {
+            LOG.debug("Adding card {} to player {}", card, player);
+            result = cards.add(card);
         }
-        LOG.debug("{}: adding card '{}'", player.getName(), card);
-        return cards.add(card);
+        return result;
+    }
+
+    private List<ActionCard> getByCard(ActionCard card) {
+        return this.cards.stream()
+                .filter(actionCard -> actionCard.equals(card))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -138,19 +161,18 @@ public final class PlayerData {
      * @return removed card or null if card was not found
      */
     public ActionCard removeCard(ActionCard card) {
+        LOG.debug("Removing card {} from player {}", card, player);
         ActionCard result = null;
-        List<ActionCard> removed;
-        removed = cards.stream()
-                .filter(actionCard -> actionCard.equals(card))
-                .collect(Collectors.toList());
-        if (removed.size() > 1) {
-            LOG.warn("{}: more than one card '{}' found", player.getName(), card);
-            result = removed.get(0);
-        } else if (removed.size() == 1) {
-            result = removed.get(0);
+        List<ActionCard> toRemove;
+        toRemove = getByCard(card);
+        if (toRemove.size() > 0) {
+            result = toRemove.get(0);
         }
-        cards.removeAll(removed);
-        hold.removeAll(removed);
+        if (toRemove.size() > 1) {
+            LOG.warn("Found more than one card to remove: {}", toRemove);
+        }
+        cards.removeAll(toRemove);
+        hold.removeAll(toRemove);
         return result;
     }
 

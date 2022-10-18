@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 
@@ -12,7 +11,7 @@ import pp.muza.monopoly.model.ActionType;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public class Tax extends BaseDebt {
 
@@ -24,7 +23,7 @@ public class Tax extends BaseDebt {
         this(ActionType.OBLIGATION, DEFAULT_PRIORITY, value);
     }
 
-    public static ActionCard of(int value) {
+    public static ActionCard create(int value) {
         return new Tax(value);
     }
 }

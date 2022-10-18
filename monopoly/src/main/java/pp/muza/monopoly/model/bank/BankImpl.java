@@ -1,15 +1,14 @@
 package pp.muza.monopoly.model.bank;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Stores the bank state.
@@ -36,26 +35,26 @@ public class BankImpl implements Bank {
     @Override
     public void deposit(Player player, int value) throws BankException {
         checkCoins(value);
-        LOG.info("Adding {} coins to {}", value, player.getName());
+        LOG.info("Adding {} coins to {}", value, player);
         playerCoins.put(player, playerCoins.getOrDefault(player, 0) + value);
-        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
+        LOG.info("{} has {} coin(s)", player, playerCoins.get(player));
     }
 
     @Override
     public void withdraw(Player player, int value) throws BankException {
         checkCoins(value);
-        LOG.info("Withdrawing {} coin(s) from player {}", value, player.getName());
+        LOG.info("Withdrawing {} coin(s) from player {}", value, player);
         if (playerCoins.get(player).compareTo(value) < 0) {
-            LOG.warn("{} has not enough coins {}, current balance: {}", player.getName(), value, playerCoins.get(player));
+            LOG.warn("{} has not enough coins {}, current balance: {}", player, value, playerCoins.get(player));
             throw new BankException(BankError.NOT_ENOUGH_COINS);
         }
         playerCoins.put(player, playerCoins.getOrDefault(player, 0) - value);
-        LOG.info("{} has {} coin(s)", player.getName(), playerCoins.get(player));
+        LOG.info("{} has {} coin(s)", player, playerCoins.get(player));
     }
 
     @Override
     public void set(Player player, int value) {
-        LOG.info("Putting {} coin(s) in {}'s account", value, player.getName());
+        LOG.info("Putting {} coin(s) in {}'s account", value, player);
         playerCoins.put(player, value);
     }
 }

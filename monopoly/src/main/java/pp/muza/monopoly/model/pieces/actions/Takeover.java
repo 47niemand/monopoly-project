@@ -1,20 +1,17 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
+
+import java.util.List;
 
 
 /**
@@ -27,7 +24,7 @@ import pp.muza.monopoly.model.pieces.lands.LandType;
  */
 
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class Takeover extends Arrival {
 
@@ -37,7 +34,7 @@ public final class Takeover extends Arrival {
         super(position);
     }
 
-    public static ActionCard of(int position) {
+    public static ActionCard create(int position) {
         return new Takeover(position);
     }
 
@@ -48,10 +45,10 @@ public final class Takeover extends Arrival {
         if (land.getType() == LandType.PROPERTY) {
             Player owner = turn.getPropertyOwner(position);
             if (owner != turn.getPlayer()) {
-                LOG.info("Player {} is buying property {}.", turn.getPlayer().getName(), land.getName());
+                LOG.info("Player {} is buying property {}.", turn.getPlayer(), land);
                 result = ImmutableList.of(new Buy(position));
             } else {
-                LOG.info("Property {} is owned by player, nothing to do", land.getName());
+                LOG.info("Property {} is owned by player, nothing to do", land);
                 result = ImmutableList.of();
             }
         } else {
@@ -59,5 +56,4 @@ public final class Takeover extends Arrival {
         }
         return result;
     }
-
 }

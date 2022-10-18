@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Turn API for the engine.
@@ -61,10 +61,11 @@ public interface Turn {
      * Executes the contract
      *
      * @param position the land id.
+     * @param price
      * @throws BankException if the player doesn't have enough coins.
      * @throws TurnException if the player is not in the game.
      */
-    void doContract(int position) throws BankException, TurnException;
+    void doContract(int position, int price) throws BankException, TurnException;
 
     /**
      * returns the position of land by the given name.
@@ -92,13 +93,6 @@ public interface Turn {
      * @throws TurnException if the player is not in the game.
      */
     void sendCard(Player to, ActionCard actionCard) throws TurnException;
-
-    /**
-     * Birthday party.
-     *
-     * @throws TurnException if it is not currently a player's turn.
-     */
-    void doBirthdayParty() throws TurnException;
 
     /**
      * Holds current turn and starts the auction.
@@ -241,15 +235,6 @@ public interface Turn {
      */
     List<Player> getPlayers();
 
-
-    /**
-     * Sends an auction invitation to all players.
-     *
-     * @param offer the offer.
-     * @throws TurnException if operation fails (offered land is not belonging to the player, etc).
-     */
-    void sendOfferToAll(Offer offer) throws TurnException;
-
     /**
      * Do bid.
      *
@@ -285,4 +270,9 @@ public interface Turn {
      * @throws TurnException if the auction is not started, or the current player is not the auctioneer.
      */
     Biding endAuction() throws TurnException;
+
+    /**
+     * @throws TurnException
+     */
+    void holdTurn() throws TurnException;
 }

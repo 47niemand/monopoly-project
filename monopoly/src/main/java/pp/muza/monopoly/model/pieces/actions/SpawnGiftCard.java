@@ -1,19 +1,17 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Buy a free property. If all are owned, purchase from any player.
@@ -21,17 +19,17 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class SpawnGiftCard extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class);
 
-    private SpawnGiftCard() {
+    SpawnGiftCard() {
         super(Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new SpawnGiftCard();
     }
 

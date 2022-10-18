@@ -1,49 +1,24 @@
 package pp.muza.monopoly.model.game;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import com.google.common.collect.ImmutableList;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Value;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.ActionType;
-import pp.muza.monopoly.model.Bank;
-import pp.muza.monopoly.model.Biding;
-import pp.muza.monopoly.model.Board;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Game;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.PlayTurn;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
-import pp.muza.monopoly.model.game.impl.GameImpl;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The base implementation of the game.
@@ -61,18 +36,17 @@ public abstract class BaseGame {
     private final ImmutableList<Player> players;
     private final Map<Player, PlayerData> playerData = new HashMap<>();
     private final Board board;
-    private final Game game = new GameImpl(this) {
-    };
+    private final Game game = new GameImpl(this);
     private final BaseGame thisGame = this;
 
-    BasePlayTurn currentTurn;
+    BaseTurn currentTurn;
     Auction auction;
     int currentPlayerIndex = -1;
     int turnNumber = 0;
     int maxTurns = Constants.DEFAULT_MAX_TURNS;
     private boolean started = false;
 
-    protected BaseGame(GameInfo gameInfo) {
+    BaseGame(GameInfo gameInfo) {
         this.bank = new BankImpl();
         this.board = gameInfo.getBoard();
         this.fortuneCards = new LinkedList<>(gameInfo.getFortunes());
@@ -112,7 +86,7 @@ public abstract class BaseGame {
         }
     }
 
-    protected BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
+    BaseGame(Bank bank, Board board, List<Fortune> fortuneCards, List<Player> players) {
         this.bank = bank;
         this.board = board;
         this.fortuneCards = new LinkedList<>(fortuneCards);
@@ -149,17 +123,16 @@ public abstract class BaseGame {
         }
         Player currentPlayer = players.get(currentPlayerIndex);
         turnNumber++;
-        currentTurn = new BasePlayTurn(currentPlayer, turnNumber) {
+        currentTurn = new BaseTurn(currentPlayer, turnNumber) {
             @Override
             protected BaseGame baseGame() {
                 return thisGame;
             }
         };
-        LOG.info("{} is starting turn {}", currentPlayer.getName(), turnNumber);
-        LOG.info("Info: {}", getPlayerInfo(currentPlayer));
+        LOG.info("{} is starting turn {}", currentPlayer, turnNumber);
     }
 
-    private void getBackAllChanceCards(Player player, boolean includeKeepable) {
+    private void getBackChanceCards(Player player, boolean includeKeepable) {
         PlayerData data = playerData.get(player);
         List<ActionCard> chanceCards = data.getCards().stream()
                 .filter(x ->
@@ -198,41 +171,41 @@ public abstract class BaseGame {
         if (fortuneCards.contains(fortune)) {
             throw new IllegalArgumentException("Card already in deck");
         }
-        LOG.info("Fortune card '{}; returned", card.getName());
+        LOG.info("Fortune card '{}; returned", card);
         fortuneCards.addLast(fortune);
     }
 
     //================================================================================================
 
-    public List<Integer> belongings(Player player) {
+    List<Integer> belongings(Player player) {
         return propertyOwners.entrySet().stream()
                 .filter(x -> x.getValue() == player)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public void propertyOwnerRemove(int position) {
+    void propertyOwnerRemove(int position) {
         Property property = (Property) board.getLand(position);
-        LOG.info("Property {} ({}) is now free", position, property.getName());
+        LOG.info("Property {} ({}) is now free", position, property);
         Player oldOwner = propertyOwners.remove(position);
         if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), position, property.getName());
+            LOG.info("{} lost property {} ({})", oldOwner, position, property);
         }
     }
 
-    public PlayerData playerData(Player player) {
+    PlayerData playerData(Player player) {
         return playerData.get(player);
     }
 
-    public Bank getBank() {
+    Bank getBank() {
         return bank;
     }
 
-    public Fortune takeFortuneCard() {
+    Fortune takeFortuneCard() {
         return fortuneCards.removeFirst();
     }
 
-    public boolean isGameInProgress() {
+    boolean isGameInProgress() {
         boolean inProgress = (currentTurn != null && !currentTurn.isFinished());
         inProgress |= (getNextPlayerIndex() != currentPlayerIndex);
         boolean lastPlayer = getPlayers().stream().filter(x -> !playerData.get(x).getStatus().isFinal()).count() < 2;
@@ -254,30 +227,30 @@ public abstract class BaseGame {
         data.releaseAll();
     }
 
-    public void holdTurn(Turn turn) throws GameException {
+    void holdTurn(Turn turn) throws GameException {
         checkTurn(turn);
         Player player = currentTurn.getPlayer();
-        LOG.debug("{} is holding turn", turn.getPlayer().getName());
+        LOG.debug("{} is holding turn", turn.getPlayer());
         releaseTurn();
         PlayerData data = playerData.get(player);
         List<ActionCard> mandatoryCards = data.getCards().stream().filter(actionCard -> actionCard.getType().isMandatory()).collect(Collectors.toList());
         if (mandatoryCards.size() > 0) {
-            LOG.info("Player {} has mandatory cards: {}", player.getName(), mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+            LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         }
         currentTurn.markFinished();
         currentTurn = null;
     }
 
-    public void finishTurn(Turn turn) throws GameException {
+    void finishTurn(Turn turn) throws GameException {
         checkTurn(turn);
         Player player = currentTurn.getPlayer();
-        LOG.debug("Finishing turn for {}", player.getName());
+        LOG.debug("Finishing turn for {}", player);
         releaseTurn();
         PlayerData data = playerData.get(player);
         List<ActionCard> mandatoryCards = data.getCards().stream().filter(actionCard -> actionCard.getType().isMandatory()).collect(Collectors.toList());
         currentTurn.markFinished();
         if (mandatoryCards.size() > 0) {
-            LOG.info("Player {} has mandatory cards: {}", player.getName(), mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
+            LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
             // Player with obligation cards is out of the game.
             data.setStatus(PlayerStatus.OUT_OF_GAME);
 
@@ -287,14 +260,14 @@ public abstract class BaseGame {
             }
 
             // return chance cards to game if any
-            getBackAllChanceCards(player, true);
+            getBackChanceCards(player, true);
             return;
         }
-        getBackAllChanceCards(player, false);
+        getBackChanceCards(player, false);
         currentTurn = null;
     }
 
-    public void start() throws GameException {
+    void start() throws GameException {
         if (players.size() < Constants.MIN_PLAYERS) {
             throw new GameException(GameError.NOT_ENOUGH_PLAYERS);
         }
@@ -308,27 +281,27 @@ public abstract class BaseGame {
         started = true;
     }
 
-    public PlayTurn getTurn() throws GameException {
+    PlayTurn getTurn() throws GameException {
         checkStarted();
         if (currentTurn == null || currentTurn.isFinished()) {
             nextPlayer();
             newTurn();
             Player currentPlayer = players.get(currentPlayerIndex);
-            // check if the player has obligation cards with high priority
-            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() == ActionType.OBLIGATION);
+            // check if the player has any non-kepable cards
+            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() != ActionType.KEEPABLE);
             if (!mandatoryCards) {
                 // if not, then the player can start a new turn
-                playerData(currentPlayer).addCard(NewTurn.of());
+                playerData(currentPlayer).addCard(NewTurn.create());
             }
         }
-        return currentTurn;
+        return currentTurn.playTurn();
     }
 
-    public Game getGame() {
+    Game getGame() {
         return game;
     }
 
-    public List<ActionCard> getActiveCards(Player player) {
+    List<ActionCard> getActiveCards(Player player) {
         PlayerData data = playerData.get(player);
 
         /*
@@ -343,19 +316,19 @@ public abstract class BaseGame {
         return data.getActiveCards();
     }
 
-    public List<ActionCard> getCards(Player player) {
+    List<ActionCard> getCards(Player player) {
         return playerData.get(player).getCards();
     }
 
-    public Board getBoard() {
+    Board getBoard() {
         return board;
     }
 
-    public List<Player> getPlayers() {
+    List<Player> getPlayers() {
         return players;
     }
 
-    public PlayerInfo getPlayerInfo(Player player) {
+    PlayerInfo getPlayerInfo(Player player) {
         PlayerData data = playerData.get(player);
         return PlayerInfo.builder()
                 .player(player)
@@ -367,28 +340,28 @@ public abstract class BaseGame {
                 .build();
     }
 
-    public Map<Integer, Player> getPropertyOwners() {
+    Map<Integer, Player> getPropertyOwners() {
         return Collections.unmodifiableMap(propertyOwners);
     }
 
-    public void setPropertyOwner(int position, Player player) {
+    void setPropertyOwner(int position, Player player) {
         Property property = (Property) getBoard().getLand(position);
-        LOG.info("Property {} ({}) is now owned by {}", position, property.getName(), player.getName());
+        LOG.info("Property {} ({}) is now owned by {}", position, property, player);
         Player oldOwner = propertyOwners.put(position, player);
         if (oldOwner != null) {
-            LOG.info("{} lost property {} ({})", oldOwner.getName(), position, property.getName());
+            LOG.info("{} lost property {} ({})", oldOwner, position, property);
         }
     }
 
-    public Player getPropertyOwner(int position) {
+    Player getPropertyOwner(int position) {
         return propertyOwners.get(position);
     }
 
-    public int getTurnNumber() {
+    int getTurnNumber() {
         return this.turnNumber;
     }
 
-    public GameInfo getGameInfo() {
+    GameInfo getGameInfo() {
         return GameInfo.builder()
                 .players(getPlayers())
                 .playerInfos(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
@@ -400,20 +373,20 @@ public abstract class BaseGame {
                 .build();
     }
 
-    public void auction(Player player, int position, int price) throws GameException {
+    void auction(Player player, int position, int price) throws GameException {
         Property property = (Property) board.getLand(position);
         if (auction != null) {
             throw new GameException(GameError.AUCTION_IS_ALREADY_IN_PROGRESS);
         }
-        LOG.info("Player {} is auctioning property {} ({})", player.getName(), position, property.getName());
+        LOG.info("Player {} is auctioning property {} ({})", player, position, property);
         auction = new Auction(player, position, price);
     }
 
-    public Auction getAuction() {
+    Auction getAuction() {
         return auction;
     }
 
-    public Biding endAuction(Player player) throws GameException {
+    Biding endAuction(Player player) throws GameException {
         if (auction == null) {
             throw new GameException(GameError.AUCTION_IS_NOT_IN_PROGRESS);
         }
@@ -445,7 +418,7 @@ public abstract class BaseGame {
      * for testing
      */
     void sendCardTest(Player to, ActionCard actionCard) {
-        LOG.info("Sending card '{}' to {}", actionCard.getName(), to.getName());
+        LOG.info("Sending card '{}' to {}", actionCard, to);
         playerData.get(to).addCard(actionCard);
     }
 
@@ -461,14 +434,14 @@ public abstract class BaseGame {
      * Represents an auction
      */
     @Data
-    public class Auction {
+    class Auction {
         private final Player seller;
         private final int position;
         private final int price;
         @Getter(AccessLevel.NONE)
         private final Map<Player, Biding> bids = new LinkedHashMap<>();
 
-        public Player winner() {
+        Player winner() {
             boolean seen = false;
             Map.Entry<Player, Biding> best = null;
             for (Map.Entry<Player, Biding> entry : bids.entrySet()) {
@@ -481,13 +454,12 @@ public abstract class BaseGame {
             return seen ? best.getKey() : null;
         }
 
-        public void doBid(Player player, int postion, int price) {
-            LOG.info("{} bids {} for property {} ({})", player.getName(), price, position, board.getLand(position).getName());
+        void doBid(Player player, int postion, int price) {
+            LOG.info("{} bids {} for property {} ({})", player, price, position, board.getLand(position));
             // put to the map at the end
             bids.remove(player);
             Biding biding = new BidingImpl(postion, price, player);
             bids.put(player, biding);
-
         }
     }
 

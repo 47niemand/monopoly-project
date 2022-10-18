@@ -10,7 +10,7 @@ import lombok.Getter;
 
 public enum ActionType {
     /**
-     * The CHOOSE is type of cards can be used only once.
+     * Only one action with this type and priority can be executed in the same turn.
      **/
     CHOOSE(true),
     /**
@@ -22,7 +22,7 @@ public enum ActionType {
      */
     OBLIGATION(true),
     /**
-     * This is a profit card. It could be used before beginning a new turn.
+     * This is a profit card. It can be played only once.
      */
     PROFIT(true);
 

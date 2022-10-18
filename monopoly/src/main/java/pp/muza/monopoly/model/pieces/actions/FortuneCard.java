@@ -1,28 +1,19 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.ActionType;
-import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.PropertyColor;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * This is a specific card that stores the chance pile of the game.
@@ -31,7 +22,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class FortuneCard extends BaseActionCard implements Fortune {
 
@@ -49,7 +40,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         this.chance = chance;
     }
 
-    public static Fortune of(Chance chance) {
+    public static Fortune create(Chance chance) {
         return new FortuneCard(chance);
     }
 
@@ -67,17 +58,16 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             result.add(turn.popFortuneCard());
         } else if (recipient == turn.getPlayer()) {
             LOG.warn("{} is trying to give a chance card to himself, get another chance card",
-                    recipient.getName());
+                    recipient);
             result.add(turn.popFortuneCard());
         } else if (turn.getPlayerStatus(recipient).isFinal()) {
-            LOG.warn("{} is out of the game, get another chance card", recipient.getName());
+            LOG.warn("{} is out of the game, get another chance card", recipient);
             result.add(turn.popFortuneCard());
         } else {
             try {
-                turn.sendCard(recipient, SpawnGiftCard.of());
+                turn.sendCard(recipient, new SpawnGiftCard());
             } catch (TurnException e) {
-                LOG.error("Error sending gift card to {}", recipient.getName(), e);
-                throw new UnexpectedErrorException(e);
+                throw new UnexpectedErrorException("Error sending gift card to " + recipient, e);
             }
             result.add(turn.popFortuneCard());
         }
@@ -87,7 +77,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
         LOG.info("Chance: " + chance.name());
-        LOG.debug("Executing card {} for player {}", this, turn.getPlayer().getName());
+        LOG.debug("Executing card {} for player {}", this, turn.getPlayer());
         List<ActionCard> result = new ArrayList<>();
 
         switch (chance) {
@@ -114,16 +104,16 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                 result.addAll(spawnGetOrPayByName(turn, Asset.GO_KARTS));
                 break;
             case PRIZE:
-                result.add(Income.of(Constants.PRIZE_AMOUNT));
+                result.add(new Income(Constants.PRIZE_AMOUNT));
                 break;
             case BIRTHDAY:
-                result.add(BirthdayParty.of());
+                result.add(new BirthdayParty());
                 break;
             case LUXURY_TAX:
                 result.add(new Tax(Constants.LUXURY_TAX_AMOUNT));
                 break;
             case ADVANCE_TO_GO:
-                result.add(MoveTo.of(turn.getStartPos()));
+                result.add(new MoveTo(turn.getStartPos()));
                 break;
             case MOVE_FORWARD_ONE_SPACE:
                 result.add(new OptionMove(1));
@@ -137,11 +127,10 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                     try {
                         turn.leaveJail();
                     } catch (TurnException e) {
-                        LOG.error("Error leaving jail: {}", this, e);
-                        throw new UnexpectedErrorException(e);
+                        throw new UnexpectedErrorException("Error leaving jail: " + this, e);
                     }
                 } else {
-                    LOG.warn("Player {} is not in jail", turn.getPlayer().getName());
+                    LOG.warn("Player {} is not in jail", turn.getPlayer());
                     result.add(this);
                 }
                 break;
@@ -177,5 +166,13 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             builder.add(new OptionMoveTo(position));
         }
         return builder.build();
+    }
+
+    @Override
+    protected Map<String, Object> params() {
+        return mergeMaps(
+                super.params(),
+                Map.of("chance", chance.name())
+        );
     }
 }

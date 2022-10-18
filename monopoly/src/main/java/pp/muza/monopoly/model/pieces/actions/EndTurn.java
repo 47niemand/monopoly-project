@@ -1,20 +1,17 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
+
+import java.util.List;
 
 
 /**
@@ -23,7 +20,7 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-@ToString(callSuper = true)
+
 @EqualsAndHashCode(callSuper = true)
 public final class EndTurn extends BaseActionCard {
 
@@ -33,7 +30,7 @@ public final class EndTurn extends BaseActionCard {
         super(Action.END_TURN, ActionType.OBLIGATION, LOW_PRIORITY);
     }
 
-    public static ActionCard of() {
+    public static ActionCard create() {
         return new EndTurn();
     }
 
@@ -42,8 +39,7 @@ public final class EndTurn extends BaseActionCard {
         try {
             turn.endTurn();
         } catch (TurnException e) {
-            LOG.error("Error during executing the action: {}", this, e);
-            throw new UnexpectedErrorException(e);
+            throw new UnexpectedErrorException("Error during executing the action: " + this, e);
         }
         return ImmutableList.of();
     }

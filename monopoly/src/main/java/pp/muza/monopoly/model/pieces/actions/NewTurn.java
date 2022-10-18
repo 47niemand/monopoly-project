@@ -25,7 +25,7 @@ public final class NewTurn extends BaseActionCard {
         super(Action.NEW_TURN, ActionType.OBLIGATION, NEW_TURN_PRIORITY);
     }
 
-    public static NewTurn create() {
+    public static ActionCard create() {
         return new NewTurn();
     }
 

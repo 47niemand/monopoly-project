@@ -24,10 +24,10 @@ public final class StartAuction extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
     StartAuction() {
-        super(Action.AUCTION, ActionType.CHOOSE, DEFAULT_PRIORITY);
+        super(Action.AUCTION, ActionType.OPTIONAL, DEFAULT_PRIORITY);
     }
 
-    public static StartAuction create() {
+    public static ActionCard create() {
         return new StartAuction();
     }
 

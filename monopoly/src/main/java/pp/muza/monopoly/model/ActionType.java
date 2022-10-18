@@ -24,7 +24,11 @@ public enum ActionType {
     /**
      * This is a profit card. It can be played only once.
      */
-    PROFIT(true);
+    PROFIT(true),
+    /**
+     * This card is optional to play.
+     */
+    OPTIONAL(false);
 
     /**
      * true if the card is obligatory, false otherwise

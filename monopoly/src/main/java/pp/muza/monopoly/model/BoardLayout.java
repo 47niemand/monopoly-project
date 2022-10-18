@@ -1,13 +1,33 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.consts.Constants;
-import pp.muza.monopoly.model.board.BoardImpl;
-import pp.muza.monopoly.model.pieces.lands.*;
+import static pp.muza.monopoly.model.Asset.AQUARIUM;
+import static pp.muza.monopoly.model.Asset.BAKERY;
+import static pp.muza.monopoly.model.Asset.BURGER_JOINT;
+import static pp.muza.monopoly.model.Asset.CINEMA;
+import static pp.muza.monopoly.model.Asset.COFFEE_SHOP;
+import static pp.muza.monopoly.model.Asset.DONUT_SHOP;
+import static pp.muza.monopoly.model.Asset.GO_KARTS;
+import static pp.muza.monopoly.model.Asset.LIBRARY;
+import static pp.muza.monopoly.model.Asset.MAYFAIR;
+import static pp.muza.monopoly.model.Asset.MUSEUM;
+import static pp.muza.monopoly.model.Asset.PARK_LANE;
+import static pp.muza.monopoly.model.Asset.PET_SHOP;
+import static pp.muza.monopoly.model.Asset.SWIMMING_POOL;
+import static pp.muza.monopoly.model.Asset.THEATRE;
+import static pp.muza.monopoly.model.Asset.THE_ZOO;
+import static pp.muza.monopoly.model.Asset.TOY_SHOP;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pp.muza.monopoly.model.Asset.*;
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.model.board.BoardImpl;
+import pp.muza.monopoly.model.pieces.lands.BaseProperty;
+import pp.muza.monopoly.model.pieces.lands.ChanceLand;
+import pp.muza.monopoly.model.pieces.lands.GotoJail;
+import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.Parking;
+import pp.muza.monopoly.model.pieces.lands.Start;
 
 /**
  * The Board layout.

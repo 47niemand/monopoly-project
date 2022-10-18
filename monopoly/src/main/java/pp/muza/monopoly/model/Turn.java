@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Turn API for the engine.
@@ -61,7 +61,7 @@ public interface Turn {
      * Executes the contract
      *
      * @param position the land id.
-     * @param price
+     * @param price    the price.
      * @throws BankException if the player doesn't have enough coins.
      * @throws TurnException if the player is not in the game.
      */
@@ -259,6 +259,8 @@ public interface Turn {
      * @param position the position of the property.
      * @param price    the price of the property.
      * @param buyer    the buyer.
+     * @throws BankException if a buyer doesn't have enough coins.
+     * @throws TurnException if operation fails.
      */
     void doSale(int position, int price, Player buyer) throws TurnException, BankException;
 
@@ -272,7 +274,12 @@ public interface Turn {
     Biding endAuction() throws TurnException;
 
     /**
-     * @throws TurnException
+     * Holds current turn.
+     * <p>
+     * Other players should player their cards.
+     * </p>
+     *
+     * @throws TurnException if the player cannot hold the turn.
      */
     void holdTurn() throws TurnException;
 }

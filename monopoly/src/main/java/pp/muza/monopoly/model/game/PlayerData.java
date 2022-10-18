@@ -1,18 +1,18 @@
 package pp.muza.monopoly.model.game;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.data.PlayerInfo;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 
 /**
  * @author dmytromuza
@@ -109,9 +109,18 @@ final class PlayerData {
         }
     }
 
-    public boolean canUseCard(ActionCard actionCard) {
+    public boolean canUseCard(ActionCard card) {
+        if (card == null) {
+            throw new NullPointerException("card is null");
+        }
         int priority = getCurrentPriority();
-        return cards.contains(actionCard) && actionCard.getPriority() <= priority;
+        int i = cards.indexOf(card);
+        if (i < 0) {
+            return false;
+        } else {
+            ActionCard actionCard = cards.get(i);
+            return actionCard.getPriority() <= priority;
+        }
     }
 
     public List<ActionCard> getActiveCards() {
@@ -126,12 +135,16 @@ final class PlayerData {
     }
 
     /**
-     * Adds the card to the player's hand. card can be added only if the player does not have it already.
+     * Adds the card to the player's hand. card can be added only if the player does
+     * not have it already.
      *
      * @param card the card to add
      * @return true if the card was added and false if the card was not added
      */
     public boolean addCard(ActionCard card) {
+        if (card == null) {
+            throw new NullPointerException("card is null");
+        }
         boolean result;
         if (cards.contains(card)) {
             if (hold.contains(card)) {
@@ -161,6 +174,9 @@ final class PlayerData {
      * @return removed card or null if card was not found
      */
     public ActionCard removeCard(ActionCard card) {
+        if (card == null) {
+            throw new NullPointerException("card is null");
+        }
         LOG.debug("Removing card {} from player {}", card, player);
         ActionCard result = null;
         List<ActionCard> toRemove;
@@ -184,9 +200,5 @@ final class PlayerData {
                 + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ")";
-    }
-
-    public void assign(PlayerInfo playerInfo) {
-
     }
 }

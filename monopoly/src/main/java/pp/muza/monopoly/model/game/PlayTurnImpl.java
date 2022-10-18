@@ -1,13 +1,16 @@
 package pp.muza.monopoly.model.game;
 
+import java.util.List;
+
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 
-import java.util.List;
-
+/**
+ * @author dmytromuza
+ */
 public class PlayTurnImpl implements PlayTurn {
 
     private final BaseTurn turn;

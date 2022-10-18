@@ -1,17 +1,18 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.ActionType;
-import pp.muza.monopoly.model.Turn;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * Base class for all action cards.
@@ -80,7 +81,7 @@ public abstract class BaseActionCard implements ActionCard {
     /**
      * Get parameters of the action card.
      *
-     * @return
+     * @return map of parameters.
      */
     protected Map<String, Object> params() {
         return Map.of("action", action, "type", type, "priority", priority);

@@ -1,8 +1,15 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
@@ -11,11 +18,6 @@ import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 import pp.muza.monopoly.model.pieces.lands.Start;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 final class CardUtils {
 

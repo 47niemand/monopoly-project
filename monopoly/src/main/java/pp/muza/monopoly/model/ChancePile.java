@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.model.pieces.actions.Chance;
-import pp.muza.monopoly.model.pieces.actions.FortuneCard;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import pp.muza.monopoly.model.pieces.actions.Chance;
+import pp.muza.monopoly.model.pieces.actions.FortuneCard;
 
 /**
  * The default chance pile.

@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Game API for engine.
@@ -239,8 +239,11 @@ public interface Game {
     void holdTurn(Turn turn) throws GameException;
 
     /**
-     * @param player the bidder
-     * @param value  the value of the bid
+     * Do bid.
+     *
+     * @param player   the bidder
+     * @param position the position of the property
+     * @param value    the value of the bid
      * @throws GameException if the bid is not valid
      * @throws BankException if the player doesn't have enough coins
      */

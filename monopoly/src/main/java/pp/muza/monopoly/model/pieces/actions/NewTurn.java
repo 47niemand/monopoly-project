@@ -1,14 +1,15 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Turn;
-
-import java.util.List;
 
 /**
  * This card starts the new turn.

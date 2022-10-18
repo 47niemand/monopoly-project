@@ -1,17 +1,23 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableList;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.*;
-
-import java.util.List;
-import java.util.Map;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Offer;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * @author dmytromuza

@@ -1,11 +1,11 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import java.util.Map;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
-
-import java.util.Map;
 
 /**
  * A player receives coins from this card due to a rent.

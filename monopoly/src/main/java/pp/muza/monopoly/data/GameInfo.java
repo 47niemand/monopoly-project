@@ -1,13 +1,13 @@
 package pp.muza.monopoly.data;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Player;
-
-import java.util.List;
 
 /**
  * This class represents the state of the game.

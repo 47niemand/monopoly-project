@@ -1,10 +1,11 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.Getter;
 import pp.muza.monopoly.model.Fortune;
-
-import java.util.List;
 
 /**
  * This class represents an action that can be executed by a player.

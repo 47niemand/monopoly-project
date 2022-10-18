@@ -1,20 +1,25 @@
 package pp.muza.monopoly.model.game;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pp.muza.monopoly.data.TurnInfo;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.PlayTurn;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.BaseActionCard;
 import pp.muza.monopoly.model.pieces.actions.SyncCard;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Base implementation of the {@link PlayTurn} interface.

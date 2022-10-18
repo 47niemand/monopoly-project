@@ -1,17 +1,19 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableList;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * A player receives coins from this card.

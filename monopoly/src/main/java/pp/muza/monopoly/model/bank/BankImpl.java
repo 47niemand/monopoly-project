@@ -1,14 +1,15 @@
 package pp.muza.monopoly.model.bank;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.model.Bank;
 import pp.muza.monopoly.model.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Stores the bank state.

@@ -1,17 +1,18 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Buy a free property. If all are owned, purchase from any player.

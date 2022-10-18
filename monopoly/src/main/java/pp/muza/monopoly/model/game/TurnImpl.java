@@ -1,14 +1,25 @@
 package pp.muza.monopoly.model.game;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
-
-import java.util.List;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.Biding;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.PropertyColor;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * The Turn interface implementation. The class is not intended to be used directly.

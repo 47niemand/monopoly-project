@@ -1,19 +1,28 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableList;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.consts.Constants;
-import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.PropertyColor;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * This is a specific card that stores the chance pile of the game.

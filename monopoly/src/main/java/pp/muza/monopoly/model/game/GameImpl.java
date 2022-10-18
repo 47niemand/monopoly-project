@@ -1,18 +1,33 @@
 package pp.muza.monopoly.model.game;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.*;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.pieces.lands.Jail;
-import pp.muza.monopoly.model.pieces.lands.LandType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.errors.BankError;
+import pp.muza.monopoly.errors.BankException;
+import pp.muza.monopoly.errors.GameError;
+import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.UnexpectedErrorException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.Biding;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.PropertyColor;
+import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.lands.Jail;
+import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
  * The Game interface implementation.

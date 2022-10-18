@@ -1,11 +1,12 @@
 package pp.muza.monopoly.model.board;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import lombok.Value;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Land;
-
-import java.util.List;
 
 /**
  * Board implementation.

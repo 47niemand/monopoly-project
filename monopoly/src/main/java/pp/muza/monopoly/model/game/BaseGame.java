@@ -1,24 +1,48 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
-import lombok.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Value;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Bank;
+import pp.muza.monopoly.model.Biding;
+import pp.muza.monopoly.model.Board;
+import pp.muza.monopoly.model.Fortune;
+import pp.muza.monopoly.model.Game;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.PlayTurn;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.Property;
+import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.bank.BankImpl;
 import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.actions.Chance;
 import pp.muza.monopoly.model.pieces.actions.NewTurn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * The base implementation of the game.

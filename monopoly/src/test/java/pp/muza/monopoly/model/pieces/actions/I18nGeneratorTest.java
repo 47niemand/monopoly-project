@@ -47,7 +47,7 @@ public class I18nGeneratorTest {
         System.out.println("# Chances");
         Chance[] chances = Chance.values();
         for (Chance value : chances) {
-            System.out.println(value.name() + "=" + normalizeValue(value.name()));
+            System.out.println(value.name() + "=" + value.getDescription());
         }
         System.out.println("# Errors");
         BankError[] errors = BankError.values();

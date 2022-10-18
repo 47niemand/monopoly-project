@@ -39,9 +39,6 @@ public class OwnershipPrivilege extends BaseActionCard {
         this(ActionType.OBLIGATION, HIGH_PRIORITY, position);
     }
 
-    /**
-     * this should be package-private
-     **/
     public static ActionCard create(int position) {
         return new OwnershipPrivilege(position);
     }

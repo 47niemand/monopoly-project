@@ -16,14 +16,12 @@ public final class Constants {
     public static final int JAIL_FINE = 1;
     public static final int START_BONUS = 2;
 
-    public static final int MIN_BID = -1;
+    public static final int MIN_BID = 0;
     public static final int PRICE_1 = 1;
     public static final int PRICE_2 = 2;
     public static final int PRICE_3 = 3;
     public static final int PRICE_4 = 4;
     public static final int PRICE_5 = 5;
-
-    public static boolean allowAuction = false;
 
     private Constants() {
     }

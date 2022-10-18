@@ -1,56 +1,33 @@
 package pp.muza.monopoly.model.game;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
+import pp.muza.monopoly.config.RuleOption;
+import pp.muza.monopoly.config.RuleOptionValue;
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.pieces.actions.*;
+import pp.muza.monopoly.strategy.ObedientStrategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-
-import pp.muza.monopoly.consts.Constants;
-import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Offer;
-import pp.muza.monopoly.model.PlayGame;
-import pp.muza.monopoly.model.PlayTurn;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.Bid;
-import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
-import pp.muza.monopoly.model.pieces.actions.Buy;
-import pp.muza.monopoly.model.pieces.actions.Chance;
-import pp.muza.monopoly.model.pieces.actions.ChoiceAuction;
-import pp.muza.monopoly.model.pieces.actions.EndAuction;
-import pp.muza.monopoly.model.pieces.actions.EndTurn;
-import pp.muza.monopoly.model.pieces.actions.FortuneCard;
-import pp.muza.monopoly.model.pieces.actions.JailFine;
-import pp.muza.monopoly.model.pieces.actions.NewTurn;
-import pp.muza.monopoly.model.pieces.actions.RentRevenue;
-import pp.muza.monopoly.model.pieces.actions.Takeover;
-import pp.muza.monopoly.model.pieces.actions.Tax;
-import pp.muza.monopoly.strategy.ObedientStrategy;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MonopolyTest {
 
     @Test
     void contractingTest() throws GameException, TurnException {
-        Constants.allowAuction = true;
         // setup
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
         Monopoly monopoly = new Monopoly(ImmutableList.of(player1, player2));
+        // allow auction
+        monopoly.baseGame.setRule(RuleOption.AUCTION, RuleOptionValue.ON.name());
         // add some assets to players
         monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.MAYFAIR), player1);
         monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.BAKERY), player1);
@@ -114,7 +91,6 @@ class MonopolyTest {
         // Sale is a specific case (ActionType.PROFIT) it is not obligated to be played
         // so player2 can play tax again and choose another option
         assertTrue(turn3.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
-
 
 
     }

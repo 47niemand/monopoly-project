@@ -23,7 +23,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public final class PayRent extends Payment {
 

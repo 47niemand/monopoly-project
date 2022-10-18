@@ -10,7 +10,6 @@ import pp.muza.monopoly.model.ActionCard;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public final class GoReward extends Income {
 

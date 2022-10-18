@@ -13,7 +13,6 @@ import pp.muza.monopoly.model.Player;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public final class RentRevenue extends ReceiveMoney {
 

@@ -1,22 +1,14 @@
 package pp.muza.monopoly.model.game;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Board;
-import pp.muza.monopoly.model.BoardLayout;
-import pp.muza.monopoly.model.ChancePile;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.PlayGame;
-import pp.muza.monopoly.model.PlayTurn;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.bank.BankImpl;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Monopoly game implementation. Implements the {@link PlayGame} interface.

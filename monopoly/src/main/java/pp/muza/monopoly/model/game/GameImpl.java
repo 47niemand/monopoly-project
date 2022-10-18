@@ -9,23 +9,14 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pp.muza.monopoly.config.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.Biding;
-import pp.muza.monopoly.model.Fortune;
-import pp.muza.monopoly.model.Game;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Player;
-import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.PropertyColor;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
@@ -292,6 +283,11 @@ public class GameImpl implements Game {
     @Override
     public Biding endAuction(Player player) throws GameException {
         return baseGame.endAuction(player);
+    }
+
+    @Override
+    public String getRuleOptions(RuleOption option) {
+        return baseGame.getRuleOptions(option);
     }
 
     @Override

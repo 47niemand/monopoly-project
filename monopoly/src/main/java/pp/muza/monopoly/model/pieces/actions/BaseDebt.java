@@ -22,7 +22,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public abstract class BaseDebt extends BaseActionCard {
 

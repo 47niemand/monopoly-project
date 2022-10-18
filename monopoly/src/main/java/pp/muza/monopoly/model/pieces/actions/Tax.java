@@ -11,7 +11,6 @@ import pp.muza.monopoly.model.ActionType;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public class Tax extends BaseDebt {
 

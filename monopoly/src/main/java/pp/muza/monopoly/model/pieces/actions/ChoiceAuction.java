@@ -17,7 +17,6 @@ import java.util.List;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public class ChoiceAuction extends BaseActionCard {
 

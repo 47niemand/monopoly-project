@@ -20,7 +20,6 @@ import pp.muza.monopoly.model.Turn;
  * @author dmytromuza
  */
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public final class Bid extends BaseActionCard implements BidingAction, SyncCard {
 

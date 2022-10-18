@@ -1,11 +1,12 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import pp.muza.monopoly.config.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Game API for engine.
@@ -289,4 +290,12 @@ public interface Game {
      * @throws GameException if the auction is not started, or the player is not the auctioneer.
      */
     Biding endAuction(Player player) throws GameException;
+
+    /**
+     * Returns the game's rule values.
+     *
+     * @param options the options.
+     * @return the game's rule value.
+     */
+    String getRuleOptions(RuleOption options);
 }

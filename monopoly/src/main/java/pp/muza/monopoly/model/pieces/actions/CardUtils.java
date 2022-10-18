@@ -1,23 +1,20 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import com.google.common.collect.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pp.muza.monopoly.config.RuleOption;
+import pp.muza.monopoly.config.RuleOptionValue;
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.pieces.lands.LandType;
+import pp.muza.monopoly.model.pieces.lands.Start;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-
-import pp.muza.monopoly.consts.Constants;
-import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.Land;
-import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.Turn;
-import pp.muza.monopoly.model.pieces.lands.LandType;
-import pp.muza.monopoly.model.pieces.lands.Start;
 
 final class CardUtils {
 
@@ -37,11 +34,15 @@ final class CardUtils {
     }
 
     static List<ActionCard> sellDebts(Turn turn) {
-        if (Constants.allowAuction) {
+        if (isEquals(turn, RuleOption.AUCTION)) {
             return ImmutableList.of(new ChoiceAuction(), new ChoiceContract());
         } else {
             return createContract(turn);
         }
+    }
+
+    static boolean isEquals(Turn turn, RuleOption option) {
+        return RuleOptionValue.ON.name().equals(turn.getRule(option));
     }
 
     static List<ActionCard> createAuction(Turn turn) {

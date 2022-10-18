@@ -1,11 +1,12 @@
 package pp.muza.monopoly.model;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import pp.muza.monopoly.config.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Turn API for the engine.
@@ -282,4 +283,12 @@ public interface Turn {
      * @throws TurnException if the player cannot hold the turn.
      */
     void holdTurn() throws TurnException;
+
+    /**
+     * Returns the game's rules options.
+     *
+     * @param option the option.
+     * @return the list of cards.
+     */
+    String getRule(RuleOption option);
 }

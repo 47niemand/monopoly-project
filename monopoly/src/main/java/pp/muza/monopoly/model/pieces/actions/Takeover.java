@@ -26,7 +26,6 @@ import pp.muza.monopoly.model.pieces.lands.LandType;
  */
 
 @Getter
-
 @EqualsAndHashCode(callSuper = true)
 public final class Takeover extends Arrival {
 

@@ -1,6 +1,6 @@
 package pp.muza.monopoly.model;
 
-import pp.muza.monopoly.config.RuleOption;
+import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;

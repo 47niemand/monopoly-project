@@ -1,4 +1,4 @@
-package pp.muza.monopoly.config;
+package pp.muza.monopoly.consts;
 
 /**
  * The game rule options.

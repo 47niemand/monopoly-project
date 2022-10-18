@@ -2,8 +2,8 @@ package pp.muza.monopoly.model.game;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
-import pp.muza.monopoly.config.RuleOption;
-import pp.muza.monopoly.config.RuleOptionValue;
+import pp.muza.monopoly.consts.RuleOption;
+import pp.muza.monopoly.consts.RuleOptionValue;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.errors.GameException;

@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pp.muza.monopoly.config.RuleOption;
+import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;

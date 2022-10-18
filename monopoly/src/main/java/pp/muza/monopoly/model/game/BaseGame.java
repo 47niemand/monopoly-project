@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pp.muza.monopoly.config.RuleOption;
+import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.data.GameInfo;
 import pp.muza.monopoly.data.PlayerInfo;

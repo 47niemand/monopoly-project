@@ -36,7 +36,7 @@ public class OwnershipPrivilege extends BaseActionCard {
     }
 
     OwnershipPrivilege(int position) {
-        this(ActionType.OBLIGATION, HIGHEST_PRIORITY, position);
+        this(ActionType.OBLIGATION, HIGH_PRIORITY, position);
     }
 
     /**

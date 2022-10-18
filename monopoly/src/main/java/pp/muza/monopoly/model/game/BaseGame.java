@@ -314,7 +314,7 @@ public abstract class BaseGame {
             newTurn();
             Player currentPlayer = players.get(currentPlayerIndex);
             // check if the player has any non-kepable cards
-            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() != ActionType.KEEPABLE);
+            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() != ActionType.KEEPABLE && actionCard.getType() != ActionType.PROFIT);
             if (!mandatoryCards) {
                 // if not, then the player can start a new turn
                 playerData(currentPlayer).addCard(NewTurn.create());
@@ -420,7 +420,9 @@ public abstract class BaseGame {
             throw new GameException(GameError.ONLY_SELLER_CAN_END_AUCTION);
         }
         Player winner = auction.winner();
-        return auction.bids.get(winner);
+        Biding winnerBiding = auction.bids.get(winner);
+        auction = null;
+        return winnerBiding;
     }
 
     /**

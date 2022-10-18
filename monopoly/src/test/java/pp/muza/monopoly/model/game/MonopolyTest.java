@@ -29,8 +29,10 @@ class MonopolyTest {
         // allow auction
         monopoly.baseGame.setRule(RuleOption.AUCTION, RuleOptionValue.ON.name());
         // add some assets to players
-        monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.MAYFAIR), player1);
-        monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.BAKERY), player1);
+        int mayfair = monopoly.baseGame.getGame().findProperty(Asset.MAYFAIR);
+        int bakery = monopoly.baseGame.getGame().findProperty(Asset.BAKERY);
+        monopoly.baseGame.setPropertyOwner(mayfair, player1);
+        monopoly.baseGame.setPropertyOwner(bakery, player1);
         monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.THE_ZOO), player2);
         monopoly.baseGame.setPropertyOwner(monopoly.baseGame.getGame().findProperty(Asset.BURGER_JOINT), player2);
         // no money
@@ -91,6 +93,26 @@ class MonopolyTest {
         // Sale is a specific case (ActionType.PROFIT) it is not obligated to be played
         // so player2 can play tax again and choose another option
         assertTrue(turn3.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
+        turn3.playCard(Tax.create(5));
+        turn3.playCard(ChoiceAuction.create());
+        turn3.playCard(PromoteAuction.create(mayfair, 4));
+        PlayTurn turn4 = monopoly.getTurn();
+        assertEquals(player2, turn4.getPlayer());
+        turn4.playCard(Bid.create(mayfair, 4));
+        turn4.endTurn();
+        assertTrue(turn4.isFinished());
+        PlayTurn turn5 = monopoly.getTurn();
+        assertEquals(player1, turn5.getPlayer());
+        turn5.playCard(EndAuction.create());
+        turn5.playCard(turn3.getTurnInfo().getActiveCards().get(0));
+        turn5.playCard(turn3.getTurnInfo().getActiveCards().get(0));
+        turn5.playCard(ChoiceAuction.create());
+        monopoly.baseGame.getBank().set(player2, 10); // give player2 some money
+        turn5.playCard(PromoteAuction.create(bakery, 4));
+
+        PlayTurn turn6 = monopoly.getTurn();
+        assertEquals(player2, turn6.getPlayer());
+        System.out.println("Turn: " + turn6.getTurnInfo());
 
 
     }

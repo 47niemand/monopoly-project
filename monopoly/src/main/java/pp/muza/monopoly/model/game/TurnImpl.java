@@ -119,8 +119,8 @@ public class TurnImpl implements Turn {
     @Override
     public void auction(int position, int price) throws TurnException {
         try {
-            game().holdTurn(this);
             game().auction(this.player(), position, price);
+            game().holdTurn(this);
         } catch (GameException e) {
             throw new TurnException(e);
         }

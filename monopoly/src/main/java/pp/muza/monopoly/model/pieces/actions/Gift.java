@@ -13,7 +13,7 @@ import pp.muza.monopoly.model.Player;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class Gift extends Payment {
+public final class Gift extends BasePayment {
 
     Gift(int value, Player recipient) {
         super(ActionType.OBLIGATION, HIGH_PRIORITY, value, recipient);

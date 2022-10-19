@@ -55,7 +55,7 @@ public enum Action {
     /**
      * Move to the land with the given id.
      */
-    MOVE_TO(ImmutableList.of(MoveTo.class, MoveGetOrPay.class, OptionMoveTo.class, MoveAndTakeover.class)),
+    MOVE_TO(ImmutableList.of(MoveTo.class, MoveGetOrPay.class, MoveAndTakeover.class)),
     /**
      * New turn, the player starts a new turn with this card.
      */

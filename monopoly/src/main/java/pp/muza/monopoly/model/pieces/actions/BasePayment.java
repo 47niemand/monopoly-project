@@ -24,13 +24,13 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class Payment extends BaseDebt {
+public abstract class BasePayment extends BaseDebt {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Payment.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BasePayment.class);
 
     protected final Player recipient;
 
-    protected Payment(ActionType type, int priority, int value, Player recipient) {
+    protected BasePayment(ActionType type, int priority, int value, Player recipient) {
         super(type, priority, value);
         this.recipient = recipient;
     }

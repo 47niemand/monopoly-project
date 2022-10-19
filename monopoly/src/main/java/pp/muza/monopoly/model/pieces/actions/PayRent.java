@@ -24,7 +24,7 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class PayRent extends Payment {
+public final class PayRent extends BasePayment {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
 

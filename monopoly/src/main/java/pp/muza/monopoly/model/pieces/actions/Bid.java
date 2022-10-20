@@ -11,17 +11,14 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.ActionCard;
-import pp.muza.monopoly.model.ActionType;
-import pp.muza.monopoly.model.BidingAction;
-import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.*;
 
 /**
  * @author dmytromuza
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class Bid extends BaseActionCard implements BidingAction, SyncCard {
+public final class Bid extends BaseActionCard implements Offer, SyncCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Bid.class);
 
@@ -35,7 +32,7 @@ public final class Bid extends BaseActionCard implements BidingAction, SyncCard 
         this.price = price;
     }
 
-    public static BidingAction create(int position, int price) {
+    public static Offer create(int position, int price) {
         return new Bid(position, price);
     }
 
@@ -52,7 +49,7 @@ public final class Bid extends BaseActionCard implements BidingAction, SyncCard 
     }
 
     @Override
-    public BidingAction bid(int newPrice) {
+    public Offer bid(int newPrice) {
         return new Bid(this.position, newPrice);
     }
 
@@ -60,7 +57,7 @@ public final class Bid extends BaseActionCard implements BidingAction, SyncCard 
     public BaseActionCard sync(SyncCard card) {
         BaseActionCard result;
         if (this.equals(card)) {
-            BidingAction other = (BidingAction) card;
+            Offer other = (Offer) card;
             result = new Bid(this.position, other.getPrice());
         } else {
             throw new IllegalArgumentException("Cannot sync " + this + " with " + card);

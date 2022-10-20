@@ -302,8 +302,8 @@ public class Printer {
                 "player", playerName)
         ));
         if (arrivalCards.size() > 1) {
-            List<Land> lands_excluding_last = arrivalCards.stream().map(Arrival::getPosition).filter(x -> x != positionNumber).map(board::getLand).collect(Collectors.toList());
-            String s = lands_excluding_last.stream().map(Land::getName).map(i18n()).collect(Collectors.joining(", "));
+            List<Land> landsExcludingLast = arrivalCards.stream().map(Arrival::getPosition).filter(x -> x != positionNumber).map(board::getLand).collect(Collectors.toList());
+            String s = landsExcludingLast.stream().map(Land::getName).map(i18n()).collect(Collectors.joining(", "));
             sb.append(" ");
             sb.append(format(VISITED_LANDS_MSG, Map.of(
                     "player", playerName,

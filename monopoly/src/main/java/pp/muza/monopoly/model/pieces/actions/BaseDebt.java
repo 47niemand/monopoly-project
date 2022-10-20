@@ -29,7 +29,7 @@ public abstract class BaseDebt extends BaseActionCard {
 
     protected final int value;
 
-    BaseDebt(ActionType type, int priority, int value) {
+    protected BaseDebt(ActionType type, int priority, int value) {
         super(Action.DEBT, type, priority);
         this.value = value;
     }

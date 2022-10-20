@@ -205,10 +205,12 @@ public abstract class BaseGame {
 
     void propertyOwnerRemove(int position) {
         Property property = (Property) board.getLand(position);
-        LOG.info("Property {} ({}) is now free", position, property);
         Player oldOwner = propertyOwners.remove(position);
         if (oldOwner != null) {
+            LOG.info("Property {} ({}) is now free", position, property);
             LOG.info("{} lost property {} ({})", oldOwner, position, property);
+        } else {
+            LOG.warn("Property {} ({}) is already free", position, property);
         }
     }
 
@@ -370,11 +372,17 @@ public abstract class BaseGame {
     }
 
     void setPropertyOwner(int position, Player player) {
+        if (player == null) {
+            throw new IllegalArgumentException("Player cannot be null");
+        }
         Property property = (Property) getBoard().getLand(position);
-        LOG.info("Property {} ({}) is now owned by {}", position, property, player);
         Player oldOwner = propertyOwners.put(position, player);
-        if (oldOwner != null) {
+        if (oldOwner == player) {
+            LOG.warn("Player {} already owns property {} ({})", player, position, property);
+        } else if (oldOwner != null) {
             LOG.info("{} lost property {} ({})", oldOwner, position, property);
+        } else {
+            LOG.info("Property {} ({}) is now owned by {}", position, property, player);
         }
     }
 

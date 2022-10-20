@@ -22,21 +22,12 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class EndAuction extends BaseActionCard implements Offer {
+public final class EndAuction extends BaseAuction implements Offer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
-    private final int position;
-    /**
-     * The starting price of the auction.
-     */
-    @EqualsAndHashCode.Exclude
-    private final int price;
-
     EndAuction(int position, int price) {
-        super(Action.OFFER, ActionType.OBLIGATION, HIGH_PRIORITY);
-        this.position = position;
-        this.price = price;
+        super(ActionType.OBLIGATION, HIGH_PRIORITY, position, price);
     }
 
     public static ActionCard create(int position, int price) {
@@ -61,7 +52,7 @@ public final class EndAuction extends BaseActionCard implements Offer {
     }
 
     @Override
-    public Offer openingBid(int price) {
+    public Offer bid(int price) {
         return this;
     }
 }

@@ -27,5 +27,5 @@ public interface Offer extends ActionCard {
      * @param price the price that the player is willing to sale
      * @return the bid card
      */
-    Offer openingBid(int price);
+    Offer bid(int price);
 }

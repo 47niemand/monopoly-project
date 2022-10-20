@@ -37,10 +37,6 @@ public enum Action {
      */
     END_TURN(ImmutableList.of(EndTurn.class)),
     /**
-     * Get a gift.
-     */
-    GIFT(ImmutableList.of(SpawnGiftCard.class, TakeFortuneCard.class)),
-    /**
      * Go to jail.
      */
     GO_TO_JAIL(ImmutableList.of(GoToJail.class)),
@@ -67,7 +63,7 @@ public enum Action {
     /**
      * Player pays the given number of coins to other players or the bank.
      */
-    DEBT(ImmutableList.of(PayRent.class, Gift.class, JailFine.class, Tax.class)),
+    DEBT(ImmutableList.of(BaseDebt.class, PayRent.class, Gift.class, JailFine.class, Tax.class)),
     /**
      * Roll dice get random number.
      */
@@ -83,11 +79,11 @@ public enum Action {
     /**
      * PromoteAuction for the property on the auction.
      */
-    OFFER(ImmutableList.of(PromoteAuction.class, EndAuction.class)),
+    OFFER(ImmutableList.of(BaseAuction.class, PromoteAuction.class, EndAuction.class)),
     /**
-     * Choose some action.
+     * Play some action.
      */
-    CHOICE(ImmutableList.of(ChoiceContract.class, ChoiceAuction.class)),
+    DEFAULT(ImmutableList.of(BaseActionCard.class, SpawnGiftCard.class, ChoiceFortuneCard.class, ChoiceContract.class, ChoiceAuction.class)),
     /**
      * Submit offer.
      */

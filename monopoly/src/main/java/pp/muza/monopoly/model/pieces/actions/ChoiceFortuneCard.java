@@ -17,14 +17,14 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class TakeFortuneCard extends BaseActionCard {
+public final class ChoiceFortuneCard extends BaseActionCard {
 
-    TakeFortuneCard() {
-        super(Action.GIFT, ActionType.CHOOSE, DEFAULT_PRIORITY);
+    ChoiceFortuneCard() {
+        super(Action.DEFAULT, ActionType.CHOICE, DEFAULT_PRIORITY);
     }
 
     public static ActionCard create() {
-        return new TakeFortuneCard();
+        return new ChoiceFortuneCard();
     }
 
     @Override

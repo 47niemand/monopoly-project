@@ -22,7 +22,6 @@ import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Asset;
-import pp.muza.monopoly.model.BidingAction;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Offer;
 import pp.muza.monopoly.model.PlayGame;
@@ -86,7 +85,7 @@ class MonopolyTest {
         List<Offer> offers = turn.getTurnInfo().getActiveCards().stream().filter(c -> c.getAction() == Action.OFFER).map(c -> (Offer) c).collect(Collectors.toList());
         assertEquals(2, offers.size());
         // player chooses the bakery with price 10
-        Offer offer = offers.stream().filter(o -> o.getPosition() == bakery).findFirst().orElseThrow(() -> new IllegalStateException("Offer not found")).openingBid(10);
+        Offer offer = offers.stream().filter(o -> o.getPosition() == bakery).findFirst().orElseThrow(() -> new IllegalStateException("Offer not found")).bid(10);
         turn.playCard(offer);
         // turn is held
         assertTrue(turn.isFinished());
@@ -100,7 +99,7 @@ class MonopolyTest {
         List<ActionCard> c1 = turn2.getTurnInfo().getActiveCards();
         assertEquals(2, c1.size());
         // player try to bid 11, which is more than his balance
-        BidingAction bid = Bid.create(bakery, 0);
+        Offer bid = Bid.create(bakery, 0);
         turn2.playCard(bid.bid(11));
         assertFalse(turn2.getTurnInfo().getUsedCards().contains(bid));
         // player try to bid 5, which is less than the minimum bid

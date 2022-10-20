@@ -21,7 +21,7 @@ import pp.muza.monopoly.model.Turn;
 public final class MoveAndTakeover extends MoveTo {
 
     MoveAndTakeover(int position) {
-        super(ActionType.CHOOSE, HIGHEST_PRIORITY, position);
+        super(ActionType.CHOICE, HIGHEST_PRIORITY, position);
     }
 
     public static ActionCard create(int position) {

@@ -26,7 +26,7 @@ public final class SpawnGiftCard extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class);
 
     SpawnGiftCard() {
-        super(Action.GIFT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
+        super(Action.DEFAULT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     public static ActionCard create() {

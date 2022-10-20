@@ -1,8 +1,5 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -22,6 +19,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pp.muza.monopoly.model.Player;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class ActionTest {
 
 
@@ -36,6 +35,7 @@ class ActionTest {
         // rule: invocation of the method create() should return an instance of the class
         // rule: all constructors should be protected or package-private
         // rule: all accessors should have the same action type as the parent class
+        // rule: If the actions specify more than one card, the second and subsequent ones must inherit the class of the first one
 
         Map<Class<? extends BaseActionCard>, Object> map = new LinkedHashMap<>();
         Map<Class<? extends BaseActionCard>, List<Class<? extends BaseActionCard>>> classHierarchy = new LinkedHashMap<>();
@@ -106,6 +106,9 @@ class ActionTest {
 
                     } else if (methods.size() > 1) {
                         throw new RuntimeException("More than one method with name of(): " + clazz.getName());
+                    } else if (Modifier.isAbstract(clazz.getModifiers())) {
+                        // abstract class
+                        continue;
                     } else {
                         throw new RuntimeException("No method with name create(): " + clazz.getName());
                     }
@@ -124,6 +127,25 @@ class ActionTest {
                     assertEquals(o1.getAction(), o.getAction(), "Class " + clazz + " : all accessors should have the same action type as the parent class");
                 }
             }
+        }
+
+        for (Action value : Action.values()) {
+
+            List<Class<? extends BaseActionCard>> classList = value.getClassList();
+
+            if (classList.size() <= 1) {
+                continue;
+            }
+
+            Class<? extends BaseActionCard> root = classList.get(0);
+            System.out.println(root.getName());
+            for (int i = 1; i < classList.size(); i++) {
+                Class<? extends BaseActionCard> aClass = classList.get(i);
+                Object o = map.get(aClass);
+                System.out.println("\t" + aClass.getName());
+                assertTrue(root.isAssignableFrom(o.getClass()), "Class " + aClass + " : second and subsequent classes should inherit the first class :" + root);
+            }
+            System.out.println();
         }
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);

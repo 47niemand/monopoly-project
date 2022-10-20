@@ -71,10 +71,11 @@ public interface Game {
      *
      * @param player   the player.
      * @param position the property.
+     * @param price
      * @throws GameException if there are some errors (e.g. the player does not own the property).
      * @throws BankException if a player cannot receive the coins.
      */
-    void doContract(Player player, int position) throws BankException, GameException;
+    void doContract(Player player, int position, int price) throws BankException, GameException;
 
     /**
      * searches for the land's id with the given name.

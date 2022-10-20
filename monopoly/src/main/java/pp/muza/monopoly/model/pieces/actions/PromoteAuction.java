@@ -24,18 +24,12 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class PromoteAuction extends BaseActionCard implements Offer, SyncCard {
+public class PromoteAuction extends BaseAuction implements SyncCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
-    private final int position;
-    @EqualsAndHashCode.Exclude
-    private final int price;
-
     PromoteAuction(int position, int price) {
-        super(Action.OFFER, ActionType.CHOOSE, HIGH_PRIORITY);
-        this.position = position;
-        this.price = price;
+        super(ActionType.CHOICE, HIGH_PRIORITY, position, price);
     }
 
     public static Offer create(int position, int price) {
@@ -74,7 +68,7 @@ public final class PromoteAuction extends BaseActionCard implements Offer, SyncC
     }
 
     @Override
-    public Offer openingBid(int startPrice) {
+    public Offer bid(int startPrice) {
         return new PromoteAuction(this.position, startPrice);
     }
 

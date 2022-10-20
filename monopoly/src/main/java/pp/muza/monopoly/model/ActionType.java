@@ -12,7 +12,7 @@ public enum ActionType {
     /**
      * Only one action with this type and priority can be executed in the same turn.
      **/
-    CHOOSE(true),
+    CHOICE(true),
     /**
      * Players can keep the card, and use it as they want.
      */

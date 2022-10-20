@@ -31,7 +31,7 @@ public final class Submit extends BaseActionCard implements Biding {
     private final int price;
 
     Submit(Player bidder, int position, int price) {
-        super(Action.SUBMIT, ActionType.CHOOSE, IDLE_PRIORITY);
+        super(Action.SUBMIT, ActionType.CHOICE, IDLE_PRIORITY);
         this.bidder = bidder;
         this.position = position;
         this.price = price;

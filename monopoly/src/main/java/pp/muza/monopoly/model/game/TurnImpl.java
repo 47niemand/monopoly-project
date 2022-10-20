@@ -91,7 +91,7 @@ public class TurnImpl implements Turn {
     @Override
     public void doContract(int position, int price) throws BankException, TurnException {
         try {
-            game().doContract(player(), position);
+            game().doContract(player(), position, price);
         } catch (GameException e) {
             throw new TurnException(e);
         }

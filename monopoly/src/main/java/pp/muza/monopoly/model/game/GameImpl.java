@@ -114,7 +114,7 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public void doContract(Player player, int position) throws BankException, GameException {
+    public void doContract(Player player, int position, int price) throws BankException, GameException {
         checkPlayerInGame(player);
         Property property = (Property) getLand(position);
         if (getPropertyOwner(position) != player) {
@@ -122,6 +122,9 @@ public class GameImpl implements Game {
         }
         LOG.info("Player {} is contracting property {} ({})", player, position, property);
         int value = property.getPrice();
+        if (price != value) {
+            throw new GameException(GameError.CONTRACT_PRICE_IS_NOT_VALID);
+        }
         baseGame.getBank().deposit(player, value);
         baseGame.propertyOwnerRemove(position);
     }

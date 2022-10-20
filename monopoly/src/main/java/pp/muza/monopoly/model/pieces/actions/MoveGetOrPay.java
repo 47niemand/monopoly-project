@@ -21,7 +21,7 @@ import pp.muza.monopoly.model.Turn;
 public final class MoveGetOrPay extends MoveTo {
 
     MoveGetOrPay(int position) {
-        super(ActionType.CHOOSE, DEFAULT_PRIORITY, position);
+        super(ActionType.CHOICE, DEFAULT_PRIORITY, position);
     }
 
     public static ActionCard create(int position) {

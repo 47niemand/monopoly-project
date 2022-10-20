@@ -45,7 +45,7 @@ public class Contract extends BaseActionCard {
     }
 
     Contract(int position, int price) {
-        this(ActionType.CHOOSE, HIGHEST_PRIORITY, position, price);
+        this(ActionType.CHOICE, HIGHEST_PRIORITY, position, price);
     }
 
     public static ActionCard create(int position, int price) {

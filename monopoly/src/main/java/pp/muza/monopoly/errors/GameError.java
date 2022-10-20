@@ -133,6 +133,10 @@ public enum GameError {
      * Unknown error
      */
     UNKNOWN("Unknown error"),
+    /**
+     * Contract price is not valid
+     */
+    CONTRACT_PRICE_IS_NOT_VALID("Contract price is not valid"),
     ;
 
     private final String message;

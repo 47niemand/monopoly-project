@@ -90,10 +90,10 @@ public abstract class BaseTurn {
             LOG.warn("Card {} was already used", actionCard);
         }
         usedCards.add(actionCard);
-        if (actionCard.getType() == ActionType.CHOOSE) {
+        if (actionCard.getType() == ActionType.CHOICE) {
             List<ActionCard> chooses = playerData.getCards()
                     .stream()
-                    .filter(it -> it.getType() == ActionType.CHOOSE && it.getPriority() <= currentPriority)
+                    .filter(it -> it.getType() == ActionType.CHOICE && it.getPriority() <= currentPriority)
                     .collect(Collectors.toList());
             LOG.debug("Removing choose cards from player's hand: {}", chooses.stream().map(ActionCard::getName).collect(Collectors.toList()));
             for (ActionCard choose : chooses) {

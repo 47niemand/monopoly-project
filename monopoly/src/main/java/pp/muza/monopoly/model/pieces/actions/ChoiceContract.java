@@ -24,7 +24,7 @@ public class ChoiceContract extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceContract.class);
 
     ChoiceContract() {
-        super(Action.CHOICE, ActionType.CHOOSE, HIGHEST_PRIORITY);
+        super(Action.DEFAULT, ActionType.CHOICE, HIGHEST_PRIORITY);
     }
 
     public static ActionCard create() {

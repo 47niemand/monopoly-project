@@ -5,7 +5,7 @@ package pp.muza.monopoly.errors;
  */
 public final class GameException extends Exception {
 
-    GameError error;
+    final GameError error;
 
     public GameException(GameError error) {
         super(error.getMessage());

@@ -125,7 +125,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                 break;
             case MOVE_FORWARD_ONE_SPACE:
                 result.add(new OptionMove(1));
-                result.add(new TakeFortuneCard());
+                result.add(new ChoiceFortuneCard());
                 break;
             case MOVE_FORWARD_UP_TO_5_SPACES:
                 IntStream.rangeClosed(1, 5).forEach(i -> result.add(new OptionMove(i)));

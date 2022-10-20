@@ -24,7 +24,7 @@ public class ChoiceAuction extends BaseActionCard {
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceAuction.class);
 
     ChoiceAuction() {
-        super(Action.CHOICE, ActionType.CHOOSE, HIGHEST_PRIORITY);
+        super(Action.DEFAULT, ActionType.CHOICE, HIGHEST_PRIORITY);
     }
 
     public static ActionCard create() {

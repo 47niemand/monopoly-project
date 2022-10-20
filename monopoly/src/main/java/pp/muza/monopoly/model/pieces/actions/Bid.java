@@ -30,7 +30,7 @@ public final class Bid extends BaseActionCard implements BidingAction, SyncCard 
     private final int price;
 
     Bid(int position, int price) {
-        super(Action.BID, ActionType.CHOOSE, DEFAULT_PRIORITY);
+        super(Action.BID, ActionType.OPTIONAL, HIGH_PRIORITY);
         this.position = position;
         this.price = price;
     }
@@ -43,6 +43,7 @@ public final class Bid extends BaseActionCard implements BidingAction, SyncCard 
     protected List<ActionCard> onExecute(Turn turn) {
         try {
             turn.doBid(position, price);
+            turn.sendCard(turn.getPropertyOwner(position), new Submit(turn.getPlayer(), position, price));
         } catch (TurnException e) {
             LOG.warn("Bid failed: {}", e.getMessage());
             return ImmutableList.of(this);

@@ -1,22 +1,52 @@
 package pp.muza.monopoly.model.game;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.Test;
-import pp.muza.monopoly.consts.RuleOption;
-import pp.muza.monopoly.consts.RuleOptionValue;
-import pp.muza.monopoly.consts.Constants;
-import pp.muza.monopoly.data.GameInfo;
-import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
-import pp.muza.monopoly.model.pieces.actions.*;
-import pp.muza.monopoly.strategy.ObedientStrategy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
+import pp.muza.monopoly.consts.Constants;
+import pp.muza.monopoly.consts.RuleOption;
+import pp.muza.monopoly.consts.RuleOptionValue;
+import pp.muza.monopoly.data.GameInfo;
+import pp.muza.monopoly.errors.GameException;
+import pp.muza.monopoly.errors.TurnException;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.Asset;
+import pp.muza.monopoly.model.BidingAction;
+import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Offer;
+import pp.muza.monopoly.model.PlayGame;
+import pp.muza.monopoly.model.PlayTurn;
+import pp.muza.monopoly.model.Player;
+import pp.muza.monopoly.model.PlayerStatus;
+import pp.muza.monopoly.model.pieces.actions.Action;
+import pp.muza.monopoly.model.pieces.actions.Bid;
+import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
+import pp.muza.monopoly.model.pieces.actions.Buy;
+import pp.muza.monopoly.model.pieces.actions.Chance;
+import pp.muza.monopoly.model.pieces.actions.ChoiceAuction;
+import pp.muza.monopoly.model.pieces.actions.EndAuction;
+import pp.muza.monopoly.model.pieces.actions.EndTurn;
+import pp.muza.monopoly.model.pieces.actions.FortuneCard;
+import pp.muza.monopoly.model.pieces.actions.JailFine;
+import pp.muza.monopoly.model.pieces.actions.NewTurn;
+import pp.muza.monopoly.model.pieces.actions.OwnershipPrivilege;
+import pp.muza.monopoly.model.pieces.actions.PromoteAuction;
+import pp.muza.monopoly.model.pieces.actions.RentRevenue;
+import pp.muza.monopoly.model.pieces.actions.Sale;
+import pp.muza.monopoly.model.pieces.actions.Takeover;
+import pp.muza.monopoly.model.pieces.actions.Tax;
+import pp.muza.monopoly.strategy.ObedientStrategy;
 
 class MonopolyTest {
 
@@ -41,43 +71,47 @@ class MonopolyTest {
         monopoly.baseGame.getBank().set(player2, 10);
         // add some obligations to player1
         monopoly.baseGame.playerData(player1).addCard(Tax.create(5));
+        monopoly.baseGame.playerData(player1).addCard(EndTurn.create());
 
         // act
         assertFalse(monopoly.isGameInProgress());
         monopoly.start();
-        // player obligates to pay 5
         PlayTurn turn = monopoly.getTurn();
-        assertTrue(turn.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
+        // player obligates to pay 5
         turn.playCard(Tax.create(5));
-        System.out.println("Turn: " + turn.getTurnInfo());
         // player has no money to pay, so player has to choose between auction and contract
         // player chooses auction
         turn.playCard(ChoiceAuction.create());
         // there are two offers to auction
         List<Offer> offers = turn.getTurnInfo().getActiveCards().stream().filter(c -> c.getAction() == Action.OFFER).map(c -> (Offer) c).collect(Collectors.toList());
         assertEquals(2, offers.size());
-        // player chooses the first offer with price 10
-        Offer offer = offers.get(0).openingBid(10);
+        // player chooses the bakery with price 10
+        Offer offer = offers.stream().filter(o -> o.getPosition() == bakery).findFirst().orElseThrow(() -> new IllegalStateException("Offer not found")).openingBid(10);
         turn.playCard(offer);
+        // turn is held
         assertTrue(turn.isFinished());
-        assertThrows(TurnException.class, () -> turn.playCard(EndAuction.create()));
-
+        // player should offer
+        assertTrue(turn.getTurnInfo().getUsedCards().stream().anyMatch(c -> c.getAction() == Action.OFFER));
+        // player should have EndAction card
+        assertTrue(monopoly.baseGame.playerData(player1).getCards().stream().anyMatch(c -> c instanceof EndAuction));
         // auction started; other players have to make the bid
-
         PlayTurn turn2 = monopoly.getTurn();
         assertEquals(player2, turn2.getPlayer());
         List<ActionCard> c1 = turn2.getTurnInfo().getActiveCards();
-        assertEquals(1, c1.size());
-        ActionCard b1 = c1.get(0);
-        assertEquals(Action.BID, b1.getAction());
-        Bid bid = (Bid) b1;
+        assertEquals(2, c1.size());
         // player try to bid 11, which is more than his balance
+        BidingAction bid = Bid.create(bakery, 0);
         turn2.playCard(bid.bid(11));
+        assertFalse(turn2.getTurnInfo().getUsedCards().contains(bid));
         // player try to bid 5, which is less than the minimum bid
         turn2.playCard(bid.bid(5));
+        assertFalse(turn2.getTurnInfo().getUsedCards().contains(bid));
         // player try to bid 10
         turn2.playCard(bid.bid(10));
-        turn2.endTurn();
+        // player2 has to make the bid
+        assertTrue(turn2.getTurnInfo().getUsedCards().contains(bid));
+        turn2.playCard(EndTurn.create());
+
 
         // incidentally, player2 has only 9 money, so he can't pay for the property
         monopoly.baseGame.getBank().set(player2, 9);
@@ -86,35 +120,30 @@ class MonopolyTest {
         PlayTurn turn3 = monopoly.getTurn();
         assertEquals(player1, turn3.getPlayer());
         // finish auction
-        turn3.playCard(EndAuction.create());
+        turn3.playCard(EndAuction.create(bakery, 10));
         // contract property
-        turn3.playCard(turn3.getTurnInfo().getActiveCards().get(0));
+        turn3.playCard(Sale.create(bakery, 10, player2));
         // Since player2 lacks the funds to purchase the property, the card cannot be considered played
         // Sale is a specific case (ActionType.PROFIT) it is not obligated to be played
         // so player2 can play tax again and choose another option
         assertTrue(turn3.getTurnInfo().getActiveCards().stream().anyMatch(c2 -> c2.getAction() == Action.DEBT));
         turn3.playCard(Tax.create(5));
         turn3.playCard(ChoiceAuction.create());
-        turn3.playCard(PromoteAuction.create(mayfair, 4));
+        turn3.playCard(PromoteAuction.create(mayfair, 5));
         PlayTurn turn4 = monopoly.getTurn();
         assertEquals(player2, turn4.getPlayer());
-        turn4.playCard(Bid.create(mayfair, 4));
+        turn4.playCard(Bid.create(mayfair, 5));
         turn4.endTurn();
         assertTrue(turn4.isFinished());
         PlayTurn turn5 = monopoly.getTurn();
         assertEquals(player1, turn5.getPlayer());
-        turn5.playCard(EndAuction.create());
-        turn5.playCard(turn3.getTurnInfo().getActiveCards().get(0));
-        turn5.playCard(turn3.getTurnInfo().getActiveCards().get(0));
-        turn5.playCard(ChoiceAuction.create());
-        monopoly.baseGame.getBank().set(player2, 10); // give player2 some money
-        turn5.playCard(PromoteAuction.create(bakery, 4));
-
+        turn5.playCard(EndAuction.create(mayfair, 5));
+        turn5.playCard(Sale.create(mayfair, 5, player2));
+        turn5.playCard(Tax.create(5));
+        turn5.playCard(EndTurn.create());
         PlayTurn turn6 = monopoly.getTurn();
         assertEquals(player2, turn6.getPlayer());
-        System.out.println("Turn: " + turn6.getTurnInfo());
-
-
+        turn6.playCard(OwnershipPrivilege.create(mayfair));
     }
 
     @Test

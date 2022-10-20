@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import pp.muza.monopoly.errors.TurnError;
+import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
@@ -33,7 +33,7 @@ public final class PromoteAuction extends BaseActionCard implements Offer, SyncC
     private final int price;
 
     PromoteAuction(int position, int price) {
-        super(Action.OFFER, ActionType.CHOOSE, DEFAULT_PRIORITY);
+        super(Action.OFFER, ActionType.CHOOSE, HIGH_PRIORITY);
         this.position = position;
         this.price = price;
     }
@@ -55,19 +55,22 @@ public final class PromoteAuction extends BaseActionCard implements Offer, SyncC
                     if (bidder != seller && !turn.getPlayerStatus(bidder).isFinal()) {
                         try {
                             turn.sendCard(bidder, new Bid(position, price));
+                            turn.sendCard(bidder, new EndTurn());
                         } catch (TurnException e) {
                             throw new UnexpectedErrorException("Error while sending invitation to player {}" + bidder, e);
                         }
                     }
                 }
+                turn.holdTurn();
             } else {
-                throw new TurnException(TurnError.PLAYER_MUST_SET_PRICE_FOR_AUCTION);
+                throw new TurnException(GameError.PLAYER_MUST_SET_PRICE_FOR_AUCTION);
             }
+            return ImmutableList.of(new EndAuction(position, price));
         } catch (TurnException e) {
             // consider this as a pass
             LOG.warn("PromoteAuction failed: {}", e.getMessage());
         }
-        return ImmutableList.of(new EndAuction());
+        return ImmutableList.of();
     }
 
     @Override

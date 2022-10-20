@@ -1,12 +1,12 @@
 package pp.muza.monopoly.model;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.TurnException;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Turn API for the engine.
@@ -269,10 +269,11 @@ public interface Turn {
     /**
      * Ends the auction.
      *
+     * @param position the position of the property.
      * @return the winner of the auction, or null if there is no winner.
      * @throws TurnException if the auction is not started, or the current player is not the auctioneer.
      */
-    Biding endAuction() throws TurnException;
+    Biding endAuction(int position) throws TurnException;
 
     /**
      * Holds current turn.

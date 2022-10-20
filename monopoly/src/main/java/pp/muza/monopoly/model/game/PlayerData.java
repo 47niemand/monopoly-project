@@ -152,11 +152,15 @@ final class PlayerData {
         if (cards.contains(card)) {
             if (hold.contains(card)) {
                 LOG.debug("Releasing card {} from hold for {}", card, player);
-                result = hold.removeAll(cards);
+                hold.removeAll(Collections.singleton(card));
+                result = true;
             } else {
                 LOG.debug("Card {} already in hand for {}", card, player);
                 result = false;
             }
+            // move to top and renew
+            cards.removeAll(Collections.singleton(card));
+            cards.add(card);
         } else {
             LOG.debug("Adding card {} to player {}", card, player);
             result = cards.add(card);
@@ -180,18 +184,22 @@ final class PlayerData {
         if (card == null) {
             throw new NullPointerException("card is null");
         }
-        LOG.debug("Removing card {} from player {}", card, player);
         ActionCard result = null;
         List<ActionCard> toRemove;
         toRemove = getByCard(card);
         if (toRemove.size() > 0) {
             result = toRemove.get(0);
+            if (toRemove.size() > 1) {
+                LOG.warn("Found more than one card to remove: {}", toRemove);
+            }
         }
-        if (toRemove.size() > 1) {
-            LOG.warn("Found more than one card to remove: {}", toRemove);
-        }
-        cards.removeAll(toRemove);
         hold.removeAll(toRemove);
+        boolean b = cards.removeAll(toRemove);
+        if (b) {
+            LOG.debug("Removed card {} from player {}", card, player);
+        } else {
+            LOG.warn("Card {} not found in player {}", card, player);
+        }
         return result;
     }
 
@@ -203,5 +211,17 @@ final class PlayerData {
                 + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
                 + ")";
+    }
+
+    public void removeCards(List<ActionCard> cards) {
+        if (cards == null) {
+            throw new NullPointerException("cards is null");
+        }
+        LOG.debug("Removing cards {} from player {}", cards, player);
+        this.hold.removeAll(cards);
+        boolean b = this.cards.removeAll(cards);
+        if (!b) {
+            LOG.warn("No cards removed from player {}", player);
+        }
     }
 }

@@ -7,12 +7,21 @@ package pp.muza.monopoly.errors;
  */
 public final class TurnException extends Exception {
 
-    public TurnException(TurnError error) {
-        super(error.getMessage());
+    GameError error;
+
+    public TurnException(GameError e) {
+        super(e.getMessage());
+        this.error = e;
     }
 
     public TurnException(Exception e) {
-        super(e.getMessage(), e);
+        super(e.getMessage());
+        if (e instanceof TurnException) {
+            this.error = ((TurnException) e).error;
+        } else if (e instanceof GameException) {
+            this.error = ((GameException) e).error;
+        } else {
+            this.error = GameError.UNKNOWN;
+        }
     }
-
 }

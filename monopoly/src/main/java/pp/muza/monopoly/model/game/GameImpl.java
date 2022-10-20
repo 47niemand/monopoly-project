@@ -1,6 +1,7 @@
 package pp.muza.monopoly.model.game;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.entry.IndexedEntry;
-import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
@@ -22,11 +22,13 @@ import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
 import pp.muza.monopoly.model.Land;
+import pp.muza.monopoly.model.Offer;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.monopoly.model.pieces.actions.Action;
 import pp.muza.monopoly.model.pieces.lands.Jail;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
@@ -296,12 +298,30 @@ public class GameImpl implements Game {
 
     @Override
     public void auction(Player player, int postion, int price) throws GameException {
-        baseGame.auction(player, postion, price);
+        checkPlayerInGame(player);
+        checkLandIsProperty(postion);
+        if (getPropertyOwner(postion) != player) {
+            throw new GameException(GameError.LAND_IS_NOT_OWNED_BY_PLAYER);
+        }
+        if (price < 1) {
+            throw new GameException(GameError.PRICE_MUST_BE_POSITIVE);
+        }
     }
 
     @Override
-    public Biding endAuction(Player player) throws GameException {
-        return baseGame.endAuction(player);
+    public Biding endAuction(Player player, int position) throws GameException {
+        PlayerData playerData = baseGame.playerData(player);
+        List<ActionCard> bidings = playerData.getCards().stream()
+                .filter(c -> c.getAction() == Action.SUBMIT)
+                .filter(d -> ((Biding) d).getPosition() == position)
+                .collect(Collectors.toList());
+        baseGame.playerData(player).removeCards(bidings);
+        if (bidings.isEmpty()) {
+            LOG.info("No biding found for player {} and position {}", player, position);
+        } else {
+            LOG.info("Auction for player {} and position {} is finished", player, position);
+        }
+        return bidings.stream().map(x -> (Biding) x).max(Comparator.comparingInt(Biding::getPrice)).orElse(null);
     }
 
     @Override
@@ -313,36 +333,57 @@ public class GameImpl implements Game {
     public void takeProperty(Player player, int position) throws GameException {
         checkPlayerInGame(player);
         checkLandIsProperty(position);
-        if (getPropertyOwner(position) != null && getPropertyOwner(position) != player) {
+        if (getPropertyOwner(position) == null) {
+            baseGame.setPropertyOwner(position, player);
+        } else if (getPropertyOwner(position) == player) {
+            LOG.warn("Player {} already owns property {}", player, position);
+        } else {
             throw new GameException(GameError.LAND_IS_ALREADY_OWNED);
         }
-        baseGame.setPropertyOwner(position, player);
     }
 
     @Override
-    public void doBid(Player player, int position, int price) throws GameException, BankException {
-        Player owner = getPropertyOwner(position);
-        if (owner == null) {
+    public void doBid(Player bidder, int position, int price) throws GameException, BankException {
+        Player seller = getPropertyOwner(position);
+        if (seller == null) {
             throw new GameException(GameError.LAND_IS_NOT_OWNED);
         }
-        BaseGame.Auction auction = baseGame.getAuction();
-        if (player.equals(auction.getSeller())) {
-            LOG.error("Player {} is trying to bid on his own property", player);
+        if (bidder.equals(seller)) {
+            LOG.error("Player {} is trying to bid on his own property", bidder);
             throw new GameException(GameError.SELLER_CANT_BID);
         }
-        if (price < auction.getPrice()) {
-            LOG.warn("Player {} is trying to bid with price {} less than current price {}", player, price, auction.getPrice());
-            throw new GameException(GameError.BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE);
+        List<ActionCard> cards = baseGame.playerData(seller).getCards();
+        Offer auction = cards.stream()
+                .filter(c -> c.getAction() == Action.OFFER)
+                .map(c -> ((Offer) c))
+                .filter(d -> d.getPosition() == position)
+                .findFirst().orElse(null);
+        if (auction == null) {
+            LOG.error("Player {} is trying to bid on property {} which is not on auction", bidder, position);
+            throw new GameException(GameError.AUCTION_IS_NOT_IN_PROGRESS);
         }
-        if (position != auction.getPosition()) {
-            LOG.error("Player {} is trying to bid on wrong property", player);
-            throw new GameException(GameError.POSITION_DOESNT_MATCH_THE_OFFER);
+        if (price > getBalance(bidder)) {
+            LOG.error("Player {} doesn't have enough money to bid", bidder);
+            throw new BankException(GameError.NOT_ENOUGH_COINS);
         }
-        if (price > getBalance(player)) {
-            LOG.error("Player {} doesn't have enough money to bid", player);
-            throw new BankException(BankError.NOT_ENOUGH_COINS);
+        List<Biding> bidings = cards.stream()
+                .filter(c -> c.getAction() == Action.SUBMIT)
+                .map(c -> ((Biding) c))
+                .filter(d -> d.getPosition() == position)
+                .collect(Collectors.toList());
+        // get max biding
+        if (bidings.isEmpty()) {
+            if (price < auction.getPrice()) {
+                LOG.error("Player {} is trying to bid on property {} with price {} which is lower than auction price {}", bidder, position, price, auction.getPrice());
+                throw new GameException(GameError.BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE);
+            }
+        } else {
+            Biding maxBiding = bidings.stream().max(Comparator.comparingInt(Biding::getPrice)).orElseThrow(() -> new IllegalStateException("No biding found"));
+            if (price <= maxBiding.getPrice()) {
+                LOG.error("Player {} is trying to bid on property {} with price {} which is lower than max biding price {}", bidder, position, price, maxBiding.getPrice());
+                throw new GameException(GameError.BID_MUST_BE_GREATER_THAN_THE_CURRENT_PRICE);
+            }
         }
-        baseGame.getAuction().doBid(player, position, price);
     }
 
     @Override
@@ -360,7 +401,7 @@ public class GameImpl implements Game {
         Property property = (Property) baseGame.getBoard().getLand(position);
         assert property != null;
         baseGame.getBank().withdraw(buyer, price);
-        baseGame.setPropertyOwner(position, seller);
+        baseGame.setPropertyOwner(position, buyer);
         try {
             baseGame.getBank().deposit(seller, price);
         } catch (BankException e) {

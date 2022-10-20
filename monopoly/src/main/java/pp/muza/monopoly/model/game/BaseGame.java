@@ -2,7 +2,6 @@ package pp.muza.monopoly.model.game;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Value;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.data.GameInfo;
@@ -29,7 +23,6 @@ import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Bank;
-import pp.muza.monopoly.model.Biding;
 import pp.muza.monopoly.model.Board;
 import pp.muza.monopoly.model.Fortune;
 import pp.muza.monopoly.model.Game;
@@ -66,7 +59,6 @@ public abstract class BaseGame {
     private final BaseGame thisGame = this;
 
     BaseTurn currentTurn;
-    Auction auction;
     int currentPlayerIndex = -1;
     int turnNumber = 0;
     int maxTurns = Constants.DEFAULT_MAX_TURNS;
@@ -156,6 +148,7 @@ public abstract class BaseGame {
             }
         };
         LOG.info("{} is starting turn {}", currentPlayer, turnNumber);
+        LOG.debug("Player's cards: {} ", playerData.get(currentPlayer).getCards());
     }
 
     private void getBackChanceCards(Player player, boolean includeKeepable) {
@@ -274,6 +267,11 @@ public abstract class BaseGame {
         releaseTurn();
         PlayerData data = playerData.get(player);
         List<ActionCard> mandatoryCards = data.getCards().stream().filter(actionCard -> actionCard.getType().isMandatory()).collect(Collectors.toList());
+        ActionCard endTurn = mandatoryCards.stream().filter(actionCard -> actionCard.getAction() == Action.END_TURN).findFirst().orElse(null);
+        if (endTurn != null) {
+            data.removeCard(endTurn);
+            mandatoryCards.remove(endTurn);
+        }
         currentTurn.markFinished();
         if (mandatoryCards.size() > 0) {
             LOG.info("Player {} has mandatory cards: {}", player, mandatoryCards.stream().map(ActionCard::getName).collect(Collectors.toList()));
@@ -313,9 +311,10 @@ public abstract class BaseGame {
             nextPlayer();
             newTurn();
             Player currentPlayer = players.get(currentPlayerIndex);
-            // check if the player has any non-kepable cards
-            boolean mandatoryCards = playerData(currentPlayer).getCards().stream().anyMatch(actionCard -> actionCard.getType() != ActionType.KEEPABLE && actionCard.getType() != ActionType.PROFIT);
-            if (!mandatoryCards) {
+            // check if the player has end turn card
+            boolean endTurn = playerData(currentPlayer).getCards().stream()
+                    .anyMatch(actionCard -> actionCard.getAction() == Action.END_TURN);
+            if (!endTurn) {
                 // if not, then the player can start a new turn
                 playerData(currentPlayer).addCard(NewTurn.create());
             }
@@ -399,31 +398,6 @@ public abstract class BaseGame {
                 .build();
     }
 
-    void auction(Player player, int position, int price) throws GameException {
-        Property property = (Property) board.getLand(position);
-        if (auction != null) {
-            throw new GameException(GameError.AUCTION_IS_ALREADY_IN_PROGRESS);
-        }
-        LOG.info("Player {} is auctioning property {} ({})", player, position, property);
-        auction = new Auction(player, position, price);
-    }
-
-    Auction getAuction() {
-        return auction;
-    }
-
-    Biding endAuction(Player player) throws GameException {
-        if (auction == null) {
-            throw new GameException(GameError.AUCTION_IS_NOT_IN_PROGRESS);
-        }
-        if (auction.seller != player) {
-            throw new GameException(GameError.ONLY_SELLER_CAN_END_AUCTION);
-        }
-        Player winner = auction.winner();
-        Biding winnerBiding = auction.bids.get(winner);
-        auction = null;
-        return winnerBiding;
-    }
 
     /**
      * for testing
@@ -456,47 +430,6 @@ public abstract class BaseGame {
 
     public void setRule(RuleOption option, String value) {
         ruleOptions.put(option, value);
-    }
-
-    @Value
-    @AllArgsConstructor(staticName = "of")
-    private static class BidingImpl implements Biding {
-        int position;
-        int price;
-        Player bidder;
-    }
-
-    /**
-     * Represents an auction
-     */
-    @Data
-    class Auction {
-        private final Player seller;
-        private final int position;
-        private final int price;
-        @Getter(AccessLevel.NONE)
-        private final Map<Player, Biding> bids = new LinkedHashMap<>();
-
-        Player winner() {
-            boolean seen = false;
-            Map.Entry<Player, Biding> best = null;
-            for (Map.Entry<Player, Biding> entry : bids.entrySet()) {
-                if (!seen || (entry.getValue().getPrice() > best.getValue().getPrice())) {
-                    seen = true;
-                    best = entry;
-                }
-            }
-
-            return seen ? best.getKey() : null;
-        }
-
-        void doBid(Player player, int postion, int price) {
-            LOG.info("{} bids {} for property {} ({})", player, price, position, board.getLand(position));
-            // put to the map at the end
-            bids.remove(player);
-            Biding biding = new BidingImpl(postion, price, player);
-            bids.put(player, biding);
-        }
     }
 
 

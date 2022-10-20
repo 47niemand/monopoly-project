@@ -3,9 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import org.apache.commons.text.WordUtils;
 import org.junit.jupiter.api.Test;
 
-import pp.muza.monopoly.errors.BankError;
 import pp.muza.monopoly.errors.GameError;
-import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.model.Asset;
 import pp.muza.monopoly.model.PropertyColor;
 import pp.muza.monopoly.model.pieces.lands.LandType;
@@ -50,14 +48,6 @@ public class I18nGeneratorTest {
             System.out.println(value.name() + "=" + value.getDescription());
         }
         System.out.println("# Errors");
-        BankError[] errors = BankError.values();
-        for (BankError value : errors) {
-            System.out.println(value.name() + "=" + value.getMessage());
-        }
-        TurnError[] turnErrors = TurnError.values();
-        for (TurnError value : turnErrors) {
-            System.out.println(value.name() + "=" + value.getMessage());
-        }
         GameError[] gameErrors = GameError.values();
         for (GameError value : gameErrors) {
             System.out.println(value.name() + "=" + value.getMessage());

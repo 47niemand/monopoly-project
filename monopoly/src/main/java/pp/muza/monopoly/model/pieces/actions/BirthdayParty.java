@@ -54,6 +54,7 @@ public final class BirthdayParty extends BaseActionCard {
             if (guest != player && !turn.getPlayerStatus(guest).isFinal()) {
                 try {
                     turn.sendCard(guest, new Gift(Constants.BIRTHDAY_GIFT_AMOUNT, player));
+                    turn.sendCard(guest, new EndTurn());
                 } catch (TurnException e) {
                     throw new UnexpectedErrorException("Error sending birthday invitation to " + player, e);
                 }

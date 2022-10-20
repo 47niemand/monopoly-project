@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.data.TurnInfo;
+import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.GameException;
-import pp.muza.monopoly.errors.TurnError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
@@ -73,7 +73,7 @@ public abstract class BaseTurn {
     private void checkFinished() throws TurnException {
         if (finished) {
             LOG.error("Turn {} is already finished", turnNumber);
-            throw new TurnException(TurnError.THE_TURN_IS_FINISHED);
+            throw new TurnException(GameError.THE_TURN_IS_FINISHED);
         }
     }
 
@@ -153,17 +153,17 @@ public abstract class BaseTurn {
             }
         } else if (playerData.getCards().contains(actionCard)) {
             LOG.warn("Card '{}' is not active for player '{}'", actionCard, player);
-            throw new TurnException(TurnError.THE_CARD_IS_NOT_ACTIVE);
+            throw new TurnException(GameError.THE_CARD_IS_NOT_ACTIVE);
         } else {
             LOG.warn("Player {} tried to play a card that is not in his hand: {}", player, actionCard);
-            throw new TurnException(TurnError.THE_CARD_IS_NOT_IN_THE_PLAYER_S_HAND);
+            throw new TurnException(GameError.THE_CARD_IS_NOT_IN_THE_PLAYER_S_HAND);
         }
         return cardUsed || newCardsSpawned ? card : null;
     }
 
     void playCard(ActionCard card) throws TurnException {
         if (card == null) {
-            throw new TurnException(TurnError.THE_CARD_IS_NULL);
+            throw new TurnException(GameError.THE_CARD_IS_NULL);
         }
         checkFinished();
         steps++;

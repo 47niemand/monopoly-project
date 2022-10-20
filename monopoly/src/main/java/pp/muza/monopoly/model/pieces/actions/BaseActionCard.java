@@ -32,6 +32,7 @@ public abstract class BaseActionCard implements ActionCard {
     public static final int NEW_TURN_PRIORITY = 100;
     public static final int DEFAULT_PRIORITY = 1000;
     public static final int LOW_PRIORITY = 10000;
+    public static final int IDLE_PRIORITY = 100000;
     private static final Logger LOG = LoggerFactory.getLogger(BaseActionCard.class);
 
     private final String name;

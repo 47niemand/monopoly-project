@@ -75,7 +75,7 @@ public enum Action {
     /**
      * Start the auction.
      */
-    AUCTION(ImmutableList.of(StartAuction.class, EndAuction.class)),
+    AUCTION(ImmutableList.of(StartAuction.class)),
     /**
      * Bid for the property.
      */
@@ -83,9 +83,15 @@ public enum Action {
     /**
      * PromoteAuction for the property on the auction.
      */
-    OFFER(ImmutableList.of(PromoteAuction.class)),
-
-    CHOICE(ImmutableList.of(ChoiceContract.class, ChoiceAuction.class));
+    OFFER(ImmutableList.of(PromoteAuction.class, EndAuction.class)),
+    /**
+     * Choose some action.
+     */
+    CHOICE(ImmutableList.of(ChoiceContract.class, ChoiceAuction.class)),
+    /**
+     * Submit offer.
+     */
+    SUBMIT(ImmutableList.of(Submit.class));
 
     @Getter
     private final List<Class<? extends BaseActionCard>> classList;

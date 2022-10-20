@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import pp.muza.monopoly.errors.TurnError;
+import pp.muza.monopoly.errors.GameError;
 import pp.muza.monopoly.errors.TurnException;
 import pp.muza.monopoly.errors.UnexpectedErrorException;
 import pp.muza.monopoly.model.ActionCard;
@@ -34,7 +34,7 @@ public final class JailFine extends Tax {
     @Override
     protected void check(Turn turn) throws TurnException {
         if (turn.getPlayerStatus() != PlayerStatus.IN_JAIL) {
-            throw new TurnException(TurnError.PLAYER_IS_NOT_IN_JAIL_CANNOT_PAY_TAX);
+            throw new TurnException(GameError.PLAYER_IS_NOT_IN_JAIL_CANNOT_PAY_TAX);
         }
     }
 

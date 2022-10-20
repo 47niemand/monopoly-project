@@ -92,7 +92,48 @@ public enum GameError {
     /**
      * Land is not property
      */
-    LAND_IS_NOT_PROPERTY("Land is not property");
+    LAND_IS_NOT_PROPERTY("Land is not property"),
+    /**
+     * Player is not in jail, cannot pay tax
+     */
+    PLAYER_IS_NOT_IN_JAIL_CANNOT_PAY_TAX("Player is not in jail, cannot pay tax"),
+    /**
+     * The card is not active
+     */
+    THE_CARD_IS_NOT_ACTIVE("The card is not active."),
+    /**
+     * The card is not in the player's hand
+     */
+    THE_CARD_IS_NOT_IN_THE_PLAYER_S_HAND("The card is not in the player's hand."),
+    /**
+     * The card is null
+     */
+    THE_CARD_IS_NULL("The card is null."),
+    /**
+     * The turn is finished
+     */
+    THE_TURN_IS_FINISHED("The turn is finished."),
+    /**
+     * Player must set price for auction
+     */
+    PLAYER_MUST_SET_PRICE_FOR_AUCTION("Player must set price for auction"),
+    /**
+     * Player has not enough money to pay.
+     */
+    NOT_ENOUGH_COINS("Not enough coins"),
+    /**
+     * Negative value
+     */
+    NEGATIVE_VALUE("Negative value"),
+    /**
+     * Price must be positive
+     */
+    PRICE_MUST_BE_POSITIVE("Price must be positive"),
+    /**
+     * Unknown error
+     */
+    UNKNOWN("Unknown error"),
+    ;
 
     private final String message;
 

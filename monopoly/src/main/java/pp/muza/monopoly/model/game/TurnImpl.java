@@ -120,7 +120,6 @@ public class TurnImpl implements Turn {
     public void auction(int position, int price) throws TurnException {
         try {
             game().auction(this.player(), position, price);
-            game().holdTurn(this);
         } catch (GameException e) {
             throw new TurnException(e);
         }
@@ -266,11 +265,11 @@ public class TurnImpl implements Turn {
     }
 
     @Override
-    public Biding endAuction() throws TurnException {
-        LOG.info("Finishing auction for {}", player());
+    public Biding endAuction(int position) throws TurnException {
+        LOG.info("Finishing auction for {}", this.player());
         Biding result;
         try {
-            result = game().endAuction(this.player());
+            result = game().endAuction(this.player(), position);
         } catch (GameException e) {
             throw new TurnException(e);
         }

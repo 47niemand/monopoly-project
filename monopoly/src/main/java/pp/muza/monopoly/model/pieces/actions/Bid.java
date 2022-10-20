@@ -11,7 +11,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.errors.TurnException;
-import pp.muza.monopoly.model.*;
+import pp.muza.monopoly.model.ActionCard;
+import pp.muza.monopoly.model.ActionType;
+import pp.muza.monopoly.model.Offer;
+import pp.muza.monopoly.model.Turn;
 
 /**
  * @author dmytromuza

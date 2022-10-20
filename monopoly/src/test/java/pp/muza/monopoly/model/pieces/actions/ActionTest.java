@@ -1,5 +1,9 @@
 package pp.muza.monopoly.model.pieces.actions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -18,8 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pp.muza.monopoly.model.Player;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ActionTest {
 

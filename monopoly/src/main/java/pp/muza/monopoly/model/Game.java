@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.consts.RuleOption;
-import pp.muza.monopoly.entry.IndexedEntry;
+import pp.muza.monopoly.stuff.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 

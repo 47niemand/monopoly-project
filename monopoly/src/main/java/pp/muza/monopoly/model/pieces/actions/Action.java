@@ -18,6 +18,14 @@ public enum Action {
      */
     ARRIVAL(ImmutableList.of(Arrival.class, GetOrPay.class, Takeover.class)),
     /**
+     * Start the auction.
+     */
+    AUCTION(ImmutableList.of(StartAuction.class)),
+    /**
+     * Bid for the property.
+     */
+    BID(ImmutableList.of(Bid.class)),
+    /**
      * Any property-related action in which the player can buy a property.
      */
     BUY(ImmutableList.of(Buy.class, OwnershipPrivilege.class)),
@@ -32,6 +40,14 @@ public enum Action {
      * Contract, any property-related activity in which the player can sale a property.
      */
     CONTRACT(ImmutableList.of(Contract.class, Sale.class)),
+    /**
+     * Player pays the given number of coins to other players or the bank.
+     */
+    DEBT(ImmutableList.of(BaseDebt.class, BasePayment.class, PayRent.class, Gift.class, JailFine.class, Tax.class)),
+    /**
+     * Play some action.
+     */
+    DEFAULT(ImmutableList.of(BaseActionCard.class, SpawnGiftCard.class, ChoiceFortuneCard.class, ChoiceContract.class, ChoiceAuction.class)),
     /**
      * End turn.
      */
@@ -57,33 +73,17 @@ public enum Action {
      */
     NEW_TURN(ImmutableList.of(NewTurn.class)),
     /**
-     * Birthday party.
-     */
-    PARTY(ImmutableList.of(BirthdayParty.class)),
-    /**
-     * Player pays the given number of coins to other players or the bank.
-     */
-    DEBT(ImmutableList.of(BaseDebt.class, PayRent.class, Gift.class, JailFine.class, Tax.class)),
-    /**
-     * Roll dice get random number.
-     */
-    ROLL_DICE(ImmutableList.of(RollDice.class)),
-    /**
-     * Start the auction.
-     */
-    AUCTION(ImmutableList.of(StartAuction.class)),
-    /**
-     * Bid for the property.
-     */
-    BID(ImmutableList.of(Bid.class)),
-    /**
      * PromoteAuction for the property on the auction.
      */
     OFFER(ImmutableList.of(BaseAuction.class, PromoteAuction.class, EndAuction.class)),
     /**
-     * Play some action.
+     * Birthday party.
      */
-    DEFAULT(ImmutableList.of(BaseActionCard.class, SpawnGiftCard.class, ChoiceFortuneCard.class, ChoiceContract.class, ChoiceAuction.class)),
+    PARTY(ImmutableList.of(BirthdayParty.class)),
+    /**
+     * Roll dice get random number.
+     */
+    ROLL_DICE(ImmutableList.of(RollDice.class)),
     /**
      * Submit offer.
      */

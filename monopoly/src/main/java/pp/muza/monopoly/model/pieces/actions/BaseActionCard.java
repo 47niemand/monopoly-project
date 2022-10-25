@@ -43,7 +43,7 @@ public abstract class BaseActionCard implements ActionCard {
     private final int priority;
 
     protected BaseActionCard(Action action, ActionType type, int priority) {
-        assert action.getClassList().contains(this.getClass());
+        assert action.getClassList().contains(this.getClass()) : "Action " + action + " is not supported by " + this.getClass();
         this.name = this.getClass().getSimpleName();
         this.action = action;
         this.type = type;

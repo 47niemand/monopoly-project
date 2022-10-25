@@ -52,7 +52,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
         return new FortuneCard(chance);
     }
 
-    private static List<ActionCard> sendGiftCard(Turn turn, int playerId) {
+    private static List<ActionCard> sendFortuneToPlayer(Turn turn, int playerId) {
         List<ActionCard> result = new ArrayList<>();
         List<Player> players = turn.getPlayers();
         Player recipient;
@@ -73,7 +73,10 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             result.add(turn.popFortuneCard());
         } else {
             try {
-                turn.sendCard(recipient, new SpawnGiftCard());
+                // The recipient on its turn will go forward to any free property and will buy it.
+                // If all are owned, recipient can buy one from any player.
+                turn.sendCard(recipient, new SpawnMoveAndTakeover());
+                turn.sendCard(recipient, new EndTurn());
             } catch (TurnException e) {
                 throw new UnexpectedErrorException("Error sending gift card to " + recipient, e);
             }
@@ -143,16 +146,16 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
                 }
                 break;
             case GIVE_THIS_CARD_TO_A_PLAYER_1:
-                result.addAll(sendGiftCard(turn, PLAYER_1));
+                result.addAll(sendFortuneToPlayer(turn, PLAYER_1));
                 break;
             case GIVE_THIS_CARD_TO_A_PLAYER_2:
-                result.addAll(sendGiftCard(turn, PLAYER_2));
+                result.addAll(sendFortuneToPlayer(turn, PLAYER_2));
                 break;
             case GIVE_THIS_CARD_TO_A_PLAYER_3:
-                result.addAll(sendGiftCard(turn, PLAYER_3));
+                result.addAll(sendFortuneToPlayer(turn, PLAYER_3));
                 break;
             case GIVE_THIS_CARD_TO_A_PLAYER_4:
-                result.addAll(sendGiftCard(turn, PLAYER_4));
+                result.addAll(sendFortuneToPlayer(turn, PLAYER_4));
                 break;
             default:
                 throw new IllegalStateException("Unknown chance card: " + chance);

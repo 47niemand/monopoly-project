@@ -21,16 +21,16 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class SpawnGiftCard extends BaseActionCard {
+public final class SpawnMoveAndTakeover extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpawnGiftCard.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpawnMoveAndTakeover.class);
 
-    SpawnGiftCard() {
+    SpawnMoveAndTakeover() {
         super(Action.DEFAULT, ActionType.OBLIGATION, DEFAULT_PRIORITY);
     }
 
     public static ActionCard create() {
-        return new SpawnGiftCard();
+        return new SpawnMoveAndTakeover();
     }
 
     @Override

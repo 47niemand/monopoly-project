@@ -47,7 +47,7 @@ public enum Action {
     /**
      * Play some action.
      */
-    DEFAULT(ImmutableList.of(BaseActionCard.class, SpawnGiftCard.class, ChoiceFortuneCard.class, ChoiceContract.class, ChoiceAuction.class)),
+    DEFAULT(ImmutableList.of(BaseActionCard.class, SpawnMoveAndTakeover.class, ChoiceFortuneCard.class, ChoiceContract.class, ChoiceAuction.class)),
     /**
      * End turn.
      */

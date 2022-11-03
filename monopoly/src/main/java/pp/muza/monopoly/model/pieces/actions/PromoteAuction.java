@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +89,7 @@ public class PromoteAuction extends BaseAuction implements SyncCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("position", position, "price", price)
+                ImmutableMap.of("position", position, "price", price)
         );
     }
 }

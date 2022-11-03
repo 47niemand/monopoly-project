@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +90,7 @@ public abstract class BaseDebt extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("value", value)
+                ImmutableMap.of("value", value)
         );
     }
 }

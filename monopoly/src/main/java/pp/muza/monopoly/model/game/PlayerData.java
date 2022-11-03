@@ -33,15 +33,15 @@ final class PlayerData {
         this.player = player;
     }
 
-    public Player getPlayer() {
+    Player getPlayer() {
         return this.player;
     }
 
-    public PlayerStatus getStatus() {
+    PlayerStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(PlayerStatus status) {
+    void setStatus(PlayerStatus status) {
         if (this.status == null) {
             LOG.debug("{}: set status to {}", player, status);
         } else {
@@ -50,11 +50,11 @@ final class PlayerData {
         this.status = status;
     }
 
-    public int getPosition() {
+    int getPosition() {
         return this.position;
     }
 
-    public void setPosition(int position) {
+    void setPosition(int position) {
         if (this.position != position) {
             LOG.info("{} is moving from position {} to position {}", this.player, this.position, position);
             this.position = position;
@@ -63,25 +63,24 @@ final class PlayerData {
         }
     }
 
-    public List<ActionCard> getCards() {
+    List<ActionCard> getCards() {
         return Collections.unmodifiableList(cards);
     }
 
-    public int getCurrentPriority() {
+    int getCurrentPriority() {
         boolean seen1 = false, seen2 = false;
         int best1 = 0, best2 = 0;
         for (ActionCard card : cards) {
             if (hold.contains(card)) {
                 continue;
             }
+            int actionCardPriority = card.getPriority();
             if (card.getType().isMandatory()) {
-                int actionCardPriority = card.getPriority();
                 if (!seen1 || actionCardPriority < best1) {
                     seen1 = true;
                     best1 = actionCardPriority;
                 }
             } else {
-                int actionCardPriority = card.getPriority();
                 if (!seen2 || actionCardPriority < best2) {
                     seen2 = true;
                     best2 = actionCardPriority;
@@ -91,7 +90,7 @@ final class PlayerData {
         return seen1 ? best1 : (seen2 ? best2 : BaseActionCard.LOW_PRIORITY);
     }
 
-    public void holdCard(ActionCard actionCard) {
+    void holdCard(ActionCard actionCard) {
         LOG.info("{}: holding card {}", this.player, actionCard);
         if (cards.contains(actionCard)) {
             if (hold.contains(actionCard)) {
@@ -105,20 +104,21 @@ final class PlayerData {
         }
     }
 
-    public void releaseAll() {
+    void releaseAll() {
         if (!hold.isEmpty()) {
             LOG.debug("Releasing all cards: {}", hold);
             hold.clear();
         }
     }
 
-    public boolean canUseCard(ActionCard card) {
+    boolean canUseCard(ActionCard card) {
         if (card == null) {
             throw new NullPointerException("card is null");
         }
         int priority = getCurrentPriority();
         int i = cards.indexOf(card);
         if (i < 0) {
+            LOG.warn("{}: card {} is not in the player's hand", this.player, card);
             return false;
         } else {
             ActionCard actionCard = cards.get(i);
@@ -126,7 +126,7 @@ final class PlayerData {
         }
     }
 
-    public List<ActionCard> getActiveCards() {
+    List<ActionCard> getActiveCards() {
         List<ActionCard> result;
         int currentPriority = getCurrentPriority();
         result = cards.stream()
@@ -144,7 +144,7 @@ final class PlayerData {
      * @param card the card to add
      * @return true if the card was added and false if the card was not added
      */
-    public boolean addCard(ActionCard card) {
+    boolean addCard(ActionCard card) {
         if (card == null) {
             throw new NullPointerException("card is null");
         }
@@ -168,7 +168,7 @@ final class PlayerData {
         return result;
     }
 
-    private List<ActionCard> getByCard(ActionCard card) {
+    List<ActionCard> getByCard(ActionCard card) {
         return this.cards.stream()
                 .filter(actionCard -> actionCard.equals(card))
                 .collect(Collectors.toList());
@@ -180,7 +180,7 @@ final class PlayerData {
      * @param card card to remove
      * @return removed card or null if card was not found
      */
-    public ActionCard removeCard(ActionCard card) {
+    ActionCard removeCard(ActionCard card) {
         if (card == null) {
             throw new NullPointerException("card is null");
         }
@@ -203,17 +203,7 @@ final class PlayerData {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "BaseGame.PlayerData(player=" + this.getPlayer()
-                + ", status=" + this.getStatus()
-                + ", position=" + this.getPosition()
-                + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
-                + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
-                + ")";
-    }
-
-    public void removeCards(List<ActionCard> cards) {
+    void removeCards(List<ActionCard> cards) {
         if (cards == null) {
             throw new NullPointerException("cards is null");
         }
@@ -223,5 +213,15 @@ final class PlayerData {
         if (!b) {
             LOG.warn("No cards removed from player {}", player);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "BaseGame.PlayerData(player=" + this.getPlayer()
+                + ", status=" + this.getStatus()
+                + ", position=" + this.getPosition()
+                + ", cards=" + this.cards.stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ", hold=" + this.hold.stream().map(ActionCard::getName).collect(Collectors.toList())
+                + ")";
     }
 }

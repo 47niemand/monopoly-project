@@ -2,6 +2,7 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
@@ -34,7 +35,7 @@ public final class RentRevenue extends ReceiveMoney {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("position", position)
+                ImmutableMap.of("position", position)
         );
     }
 }

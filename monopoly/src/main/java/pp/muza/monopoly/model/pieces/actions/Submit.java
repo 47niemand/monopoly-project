@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public final class Submit extends BaseActionCard implements Biding {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("bidder", bidder, "position", position, "price", price)
+                ImmutableMap.of("bidder", bidder, "position", position, "price", price)
         );
     }
 }

@@ -3,6 +3,7 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,6 @@ import pp.muza.monopoly.model.Turn;
 public final class Sale extends Contract {
 
     private static final Logger LOG = LoggerFactory.getLogger(Sale.class);
-
 
     private final Player buyer;
 
@@ -65,7 +65,7 @@ public final class Sale extends Contract {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("buyer", buyer)
+                ImmutableMap.of("buyer", buyer)
         );
     }
 }

@@ -49,7 +49,6 @@ public final class BirthdayParty extends BaseActionCard {
     private void doBirthdayParty(Turn turn) throws TurnException {
         Player player = turn.getPlayer();
         LOG.info("Birthday party for {}", player);
-        turn.holdTurn();
         for (Player guest : turn.getPlayers()) {
             if (guest != player && !turn.getPlayerStatus(guest).isFinal()) {
                 try {
@@ -60,6 +59,7 @@ public final class BirthdayParty extends BaseActionCard {
                 }
             }
         }
+        turn.holdTurn();
     }
 }
 

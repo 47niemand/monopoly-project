@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +184,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("chance", chance.name())
+                ImmutableMap.of("chance", chance.name())
         );
     }
 }

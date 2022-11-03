@@ -19,7 +19,7 @@ import pp.muza.monopoly.model.Player;
 @ToString
 public class GameInfo {
     List<Player> players;
-    List<PlayerInfo> playerInfos;
+    List<PlayerInfo> playerInfo;
     Board board;
     List<Fortune> fortunes;
     int currentPlayerIndex;

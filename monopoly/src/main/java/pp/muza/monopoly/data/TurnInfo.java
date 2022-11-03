@@ -23,6 +23,7 @@ import pp.muza.monopoly.model.ActionCard;
 public class TurnInfo {
 
     int turnNumber;
+    int stepNumber;
     PlayerInfo playerInfo;
     List<ActionCard> activeCards;
     boolean isFinished;
@@ -34,6 +35,7 @@ public class TurnInfo {
     public String toString() {
         return "TurnInfo{" +
                 "turnNumber=" + turnNumber +
+                ", stepNumber=" + stepNumber +
                 ", playerInfo=" + playerInfo +
                 ", activeCards=" + activeCards.stream().map(ActionCard::getName).collect(Collectors.toList()) +
                 (usedCards != null ? ", usedCards=" + usedCards.stream().map(ActionCard::getName).collect(Collectors.toList()) : "") +

@@ -68,7 +68,7 @@ public enum Asset {
     /**
      * Park
      */
-    PARK_LANE(Constants.PRICE_5, PropertyColor.RAINBOW),
+    PARK_LANE(Constants.PRICE_4, PropertyColor.RAINBOW),
     /**
      * Mayfair
      */

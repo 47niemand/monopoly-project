@@ -74,7 +74,7 @@ public abstract class BaseGame {
         this.turnNumber = gameInfo.getTurnNumber();
         for (Player player : this.players) {
             PlayerData data = new PlayerData(player);
-            PlayerInfo playerInfo = gameInfo.getPlayerInfos().stream()
+            PlayerInfo playerInfo = gameInfo.getPlayerInfo().stream()
                     .filter(x -> x.getPlayer().equals(player))
                     .findFirst()
                     .orElseThrow();
@@ -207,8 +207,8 @@ public abstract class BaseGame {
         Property property = (Property) board.getLand(position);
         Player oldOwner = propertyOwners.remove(position);
         if (oldOwner != null) {
-            LOG.info("Property {} ({}) is now free", position, property);
             LOG.info("{} lost property {} ({})", oldOwner, position, property);
+            LOG.info("Property {} ({}) is now free", position, property);
         } else {
             LOG.warn("Property {} ({}) is already free", position, property);
         }
@@ -397,7 +397,7 @@ public abstract class BaseGame {
     GameInfo getGameInfo() {
         return GameInfo.builder()
                 .players(getPlayers())
-                .playerInfos(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
+                .playerInfo(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
                 .board(board)
                 .fortunes(ImmutableList.copyOf(fortuneCards))
                 .currentPlayerIndex(currentPlayerIndex)

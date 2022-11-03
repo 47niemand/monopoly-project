@@ -191,6 +191,7 @@ public abstract class BaseTurn {
     TurnInfo getTurnInfo() {
         return TurnInfo.builder()
                 .turnNumber(turnNumber)
+                .stepNumber(steps)
                 .playerInfo(baseGame().getPlayerInfo(player))
                 .activeCards(baseGame().getActiveCards(player))
                 .usedCards(usedCards)

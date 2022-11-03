@@ -2,6 +2,7 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
@@ -39,7 +40,7 @@ public class ReceiveMoney extends Income {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("sender", sender)
+                ImmutableMap.of("sender", sender)
         );
     }
 }

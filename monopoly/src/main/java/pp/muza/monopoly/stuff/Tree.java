@@ -1,6 +1,11 @@
 package pp.muza.monopoly.stuff;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -165,6 +170,8 @@ public class Tree<T> {
             while (node != null) {
                 if (node.value != null) {
                     path.add(node.value);
+                } else {
+                    path.add(null);
                 }
                 node = node.parent;
             }

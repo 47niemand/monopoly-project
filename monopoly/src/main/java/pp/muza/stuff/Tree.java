@@ -1,4 +1,4 @@
-package pp.muza.monopoly.stuff;
+package pp.muza.stuff;
 
 import java.util.ArrayList;
 import java.util.Collection;

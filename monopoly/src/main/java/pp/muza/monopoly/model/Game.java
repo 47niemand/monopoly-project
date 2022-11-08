@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.consts.RuleOption;
-import pp.muza.monopoly.stuff.IndexedEntry;
+import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 
@@ -71,7 +71,7 @@ public interface Game {
      *
      * @param player   the player.
      * @param position the property.
-     * @param price
+     * @param price    the price to sell.
      * @throws GameException if there are some errors (e.g. the player does not own the property).
      * @throws BankException if a player cannot receive the coins.
      */
@@ -135,7 +135,6 @@ public interface Game {
      */
     void income(Player player, int value) throws BankException;
 
-
     /**
      * Returns status of a player.
      *
@@ -153,7 +152,6 @@ public interface Game {
      * @return the new position.
      */
     int nextPosition(Player player, int distance);
-
 
     /**
      * Returns the land at the given position.
@@ -192,7 +190,6 @@ public interface Game {
      * @return the starting position.
      */
     int getStartPosition();
-
 
     /**
      * Returns the list of all properties in the game.

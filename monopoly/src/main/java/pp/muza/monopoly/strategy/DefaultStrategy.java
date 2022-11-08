@@ -29,7 +29,7 @@ public class DefaultStrategy implements Strategy {
         List<ActionCard> cards = turnInfo.getActiveCards();
         LOG.info("Active cards: {}", cards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         // TODO: implement a better strategy
-        //  if there are CONTRACT cards, chose which a better to sale (to cover the obligation, or get more profit);
+        //  if there are CONTRACT cards, choose which a better to sale (to cover the obligation, or get more profit);
         //  If there is a BUY card, decide whether to buy it or not if a better option could be available;
         //  if there are MoveAndTakeover cards, chose card which fits player balance;
         //  if there are GetOrPay cards, It is preferable to select an unowned land, but consider the player's balance;

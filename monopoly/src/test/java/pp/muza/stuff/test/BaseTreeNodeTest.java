@@ -1,7 +1,7 @@
-package pp.muza.monopoly.stuff.test;
+package pp.muza.stuff.test;
 
 import org.junit.jupiter.api.Test;
-import pp.muza.monopoly.stuff.Tree;
+import pp.muza.stuff.Tree;
 
 class BaseTreeNodeTest {
 

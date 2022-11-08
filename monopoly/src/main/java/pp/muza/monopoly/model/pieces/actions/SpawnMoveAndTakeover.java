@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import pp.muza.monopoly.stuff.IndexedEntry;
+import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Property;

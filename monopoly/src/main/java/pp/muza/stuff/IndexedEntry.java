@@ -1,4 +1,4 @@
-package pp.muza.monopoly.stuff;
+package pp.muza.stuff;
 
 import lombok.Value;
 

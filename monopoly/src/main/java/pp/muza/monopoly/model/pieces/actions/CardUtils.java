@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableList;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.consts.RuleOptionValue;
-import pp.muza.monopoly.stuff.IndexedEntry;
+import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;

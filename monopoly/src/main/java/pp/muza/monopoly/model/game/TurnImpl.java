@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pp.muza.monopoly.consts.RuleOption;
-import pp.muza.monopoly.stuff.IndexedEntry;
+import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
 import pp.muza.monopoly.errors.TurnException;

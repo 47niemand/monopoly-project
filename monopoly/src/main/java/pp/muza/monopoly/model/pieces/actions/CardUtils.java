@@ -13,13 +13,13 @@ import com.google.common.collect.ImmutableList;
 import pp.muza.monopoly.consts.Constants;
 import pp.muza.monopoly.consts.RuleOption;
 import pp.muza.monopoly.consts.RuleOptionValue;
-import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 import pp.muza.monopoly.model.pieces.lands.Start;
+import pp.muza.stuff.IndexedEntry;
 
 final class CardUtils {
 

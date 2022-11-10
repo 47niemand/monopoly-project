@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.Turn;
+import pp.muza.stuff.IndexedEntry;
 
 /**
  * Buy a free property. If all are owned, purchase from any player.

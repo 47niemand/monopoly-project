@@ -25,8 +25,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import pp.muza.stuff.Tree;
 import pp.muza.monopoly.model.Player;
+import pp.muza.stuff.Tree;
 
 class ActionTest {
 

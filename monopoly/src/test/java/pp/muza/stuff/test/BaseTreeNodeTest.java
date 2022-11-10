@@ -1,6 +1,7 @@
 package pp.muza.stuff.test;
 
 import org.junit.jupiter.api.Test;
+
 import pp.muza.stuff.Tree;
 
 class BaseTreeNodeTest {

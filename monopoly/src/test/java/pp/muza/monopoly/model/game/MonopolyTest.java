@@ -28,23 +28,7 @@ import pp.muza.monopoly.model.PlayGame;
 import pp.muza.monopoly.model.PlayTurn;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
-import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.Bid;
-import pp.muza.monopoly.model.pieces.actions.BirthdayParty;
-import pp.muza.monopoly.model.pieces.actions.Buy;
-import pp.muza.monopoly.model.pieces.actions.Chance;
-import pp.muza.monopoly.model.pieces.actions.ChoiceAuction;
-import pp.muza.monopoly.model.pieces.actions.EndAuction;
-import pp.muza.monopoly.model.pieces.actions.EndTurn;
-import pp.muza.monopoly.model.pieces.actions.FortuneCard;
-import pp.muza.monopoly.model.pieces.actions.JailFine;
-import pp.muza.monopoly.model.pieces.actions.NewTurn;
-import pp.muza.monopoly.model.pieces.actions.OwnershipPrivilege;
-import pp.muza.monopoly.model.pieces.actions.PromoteAuction;
-import pp.muza.monopoly.model.pieces.actions.RentRevenue;
-import pp.muza.monopoly.model.pieces.actions.Sale;
-import pp.muza.monopoly.model.pieces.actions.Takeover;
-import pp.muza.monopoly.model.pieces.actions.Tax;
+import pp.muza.monopoly.model.pieces.actions.*;
 import pp.muza.monopoly.strategy.ObedientStrategy;
 
 class MonopolyTest {
@@ -474,6 +458,29 @@ class MonopolyTest {
         l = game.baseGame.getGame().moveTo(player1, 23);
         assertEquals(23, game.baseGame.playerData(player1).getPosition());
         assertEquals(22, l.size());
+    }
+
+    @Test
+    void giveThisCardToAPlayer() throws GameException, TurnException {
+        Player player1 = new Player("player1");
+        Player player2 = new Player("player2");
+        Monopoly game = new Monopoly(ImmutableList.of(player1, player2));
+        game.start();
+        game.baseGame.sendCardTest(player1, game.baseGame.pickFortuneCard(Chance.GIVE_THIS_CARD_TO_A_PLAYER_2));
+        game.baseGame.sendCardTest(player1, EndTurn.create());
+        PlayTurn turn1 = game.getTurn();
+        //Give this card to Player 2
+        while (!turn1.isFinished()) {
+            ActionCard card = ObedientStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn1.getTurnInfo());
+            turn1.playCard(card);
+        }
+        PlayTurn turn2 = game.getTurn();
+        // Player 2, on your turn, go forward to any free property and buy it. If all are owned, buy one from any player.
+        assertEquals(2, turn2.getTurnInfo().getPlayerInfo().getActionCards().size());
+        assertEquals(1, turn2.getTurnInfo().getPlayerInfo().getActionCards().stream().filter(c -> c instanceof EndTurn).count());
+        assertEquals(1, turn2.getTurnInfo().getPlayerInfo().getActionCards().stream().filter(c -> c instanceof SpawnMoveAndTakeover).count());
+        turn2.playCard(SpawnMoveAndTakeover.create());
+        assertTrue(true);
     }
 
 }

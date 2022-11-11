@@ -72,6 +72,7 @@ public abstract class BaseGame {
         this.maxTurns = gameInfo.getMaxTurns();
         this.currentPlayerIndex = gameInfo.getCurrentPlayerIndex();
         this.turnNumber = gameInfo.getTurnNumber();
+        gameInfo.getRules().forEach(k -> ruleOptions.put(k.getKey(), k.getValue()));
         for (Player player : this.players) {
             PlayerData data = new PlayerData(player);
             PlayerInfo playerInfo = gameInfo.getPlayerInfo().stream()
@@ -399,6 +400,7 @@ public abstract class BaseGame {
                 .players(getPlayers())
                 .playerInfo(players.stream().map(this::getPlayerInfo).collect(Collectors.toList()))
                 .board(board)
+                .rules(ImmutableList.copyOf(ruleOptions.entrySet()))
                 .fortunes(ImmutableList.copyOf(fortuneCards))
                 .currentPlayerIndex(currentPlayerIndex)
                 .turnNumber(turnNumber)

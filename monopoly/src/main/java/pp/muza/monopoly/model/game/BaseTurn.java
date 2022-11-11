@@ -28,7 +28,7 @@ import pp.muza.monopoly.model.pieces.actions.SyncCard;
  */
 public abstract class BaseTurn {
 
-    public static final int MAX_STEPS_PER_TURN = 30;
+    public static final int MAX_STEPS_PER_TURN = 100;
     private static final Logger LOG = LoggerFactory.getLogger(BaseTurn.class);
 
     private final Player player;

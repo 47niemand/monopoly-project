@@ -351,10 +351,6 @@ public class GameImpl implements Game {
         if (seller == null) {
             throw new GameException(GameError.LAND_IS_NOT_OWNED);
         }
-        if (bidder.equals(seller)) {
-            LOG.error("Player {} is trying to bid on his own property", bidder);
-            throw new GameException(GameError.SELLER_CANT_BID);
-        }
         List<ActionCard> cards = baseGame.playerData(seller).getCards();
         Offer auction = cards.stream()
                 .filter(c -> c.getAction() == Action.OFFER)
@@ -364,6 +360,10 @@ public class GameImpl implements Game {
         if (auction == null) {
             LOG.error("Player {} is trying to bid on property {} which is not on auction", bidder, position);
             throw new GameException(GameError.AUCTION_IS_NOT_IN_PROGRESS);
+        }
+        if (bidder.equals(seller)) {
+            LOG.error("Player {} is trying to bid on his own property", bidder);
+            throw new GameException(GameError.SELLER_CANT_BID);
         }
         if (price > getBalance(bidder)) {
             LOG.error("Player {} doesn't have enough money to bid", bidder);

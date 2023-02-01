@@ -6,7 +6,7 @@ import pp.muza.monopoly.model.ActionCard;
  * Synchronization card.
  * <p>
  * This card is used to synchronize some properties between the cards.
- * </p
+ * </p>
  *
  * @author dmytromuza
  */

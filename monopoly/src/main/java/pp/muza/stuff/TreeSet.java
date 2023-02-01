@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  */
 public class TreeSet<T> implements Set<T> {
 
+    private static final String NULL_STR = "null";
     private final Map<T, TreeNode<T>> nodes = new HashMap<>();
     private final TreeNode<T> root = new TreeNode<>(null);
 
@@ -158,7 +159,7 @@ public class TreeSet<T> implements Set<T> {
 
     private String toString(T t) {
         if (t == null) {
-            return "null";
+            return NULL_STR;
         }
         return t.toString();
     }
@@ -235,7 +236,6 @@ public class TreeSet<T> implements Set<T> {
      */
     public static class TreeNode<K> {
 
-        private static final String NULL_STR = "null";
         private final K value;
         private final Collection<TreeNode<K>> children = new ArrayList<>();
         private TreeNode<K> parent;

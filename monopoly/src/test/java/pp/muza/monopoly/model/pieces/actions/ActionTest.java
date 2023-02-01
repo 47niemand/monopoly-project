@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pp.muza.monopoly.model.Player;
-import pp.muza.stuff.Tree;
+import pp.muza.stuff.TreeSet;
 
 class ActionTest {
 
@@ -47,7 +47,7 @@ class ActionTest {
 
         Map<Class<? extends BaseActionCard>, Object> map = new LinkedHashMap<>();
         Map<Class<? extends BaseActionCard>, List<Class<? extends BaseActionCard>>> classHierarchy = new LinkedHashMap<>();
-        Tree<Class<?>> tree = new Tree<>();
+        TreeSet<Class<?>> tree = new TreeSet<>();
 
         Collection<Class<?>> classes = Arrays.stream(Action.values())
                 .flatMap(b -> b.getClassList().stream())

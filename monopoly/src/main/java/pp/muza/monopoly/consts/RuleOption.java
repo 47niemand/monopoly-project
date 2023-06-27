@@ -12,6 +12,10 @@ public enum RuleOption {
      */
     AUCTION,
     /**
+     * The player must buy free properties he lands on.
+     */
+    BUY_OBLIGATORY,
+    /**
      * The player can mortgage his property.
      * <p>
      * Note: this option is not implemented yet.

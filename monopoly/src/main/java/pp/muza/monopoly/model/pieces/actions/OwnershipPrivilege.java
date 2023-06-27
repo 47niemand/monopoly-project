@@ -24,7 +24,7 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class OwnershipPrivilege extends Buy {
+public final class OwnershipPrivilege extends BaseBuy {
 
     private static final Logger LOG = LoggerFactory.getLogger(OwnershipPrivilege.class);
 
@@ -46,11 +46,5 @@ public final class OwnershipPrivilege extends Buy {
         return ImmutableList.of();
     }
 
-    @Override
-    protected Map<String, Object> params() {
-        return mergeMaps(
-                super.params(),
-                ImmutableMap.of("position", position)
-        );
-    }
+
 }

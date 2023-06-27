@@ -20,14 +20,7 @@ import pp.muza.monopoly.model.PlayGame;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.PlayerStatus;
 import pp.muza.monopoly.model.Property;
-import pp.muza.monopoly.model.pieces.actions.Action;
-import pp.muza.monopoly.model.pieces.actions.Arrival;
-import pp.muza.monopoly.model.pieces.actions.BaseDebt;
-import pp.muza.monopoly.model.pieces.actions.Buy;
-import pp.muza.monopoly.model.pieces.actions.Contract;
-import pp.muza.monopoly.model.pieces.actions.Income;
-import pp.muza.monopoly.model.pieces.actions.PayRent;
-import pp.muza.monopoly.model.pieces.actions.RentRevenue;
+import pp.muza.monopoly.model.pieces.actions.*;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
 /**
@@ -167,8 +160,8 @@ public class Printer {
                     "player", playerName
             ));
 
-        } else if (card instanceof Buy) {
-            Buy buy = (Buy) card;
+        } else if (card instanceof BaseBuy) {
+            BaseBuy buy = (BaseBuy) card;
             return format(BUY_MSG, Map.of(
                     "land", resourceBundle.getString(board.getLand(buy.getPosition()).getName()),
                     "player", playerName,

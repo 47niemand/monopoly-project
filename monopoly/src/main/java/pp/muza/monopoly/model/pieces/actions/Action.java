@@ -28,7 +28,7 @@ public enum Action {
     /**
      * Any property-related action in which the player can buy a property.
      */
-    BUY(ImmutableList.of(Buy.class, OwnershipPrivilege.class)),
+    BUY(ImmutableList.of(BaseBuy.class, Buy.class, OwnershipPrivilege.class)),
     /**
      * This is a specific card that stores the chance pile of the game.
      * <p>It should be returned to the game when the card is used.

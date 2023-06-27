@@ -20,7 +20,7 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * A Player can use this card to purchase a property from the board.
+ * A Player must use this card to purchase a property from the board.
  * If the property is not owned, the player should buy it.
  * If someone else owns the property, the player has to pay the price to the
  * owner and then the property is bought.
@@ -32,18 +32,10 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class Buy extends BaseActionCard {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Buy.class);
-
-    /**
-     * the id of the land to be traded.
-     */
-    protected final int position;
+public class Buy extends BaseBuy {
 
     protected Buy(ActionType type, int priority, int position) {
-        super(Action.BUY, type, priority);
-        this.position = position;
+        super(type, priority, position);
     }
 
     Buy(int position) {
@@ -81,11 +73,4 @@ public class Buy extends BaseActionCard {
         return result;
     }
 
-    @Override
-    protected Map<String, Object> params() {
-        return mergeMaps(
-                super.params(),
-                ImmutableMap.of("position", position)
-        );
-    }
 }

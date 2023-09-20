@@ -91,6 +91,10 @@ public class Printer {
             resourceBundle.getString("BUY_MSG")
     };
 
+    public static void println(String msg) {
+        System.out.println(msg);
+    }
+
     public static void printResults(PlayGame game) {
         List<String> freeProperties = IntStream.range(0, game.getBoard().getLands().size())
                 .filter(x -> game.getBoard().getLand(x).getType() == LandType.PROPERTY)
@@ -120,7 +124,7 @@ public class Printer {
         Land land = board.getLand(positionNumber);
         // cards played
         List<ActionCard> cards = turnInfo.getUsedCards();
-        List<Buy> buyCards = cards.stream().filter(x -> x.getAction() == Action.BUY).map(x -> (Buy) x).collect(Collectors.toList());
+        List<BaseBuy> buyCards = cards.stream().filter(x -> x.getAction() == Action.BUY).map(x -> (BaseBuy) x).collect(Collectors.toList());
         List<Fortune> fortuneCards = cards.stream().filter(x -> x.getAction() == Action.CHANCE).map(x -> (Fortune) x).collect(Collectors.toList());
         List<Contract> contractCards = cards.stream().filter(x -> x.getAction() == Action.CONTRACT).map(x -> (Contract) x).collect(Collectors.toList());
         List<Income> incomeCards = cards.stream().filter(x -> x.getAction() == Action.INCOME).map(x -> (Income) x).collect(Collectors.toList());
@@ -271,7 +275,7 @@ public class Printer {
         }
     }
 
-    static void newOwnsMsg(Board board, String playerName, List<Buy> buyCards, StringBuilder sb) {
+    static void newOwnsMsg(Board board, String playerName, List<BaseBuy> buyCards, StringBuilder sb) {
         List<Property> ownedProperties = buyCards.stream().map(actionCard -> board.getLand(actionCard.getPosition())).map(x -> (Property) x).collect(Collectors.toList());
         String s = ownedProperties.stream().map(Property::getName).map(i18n()).collect(Collectors.joining(", "));
         sb.append(format(NEW_OWN_MSG, Map.of(

@@ -8,6 +8,7 @@ version 'unspecified'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 application {
@@ -26,6 +27,7 @@ dependencies {
     //implementation 'org.apache.avro:avro:1.11.1'
     //implementation 'org.apache.kafka:kafka-clients:3.2.1'
 
+    implementation 'com.github.47niemand:LineFormatter:0.2-6'
 
     implementation project(':monopoly')
 }

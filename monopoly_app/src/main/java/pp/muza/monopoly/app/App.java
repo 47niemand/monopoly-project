@@ -16,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import pp.muza.monopoly.app.print.PrintBoard;
 import pp.muza.monopoly.app.print.Printer;
 import pp.muza.monopoly.app.stats.Statistics;
 import pp.muza.monopoly.consts.Constants;
@@ -96,6 +97,9 @@ public class App {
         List<Player> players = IntStream.range(0, playerNumbers).mapToObj(i -> new Player("Player" + (i + 1)))
                 .collect(Collectors.toList());
         PlayGame game = new Monopoly(players);
+
+        Printer.println(PrintBoard.printBoard(game.getBoard()));
+
         game.start();
         while (game.isGameInProgress()) {
             PlayTurn turn = game.getTurn();

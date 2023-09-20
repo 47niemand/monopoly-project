@@ -90,6 +90,7 @@ public class Printer {
     static final String[] BUY_MSG = new String[]{
             resourceBundle.getString("BUY_MSG")
     };
+    public static final String LINE_BREAK = "\n";
 
     public static void println(String msg) {
         System.out.println(msg);
@@ -184,14 +185,14 @@ public class Printer {
     static void playerStatus(Board board, TurnInfo turnInfo, String playerName, StringBuilder sb) {
         if (turnInfo.getPlayerInfo().getStatus() == PlayerStatus.OUT_OF_GAME) {
             String obligatoryCards = turnInfo.getActiveCards().stream().map(actionCard -> cardInfo(playerName, board, actionCard)).collect(Collectors.joining(", "));
-            sb.append(obligatoryCards).append("\n");
+            sb.append(obligatoryCards).append(LINE_BREAK);
             sb.append(format(OUT_OF_GAME_MSG, Map.of(
                     "player", playerName
-            ))).append("\n");
+            ))).append(LINE_BREAK);
         } else if (turnInfo.getPlayerInfo().getStatus() == PlayerStatus.IN_JAIL) {
             sb.append(format(IN_JAIL_MSG, Map.of(
                     "player", playerName
-            ))).append("\n");
+            ))).append(LINE_BREAK);
         }
     }
 
@@ -201,7 +202,7 @@ public class Printer {
 
     static void fortuneMsg(String playerName, Board board, List<Fortune> fortuneCards, StringBuilder sb) {
         for (Fortune x : fortuneCards) {
-            sb.append(cardInfo(playerName, board, x)).append("\n");
+            sb.append(cardInfo(playerName, board, x)).append(LINE_BREAK);
         }
     }
 
@@ -227,7 +228,7 @@ public class Printer {
                     "amount", spending
             )));
         }
-        sb.append("\n");
+        sb.append(LINE_BREAK);
     }
 
     static void incomeMsg(String playerName, List<Income> incomeCards, StringBuilder sb) {
@@ -256,7 +257,7 @@ public class Printer {
                 )));
             }
         }
-        sb.append("\n");
+        sb.append(LINE_BREAK);
     }
 
     static void lostMsg(Board board, String playerName, List<Contract> contractCards, StringBuilder sb) {
@@ -266,12 +267,12 @@ public class Printer {
             sb.append(format(LOST_PROPERTY_MSG, Map.of(
                     "player", playerName,
                     "land", s)
-            )).append("\n");
+            )).append(LINE_BREAK);
         } else {
             sb.append(format(LOST_PROPERTY_PLURAL_MSG, Map.of(
                     "player", playerName,
                     "lands", s)
-            )).append("\n");
+            )).append(LINE_BREAK);
         }
     }
 
@@ -281,7 +282,7 @@ public class Printer {
         sb.append(format(NEW_OWN_MSG, Map.of(
                 "player", playerName,
                 "land", s)
-        )).append("\n");
+        )).append(LINE_BREAK);
     }
 
     static void playedCardsMsg(String playerName, List<ActionCard> cards, StringBuilder sb) {
@@ -289,7 +290,7 @@ public class Printer {
         sb.append(format(PLAYED_CARDS_MSG, Map.of(
                 "player", playerName,
                 "cards", cardsPlayed)
-        )).append("\n");
+        )).append(LINE_BREAK);
     }
 
     static void playerLocationMsg(String playerName, int positionNumber, Board board, Land land, List<Arrival> arrivalCards, StringBuilder sb) {
@@ -307,7 +308,7 @@ public class Printer {
                     "lands_excluding_last", s)
             ));
         }
-        sb.append("\n");
+        sb.append(LINE_BREAK);
     }
 
     static void playedTurnMsg(int turnNumber, String playerName, PlayerInfo playerInfo, StringBuilder sb) {
@@ -318,7 +319,7 @@ public class Printer {
                 "player", playerName,
                 "amount", playerInfo.getCoins(),
                 "lands_count", playerInfo.getBelongings().size())
-        )).append("\n");
+        )).append(LINE_BREAK);
     }
 
     public static String format(String[] array, Map<String, Object> params) {

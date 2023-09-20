@@ -10,6 +10,7 @@ import pp.muza.monopoly.model.pieces.lands.LandType;
 
 import java.util.List;
 
+import static pp.muza.formatter.Meta.LINES_SEPARATOR;
 import static pp.muza.monopoly.app.I18n.resourceBundle;
 
 public class PrintBoard {
@@ -20,9 +21,9 @@ public class PrintBoard {
     private static String landText(Land land) {
         StringBuilder sb = new StringBuilder();
         if (land.getType() == LandType.PROPERTY) {
-            sb.append(resourceBundle.getString(((Property) land).getColor().name()).toUpperCase(I18n.currentLocale)).append("\n");
+            sb.append(resourceBundle.getString(((Property) land).getColor().name()).toUpperCase(I18n.currentLocale)).append(LINES_SEPARATOR);
             sb.append(resourceBundle.getString(land.getName()));
-            sb.append(" $").append(((Property) land).getPrice()).append("\n");
+            sb.append(" $").append(((Property) land).getPrice()).append(LINES_SEPARATOR);
         } else {
             sb.append(resourceBundle.getString(land.getName()));
         }

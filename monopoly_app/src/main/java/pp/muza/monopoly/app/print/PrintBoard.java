@@ -8,7 +8,9 @@ import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Property;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Stack;
 
 import static pp.muza.formatter.Meta.LINES_SEPARATOR;
 import static pp.muza.monopoly.app.I18n.resourceBundle;
@@ -44,10 +46,17 @@ public class PrintBoard {
         int vx = -1;
         int vy = 0;
 
+        // for storing the positions of the lands
+        Stack<AbstractMap.SimpleEntry<Integer, Integer>> pos = new Stack<>();
+
         for (int i = 0; i < size; i++) {
             String text = landText(board.getLand(i));
             List<String> block = LineFormatter.textRectangle(WIDTH, HEIGHT, text, LineFormatter.Border.ALL, ' ');
-            canvas.pasteLines(left * (WIDTH - 1), top * (HEIGHT - 1), block);
+            int left1 = left * (WIDTH - 1);
+            int top1 = top * (HEIGHT - 1);
+            pos.push(new AbstractMap.SimpleEntry<>(left1, top1));
+            canvas.pasteLines(left1, top1, block);
+
             left += vx;
             top += vy;
             if (left == 0 && top == (height - 1)) {
@@ -63,6 +72,12 @@ public class PrintBoard {
                 vx = -1;
                 vy = 0;
             }
+        }
+
+        // draw indexes of the lands
+        while (!pos.isEmpty()) {
+            AbstractMap.SimpleEntry<Integer, Integer> p = pos.pop();
+            canvas.drawText(p.getKey() + 1, p.getValue(), "[" + pos.size() + "]");
         }
         return canvas.toString();
     }

@@ -3,10 +3,7 @@ plugins {
 }
 
 group 'pp.muza.monopoly'
-version '0.1'
-
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+version '0.1.1'
 
 repositories {
     // Use Maven Central for resolving dependencies.

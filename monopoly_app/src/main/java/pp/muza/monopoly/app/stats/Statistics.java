@@ -22,7 +22,8 @@ public class Statistics {
     public void addTurnInfo(TurnInfo turn) {
         turns.add(turn);
         turnInfo.put(turn.getTurnNumber(), turn);
-        playerTurns.computeIfAbsent(turn.getPlayerInfo().getPlayer(), k -> new LinkedHashSet<>()).add(turn.getTurnNumber());
+        playerTurns.computeIfAbsent(turn.getPlayerInfo().getPlayer(), k -> new LinkedHashSet<>())
+                .add(turn.getTurnNumber());
     }
 
     public List<TurnInfo> getTurns() {

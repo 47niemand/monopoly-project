@@ -6,6 +6,7 @@ import lombok.Getter;
  * @author dmytromuza
  */
 
+@Getter
 public enum LandType {
     /**
      * Chance card.
@@ -16,7 +17,8 @@ public enum LandType {
      */
     GOTO_JAIL(GotoJail.class),
     /**
-     * The JAIL is a land that the player is sent when he/she is caught by the police.
+     * The JAIL is a land that the player is sent when he/she is caught by the
+     * police.
      */
     JAIL(Jail.class),
     /**
@@ -28,11 +30,10 @@ public enum LandType {
      */
     PROPERTY(BaseProperty.class),
     /**
-     * start is a land that is used to start the game.
+     * start is a land used to start the game.
      */
     START(Start.class);
 
-    @Getter
     private final Class<? extends BaseLand> aClass;
 
     LandType(Class<? extends BaseLand> aClass) {

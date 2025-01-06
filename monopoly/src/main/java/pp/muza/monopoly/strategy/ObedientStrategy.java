@@ -23,6 +23,6 @@ public class ObedientStrategy implements Strategy {
     public ActionCard playTurn(Board board, List<Player> players, TurnInfo turnInfo) {
         List<ActionCard> a = turnInfo.getActiveCards();
         // it always returns the first card
-        return a.size() > 0 ? a.get(0) : null;
+        return !a.isEmpty() ? a.get(0) : null;
     }
 }

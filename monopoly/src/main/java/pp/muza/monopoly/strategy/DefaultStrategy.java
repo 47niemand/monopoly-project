@@ -29,14 +29,18 @@ public class DefaultStrategy implements Strategy {
         List<ActionCard> cards = turnInfo.getActiveCards();
         LOG.info("Active cards: {}", cards.stream().map(ActionCard::getName).collect(Collectors.toList()));
         // TODO: implement a better strategy
-        //  if there are CONTRACT cards, choose which a better to sale (to cover the obligation, or get more profit);
-        //  If there is a BUY card, decide whether to buy it or not if a better option could be available;
-        //  if there are MoveAndTakeover cards, chose card which fits player balance;
-        //  if there are GetOrPay cards, It is preferable to select an unowned land, but consider the player's balance;
-        //  if there are OptionMove cards, chose the one which is better to the player's current situation;
+        // if there are CONTRACT cards, choose which a better to sale (to cover the
+        // obligation, or get more profit);
+        // If there is a BUY card, decide whether to buy it or not if a better option
+        // could be available;
+        // if there are MoveAndTakeover cards, chose card which fits player balance;
+        // if there are GetOrPay cards, It is preferable to select an unowned land, but
+        // consider the player's balance;
+        // if there are OptionMove cards, chose the one which is better to the player's
+        // current situation;
 
         int random = (int) (Math.random() * cards.size());
         LOG.debug("Random card: {}", random);
-        return cards.size() > 0 ? cards.get(random) : null;
+        return !cards.isEmpty() ? cards.get(random) : null;
     }
 }

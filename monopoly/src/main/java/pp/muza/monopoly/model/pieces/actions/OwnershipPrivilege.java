@@ -1,13 +1,8 @@
 package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,8 +21,6 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public final class OwnershipPrivilege extends BaseBuy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OwnershipPrivilege.class);
-
     OwnershipPrivilege(int position) {
         super(ActionType.OBLIGATION, HIGH_PRIORITY, position);
     }
@@ -45,6 +38,5 @@ public final class OwnershipPrivilege extends BaseBuy {
         }
         return ImmutableList.of();
     }
-
 
 }

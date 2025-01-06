@@ -15,7 +15,6 @@ import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
-
 /**
  * This card finishes the turn.
  *
@@ -37,6 +36,7 @@ public final class EndTurn extends BaseActionCard {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
+        LOG.debug("Ending the turn");
         try {
             turn.endTurn();
         } catch (TurnException e) {

@@ -36,7 +36,6 @@ public final class RentRevenue extends ReceiveMoney {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position)
-        );
+                ImmutableMap.of("position", position));
     }
 }

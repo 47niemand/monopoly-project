@@ -15,12 +15,13 @@ import pp.muza.monopoly.model.Land;
 import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 
-
 /**
  * This card spawns action cards for the player, when player arrives at a land.
- * <p>For example:
+ * <p>
+ * For example:
  * <ul>
- * <li>when player arrives at the property, depending on the property owner, player can buy it, or player should pay rent.</li>
+ * <li>when player arrives at the property, depending on the property owner,
+ * player can buy it, or player should pay rent.</li>
  * <li>when player arrives at the goto jail, player should move to jail.</li>
  * <li>when player arrives at the chance, player should draw a card.</li>
  * <li>etc.</li>

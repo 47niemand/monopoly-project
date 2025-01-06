@@ -14,7 +14,7 @@ import pp.muza.monopoly.model.ActionType;
 import pp.muza.monopoly.model.Turn;
 
 /**
- * A player must roll dice by using this card.
+ * A player must roll the dice by using this card.
  *
  * @author dmytromuza
  */

@@ -27,7 +27,7 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public class PromoteAuction extends BaseAuction implements SyncCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PromoteAuction.class);
 
     PromoteAuction(int position, int price) {
         super(ActionType.CHOICE, HIGH_PRIORITY, position, price);
@@ -52,7 +52,8 @@ public class PromoteAuction extends BaseAuction implements SyncCard {
                             turn.sendCard(bidder, new Bid(position, price));
                             turn.sendCard(bidder, new EndTurn());
                         } catch (TurnException e) {
-                            throw new UnexpectedErrorException("Error while sending invitation to player {}" + bidder, e);
+                            throw new UnexpectedErrorException("Error while sending invitation to player {}" + bidder,
+                                    e);
                         }
                     }
                 }
@@ -89,8 +90,6 @@ public class PromoteAuction extends BaseAuction implements SyncCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position, "price", price)
-        );
+                ImmutableMap.of("position", position, "price", price));
     }
 }
-

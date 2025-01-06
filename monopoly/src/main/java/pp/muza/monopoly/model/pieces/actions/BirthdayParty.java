@@ -62,4 +62,3 @@ public final class BirthdayParty extends BaseActionCard {
         turn.holdTurn();
     }
 }
-

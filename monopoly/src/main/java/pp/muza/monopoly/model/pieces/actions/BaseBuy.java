@@ -1,18 +1,19 @@
 package pp.muza.monopoly.model.pieces.actions;
 
-import com.google.common.collect.ImmutableMap;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import pp.muza.monopoly.model.ActionType;
 
-import java.util.Map;
-
-
 /**
- * It is a base class for all actions that are related to taking ownership of the property.
+ * It is a base class for all actions that are related to taking ownership of
+ * the property.
  *
  * @author dmytromuza
  */
@@ -20,7 +21,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public abstract class BaseBuy extends BaseActionCard {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(Buy.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(BaseBuy.class);
     /**
      * the id of the land to be traded.
      */
@@ -35,7 +36,6 @@ public abstract class BaseBuy extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position)
-        );
+                ImmutableMap.of("position", position));
     }
 }

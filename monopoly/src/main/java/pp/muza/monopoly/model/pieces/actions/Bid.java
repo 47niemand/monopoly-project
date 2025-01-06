@@ -73,7 +73,6 @@ public final class Bid extends BaseActionCard implements Offer, SyncCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position, "price", price)
-        );
+                ImmutableMap.of("position", position, "price", price));
     }
 }

@@ -2,9 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
@@ -20,8 +17,6 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public abstract class BaseAuction extends BaseActionCard implements Offer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
 
     protected final int position;
     /**
@@ -46,4 +41,3 @@ public abstract class BaseAuction extends BaseActionCard implements Offer {
         throw new UnsupportedOperationException("Opening bid is not supported for the action: " + this);
     }
 }
-

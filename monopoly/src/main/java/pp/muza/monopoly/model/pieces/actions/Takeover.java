@@ -15,10 +15,10 @@ import pp.muza.monopoly.model.Player;
 import pp.muza.monopoly.model.Turn;
 import pp.muza.monopoly.model.pieces.lands.LandType;
 
-
 /**
  * A Player arrives at a property and must buy it.
- * If the property is owned by other player, the player must buy that property by paying the owner.
+ * If the property is owned by another player, the player must buy that property
+ * by paying the owner.
  * If the player owns the property, nothing happens.
  * If anyone does not own the property, the player can buy it from the bank.
  *

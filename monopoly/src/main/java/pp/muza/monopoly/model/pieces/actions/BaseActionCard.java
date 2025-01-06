@@ -17,7 +17,8 @@ import pp.muza.monopoly.model.Turn;
 /**
  * Base class for all action cards.
  * <p>
- * {@link BaseActionCard#onExecute} is an abstract method that is executed when the card using.
+ * {@link BaseActionCard#onExecute} is an abstract method that is executed when
+ * the card using.
  * It should be overridden by the subclasses.
  * </p>
  *
@@ -43,7 +44,8 @@ public abstract class BaseActionCard implements ActionCard {
     private final int priority;
 
     protected BaseActionCard(Action action, ActionType type, int priority) {
-        assert action.getClassList().contains(this.getClass()) : "Action " + action + " is not supported by " + this.getClass();
+        assert action.getClassList().contains(this.getClass())
+                : "Action " + action + " is not supported by " + this.getClass();
         this.name = this.getClass().getSimpleName();
         this.action = action;
         this.type = type;
@@ -90,6 +92,6 @@ public abstract class BaseActionCard implements ActionCard {
 
     @Override
     public String toString() {
-        return "" + this.name + params();
+        return this.name + params();
     }
 }

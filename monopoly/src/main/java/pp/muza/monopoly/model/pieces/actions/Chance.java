@@ -7,6 +7,7 @@ import lombok.Getter;
  *
  * @author dmytromuza
  */
+@Getter
 public enum Chance {
     /**
      * Advance to Mayfair. If one is available, get it for free, otherwise pay rent to the owner.
@@ -53,9 +54,9 @@ public enum Chance {
      */
     MOVE_FORWARD_ONE_SPACE(false, "Move forward one space or take another chance card."),
     /**
-     * Move forward up 5 spaces. Get ahead up to five spaces.
+     * Move forward up five spaces. Get ahead up to five spaces.
      */
-    MOVE_FORWARD_UP_TO_5_SPACES(false, "Move forward up 5 spaces. Get ahead up to five spaces."),
+    MOVE_FORWARD_UP_TO_5_SPACES(false, "Move forward up to five spaces."),
     /**
      * Get out of Jail Free. You can get out of jail free, keep this card until needed.
      */
@@ -80,9 +81,7 @@ public enum Chance {
     /**
      * true if the card is keepable, false otherwise
      */
-    @Getter
     private final boolean isKeepable;
-    @Getter
     private final String description;
 
     Chance(boolean isKeepable, String description) {

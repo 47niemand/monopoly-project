@@ -9,7 +9,6 @@ import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
 import pp.muza.monopoly.model.Player;
 
-
 /**
  * A player receives coins from the card.
  *
@@ -41,7 +40,6 @@ public class ReceiveMoney extends Income {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("sender", sender)
-        );
+                ImmutableMap.of("sender", sender));
     }
 }

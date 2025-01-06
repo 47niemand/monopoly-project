@@ -37,7 +37,10 @@ public abstract class BaseDebt extends BaseActionCard {
 
     /**
      * Return cards if the player succeeds in paying the tax.
-     * <p>Override this method in subclasses to return cards if the player succeeds in paying the tax.</p>
+     * <p>
+     * Override this method in subclasses to return cards if the player succeeds in
+     * paying the tax.
+     * </p>
      *
      * @param turn the turn to execute the action on.
      * @return cards if the player succeeds in paying the tax.
@@ -64,7 +67,7 @@ public abstract class BaseDebt extends BaseActionCard {
      * @throws TurnException if the player cannot pay the tax.
      */
     protected void check(Turn turn) throws TurnException {
-        //  check if the player can play the card
+        // check if the player can play the card
     }
 
     @Override
@@ -90,7 +93,6 @@ public abstract class BaseDebt extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("value", value)
-        );
+                ImmutableMap.of("value", value));
     }
 }

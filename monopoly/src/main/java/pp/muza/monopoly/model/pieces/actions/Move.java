@@ -47,11 +47,14 @@ public class Move extends BaseActionCard {
 
     /**
      * A method called when the player arrives at a new location on the board.
-     * <p>can be overridden by subclasses to perform additional actions.</p>
+     * <p>
+     * can be overridden by subclasses to perform additional actions.
+     * </p>
      *
      * @param turn     the current turn
      * @param position the new location on the board.
-     * @return the action cards to execute after the player arrives at the new location.
+     * @return the action cards to execute after the player arrives at the new
+     *         location.
      */
     @SuppressWarnings("unused")
     protected List<ActionCard> onArrival(Turn turn, int position) {
@@ -87,8 +90,7 @@ public class Move extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("distance", distance)
-        );
+                ImmutableMap.of("distance", distance));
     }
 
 }

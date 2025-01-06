@@ -65,7 +65,6 @@ public final class Sale extends Contract {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("buyer", buyer)
-        );
+                ImmutableMap.of("buyer", buyer));
     }
 }

@@ -46,10 +46,13 @@ public class MoveTo extends BaseActionCard {
 
     /**
      * A method called when the player arrives at a new location on the board.
-     * <p>can be overridden by subclasses to perform additional actions.</p>
+     * <p>
+     * can be overridden by subclasses to perform additional actions.
+     * </p>
      *
      * @param turn the current turn
-     * @return the action cards to execute after the player arrives at the new location.
+     * @return the action cards to execute after the player arrives at the new
+     *         location.
      */
     protected List<ActionCard> onArrival(Turn turn) {
         return ImmutableList.of(new Arrival(position));
@@ -63,7 +66,7 @@ public class MoveTo extends BaseActionCard {
         } catch (TurnException e) {
             throw new UnexpectedErrorException("Error during executing the action: " + this, e);
         }
-        if (path.size() == 0) {
+        if (path.isEmpty()) {
             LOG.warn("Staying on the same land");
         }
         return ImmutableList.<ActionCard>builder()
@@ -76,7 +79,6 @@ public class MoveTo extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position)
-        );
+                ImmutableMap.of("position", position));
     }
 }

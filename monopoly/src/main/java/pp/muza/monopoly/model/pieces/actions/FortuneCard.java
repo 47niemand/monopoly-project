@@ -43,9 +43,8 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     private final Chance chance;
 
     FortuneCard(Chance chance) {
-        super(Action.CHANCE
-                , chance.isKeepable() ? ActionType.KEEPABLE : ActionType.OBLIGATION
-                , chance.isKeepable() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
+        super(Action.CHANCE, chance.isKeepable() ? ActionType.KEEPABLE : ActionType.OBLIGATION,
+                chance.isKeepable() ? HIGHEST_PRIORITY : DEFAULT_PRIORITY);
         this.chance = chance;
     }
 
@@ -74,8 +73,9 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
             result.add(turn.popFortuneCard());
         } else {
             try {
-                // The recipient on its turn will go forward to any free property and will buy it.
-                // If all are owned, recipient can buy one from any player.
+                // The recipient on its turn will go forward to any free property and will buy
+                // it.
+                // If all are owned, the recipient can buy one from any player.
                 turn.sendCard(recipient, new SpawnMoveAndTakeover());
                 turn.sendCard(recipient, new EndTurn());
             } catch (TurnException e) {
@@ -88,7 +88,7 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
 
     @Override
     protected List<ActionCard> onExecute(Turn turn) {
-        LOG.info("Chance: " + chance.name());
+        LOG.info("Chance: {}", chance.name());
         LOG.debug("Executing card {} for player {}", this, turn.getPlayer());
         List<ActionCard> result = new ArrayList<>();
 
@@ -184,7 +184,6 @@ public final class FortuneCard extends BaseActionCard implements Fortune {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("chance", chance.name())
-        );
+                ImmutableMap.of("chance", chance.name()));
     }
 }

@@ -53,7 +53,6 @@ public final class Submit extends BaseActionCard implements Biding {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("bidder", bidder, "position", position, "price", price)
-        );
+                ImmutableMap.of("bidder", bidder, "position", position, "price", price));
     }
 }

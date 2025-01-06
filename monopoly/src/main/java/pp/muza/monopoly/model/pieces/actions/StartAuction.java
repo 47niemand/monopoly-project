@@ -2,9 +2,6 @@ package pp.muza.monopoly.model.pieces.actions;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pp.muza.monopoly.model.ActionCard;
@@ -20,8 +17,6 @@ import pp.muza.monopoly.model.Turn;
 @EqualsAndHashCode(callSuper = true)
 public final class StartAuction extends BaseActionCard {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
-
     StartAuction() {
         super(Action.AUCTION, ActionType.OPTIONAL, DEFAULT_PRIORITY);
     }
@@ -35,4 +30,3 @@ public final class StartAuction extends BaseActionCard {
         return CardUtils.createAuction(turn);
     }
 }
-

@@ -57,7 +57,6 @@ public abstract class BasePayment extends BaseDebt {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("recipient", recipient)
-        );
+                ImmutableMap.of("recipient", recipient));
     }
 }

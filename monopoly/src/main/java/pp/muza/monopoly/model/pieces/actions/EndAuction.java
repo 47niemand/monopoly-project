@@ -22,9 +22,9 @@ import pp.muza.monopoly.model.Turn;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public final class EndAuction extends BaseAuction implements Offer {
+public final class EndAuction extends BaseAuction {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Contract.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EndAuction.class);
 
     EndAuction(int position, int price) {
         super(ActionType.OBLIGATION, HIGH_PRIORITY, position, price);
@@ -56,4 +56,3 @@ public final class EndAuction extends BaseAuction implements Offer {
         return this;
     }
 }
-

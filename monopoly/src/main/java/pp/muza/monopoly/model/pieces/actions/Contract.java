@@ -69,7 +69,6 @@ public class Contract extends BaseActionCard {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                ImmutableMap.of("position", position, "price", price)
-        );
+                ImmutableMap.of("position", position, "price", price));
     }
 }

@@ -3,9 +3,6 @@ package pp.muza.monopoly.model.pieces.actions;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
 
 import lombok.EqualsAndHashCode;
@@ -25,8 +22,6 @@ import pp.muza.monopoly.model.Turn;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public final class PayRent extends BasePayment {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PayRent.class);
 
     private final int position;
 
@@ -54,7 +49,6 @@ public final class PayRent extends BasePayment {
     protected Map<String, Object> params() {
         return mergeMaps(
                 super.params(),
-                Map.of("position", position)
-        );
+                Map.of("position", position));
     }
 }

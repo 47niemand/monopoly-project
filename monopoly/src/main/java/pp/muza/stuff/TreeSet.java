@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * is not found.
  * - You can delete node by value ({@link #delete(Object)}).
  * <p>
- * TreeNodes are immutable, you can not change their values.
+ * TreeNodes are immutable, you cannot change their values.
  * the only way to change the tree is to insert or delete nodes.
  *
  * @param <T> the type of the value
@@ -44,7 +44,7 @@ public class TreeSet<T> implements Set<T> {
     }
 
     /**
-     * Get root node of the tree. It is a node with null value.
+     * Get the root node of the tree. It is a node with null value.
      * Children of the root node are the root nodes of the trees.
      *
      * @return root node
@@ -57,7 +57,7 @@ public class TreeSet<T> implements Set<T> {
      * Delete node by value
      *
      * @param value the value to delete
-     * @return true if node was deleted
+     * @return true if the node was deleted
      * @throws NullPointerException if value is null
      */
     public boolean delete(T value) {
@@ -73,10 +73,10 @@ public class TreeSet<T> implements Set<T> {
     }
 
     /**
-     * Insert new value to the root of the tree, if value already exists then move
+     * Insert a new value to the root of the tree, if value already exists then move
      * to the root.
      *
-     * @param value the value to insert, can not be null
+     * @param value the value to insert, cannot be null
      * @return true if node was inserted or moved
      * @throws NullPointerException if value is null
      */
@@ -85,12 +85,12 @@ public class TreeSet<T> implements Set<T> {
     }
 
     /**
-     * Insert new value to the parent, if parent is null then insert to the root.
-     * if parent is not null and not found then create new parent.
-     * if value already exists then move to the parent.
+     * Insert a new value to the parent, if parent is null then insert to the root.
+     * If parent is not null and not found, then create a new parent.
+     * If value already exists, then move to the parent.
      *
-     * @param parent the parent of the value, can be null
-     * @param value  the value to insert, can not be null
+     * @param parent the parent of the value can be null
+     * @param value  the value to insert, cannot be null
      * @return true if node was inserted or moved
      * @throws NullPointerException     if value is null
      * @throws IllegalArgumentException if value is already a child of the parent

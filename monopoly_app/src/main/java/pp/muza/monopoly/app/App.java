@@ -45,8 +45,10 @@ public class App {
         System.out.println(new App().getGreeting());
 
         Options options = new Options();
-        options.addOption(Option.builder("p").longOpt(OPT_PLAYERS).hasArg().desc("define number of players").type(Integer.class).build());
-        options.addOption(Option.builder("v").longOpt(OPT_VERBOSE).optionalArg(true).desc("verbose mode").type(Integer.class).build());
+        options.addOption(Option.builder("p").longOpt(OPT_PLAYERS).hasArg().desc("define number of players")
+                .type(Integer.class).build());
+        options.addOption(Option.builder("v").longOpt(OPT_VERBOSE).optionalArg(true).desc("verbose mode")
+                .type(Integer.class).build());
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter helpFormatter = new HelpFormatter();
@@ -55,7 +57,8 @@ public class App {
             if (cmd.hasOption(OPT_PLAYERS)) {
                 playerNumbers = Integer.parseInt(cmd.getOptionValue("players"));
                 if (playerNumbers < Constants.MIN_PLAYERS || playerNumbers > Constants.MAX_PLAYERS) {
-                    throw new IllegalArgumentException(String.format("Number of players must be between %s and %s", Constants.MIN_PLAYERS, Constants.MAX_PLAYERS));
+                    throw new IllegalArgumentException(String.format("Number of players must be between %s and %s",
+                            Constants.MIN_PLAYERS, Constants.MAX_PLAYERS));
                 }
                 System.out.println("Number of players: " + playerNumbers);
             }
@@ -103,7 +106,8 @@ public class App {
         game.start();
         while (game.isGameInProgress()) {
             PlayTurn turn = game.getTurn();
-            ActionCard card = DefaultStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(), turn.getTurnInfo());
+            ActionCard card = DefaultStrategy.getInstance().playTurn(game.getBoard(), game.getPlayers(),
+                    turn.getTurnInfo());
             if (card != null) {
                 turn.playCard(card);
             } else {

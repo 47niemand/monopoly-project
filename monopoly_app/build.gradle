@@ -23,11 +23,8 @@ dependencies {
     implementation libs.logback
     implementation libs.commons.cli
     implementation libs.jackson.databind
-
-    //implementation 'org.apache.avro:avro:1.11.1'
-    //implementation 'org.apache.kafka:kafka-clients:3.2.1'
-
-    implementation 'com.github.47niemand:LineFormatter:0.2-6'
+    implementation 'com.github.47niemand:LineFormatter:0.3-1'
+    implementation 'com.diogonunes:JColor:5.5.1'
 
     implementation project(':monopoly')
 }
@@ -49,7 +46,7 @@ tasks.register('simJar', Jar) {
     }
 
     manifest {
-        attributes("Implementation-Title": "Monopoy Game Simulator",
+        attributes("Implementation-Title": "Monopoly Game Simulator",
                 "Implementation-Version": archiveVersion,
                 "Main-Class": application.mainClass
 

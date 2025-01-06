@@ -27,7 +27,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
+          java-version: '21-ea'
           distribution: 'temurin'
       - name: Run PMD
         id: pmd

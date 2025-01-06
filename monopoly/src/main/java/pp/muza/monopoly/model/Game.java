@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import pp.muza.monopoly.consts.RuleOption;
-import pp.muza.stuff.IndexedEntry;
 import pp.muza.monopoly.errors.BankException;
 import pp.muza.monopoly.errors.GameException;
+import pp.muza.stuff.IndexedEntry;
 
 /**
  * Game API for engine.
@@ -38,12 +38,13 @@ public interface Game {
     void setPlayerInJail(Player player) throws GameException;
 
     /**
-     * Moves the player to the given position and returns the path player was moved on.
+     * Moves the player to the given position and returns the path the player was
+     * moved on.
      *
      * @param player   the player.
      * @param position the position.
      * @return the path from the current position (excluded) to the new position
-     * (included).
+     *         (included).
      * @throws GameException if the player is not in the game.
      */
     List<Land> moveTo(Player player, int position) throws GameException;
@@ -53,7 +54,8 @@ public interface Game {
      *
      * @param player   the player.
      * @param position the property to buy.
-     * @throws GameException if there are some errors (e.g. someone already owns the property).
+     * @throws GameException if there are some errors (e.g., someone already owns
+     *                       the property).
      * @throws BankException if the player doesn't have enough coins.
      */
     void buyProperty(Player player, int position) throws GameException, BankException;
@@ -72,7 +74,8 @@ public interface Game {
      * @param player   the player.
      * @param position the property.
      * @param price    the price to sell.
-     * @throws GameException if there are some errors (e.g. the player does not own the property).
+     * @throws GameException if there are some errors (e.g., the player does not own
+     *                       the property).
      * @throws BankException if a player cannot receive the coins.
      */
     void doContract(Player player, int position, int price) throws BankException, GameException;
@@ -101,7 +104,7 @@ public interface Game {
      * @param sender     the player who sends the card.
      * @param to         the player who receives the card.
      * @param actionCard the action card.
-     * @throws GameException if recipient cannot receive the card.
+     * @throws GameException if the recipient cannot receive the card.
      */
     void sendCard(Player sender, Player to, ActionCard actionCard) throws GameException;
 
@@ -111,10 +114,10 @@ public interface Game {
      * @param buyer    the player who is buying the property.
      * @param seller   the player who is selling the property.
      * @param position the property to trade.
-     * @throws GameException if there are some errors (e.g. the property is not owned
-     *                       by the sale player).
-     * @throws BankException if operation fails (e.g. if the player doesn't have
-     *                       enough coins).
+     * @throws GameException if there are some errors (e.g., the property is not
+     *                       owned by the sale player).
+     * @throws BankException if the operation fails (e.g., if the player doesn't
+     *                       have enough coins).
      */
     void tradeProperty(Player buyer, Player seller, int position) throws BankException, GameException;
 
@@ -122,7 +125,8 @@ public interface Game {
      * Get the number of coins needed to cover the rent.
      *
      * @param position the property.
-     * @return the number of coins to pay for the rent, or 0 if anyone does not own the property.
+     * @return the number of coins to pay for the rent, or 0 if anyone does not own
+     *         the property.
      */
     int getRent(int position);
 
@@ -131,7 +135,8 @@ public interface Game {
      *
      * @param player the player.
      * @param value  the value of coins to add.
-     * @throws BankException if operation fails (e.g. if the player wallet is full).
+     * @throws BankException if the operation fails (e.g., if the player wallet is
+     *                       full).
      */
     void income(Player player, int value) throws BankException;
 
@@ -170,7 +175,7 @@ public interface Game {
     Player getPropertyOwner(int position);
 
     /**
-     * Returns a fine to pay in order to get out of jail.
+     * Returns a fine to pay to get out of jail.
      *
      * @return amount to pay.
      */
@@ -265,8 +270,10 @@ public interface Game {
      * @param position the position of the property.
      * @param price    the price of the property.
      * @param buyer    the buyer.
-     * @throws GameException if there are some errors (e.g. the property is not owned)
-     * @throws BankException if operation fails (e.g. if the buyer doesn't have enough coins).
+     * @throws GameException if there are some errors (e.g., the property is not
+     *                       owned)
+     * @throws BankException if the operation fails (e.g., if the buyer doesn't have
+     *                       enough coins).
      */
     void doSale(Player seller, int position, int price, Player buyer) throws GameException, BankException;
 
@@ -276,7 +283,8 @@ public interface Game {
      * @param player  the player who starts the auction.
      * @param postion the position of the property.
      * @param price   the starting price.
-     * @throws GameException if there are some errors (e.g. the property is not owned but the player, wrong position, etc.)
+     * @throws GameException if there are some errors (e.g., the property is not
+     *                       owned but the player, wrong position, etc.)
      */
     void auction(Player player, int postion, int price) throws GameException;
 
@@ -286,7 +294,8 @@ public interface Game {
      * @param player   the player who ends the auction.
      * @param position the position of the property.
      * @return the winner of the auction, or null if there is no winner.
-     * @throws GameException if the auction is not started, or the player is not the auctioneer.
+     * @throws GameException if the auction is not started, or the player is not the
+     *                       auctioneer.
      */
     Biding endAuction(Player player, int position) throws GameException;
 
@@ -303,7 +312,7 @@ public interface Game {
      *
      * @param player   the player.
      * @param position the land id.
-     * @throws GameException if operation fails (e.g. the property is not free).
+     * @throws GameException if operation fails (e.g., the property is not free).
      */
     void takeProperty(Player player, int position) throws GameException;
 }
